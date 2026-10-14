@@ -9,7 +9,7 @@ import unittest
 from datetime import date, timedelta
 from pathlib import Path
 
-from mos import campanas, config, contenido
+from mos import campanas, canales, config, contenido
 from mos.fabrica import render
 from tests.base import ConBase
 
@@ -183,6 +183,14 @@ class CampanaReal(ConBase):
                 for campo in ("tema", "objetivo", "metrica", "verificacion", "audiencia"):
                     self.assertTrue(p.get(campo), f"Falta «{campo}»")
                 self.assertTrue(p["contenido"].get("copy"), "Falta el texto para publicar")
+
+    def test_cada_red_acepta_el_tamano_de_sus_piezas(self):
+        for p in self.datos["pieza"]:
+            aceptados = canales.canal(p["canal"], RAIZ).get("formatos", [])
+            for formato in p["formatos"]:
+                ancho, alto = render.FORMATOS[formato]
+                with self.subTest(pieza=p["clave"], formato=formato):
+                    self.assertIn(f"{ancho}x{alto}", aceptados, f"{p['canal']} no lista {ancho}x{alto} en semillas/canales.toml")
 
     def test_el_auditor_solo_frena_la_noticia_hasta_que_la_revise_un_contador(self):
         res = campanas.cargar(self.cx, self.cfg, CAMPANA_REAL)

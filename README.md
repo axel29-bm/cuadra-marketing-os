@@ -16,6 +16,7 @@ El departamento de marketing de Didi, en su propia PC: investiga, planifica, pro
 | Métricas | Lo medido separado de lo estimado, recomendaciones explicables y reciclaje de lo que funcionó | `mos/metricas.py` |
 | Fábrica | 10 plantillas con la identidad de Cuadra que exportan PNG, PDF de carrusel, trivia interactiva, vídeo MP4, guion, teleprompter y subtítulos, sin Internet | `plantillas/`, `mos/fabrica/`, `docs/IDENTIDAD-VISUAL.md` |
 | Campañas | Campañas escritas en un archivo: se cargan sin duplicar, se auditan, se renderizan y salen como calendario y paquete listo para publicar | `campanas/`, `mos/campanas.py` |
+| Landing | Página de la lista de espera con formulario de consentimiento, aviso de privacidad en borrador y trivia. Se ve en local; publicarla espera los trámites legales y tu autorización | `sitio/`, `mos/sitio.py`, `docs/CANALES-Y-PUBLICACION.md` |
 | Panel | Todo lo anterior con clics, en `http://127.0.0.1:8765` | `mos/web/` |
 | Radar | Fuentes oficiales (SUNAT, El Peruano, MEF) con método y frecuencia | `semillas/fuentes.toml` |
 | Herramientas | Registro de herramientas con coste, licencia, límites, riesgo, decisión y fuente | `docs/REGISTRO-HERRAMIENTAS-Y-COSTES.md` |
@@ -45,11 +46,13 @@ python -m mos auditar --texto "Tu texto" --cta "Pide una demostración"
 python -m mos agentes --detalle                       # los roles y sus contratos
 python -m mos campana cargar campanas/lista-espera-beta   # la campaña de lanzamiento, auditada
 python -m mos campana render campanas/lista-espera-beta   # sus imágenes, PDF y vídeos
+python -m mos sitio ver                                   # la landing en http://127.0.0.1:8766
+python -m mos sitio pendientes                            # lo que falta para poder publicarla
 ```
 
 **La campaña de lanzamiento** (30 días, 26 piezas, paquete exportado) está en `campanas/lista-espera-beta/`: empieza por su `LEEME.md`.
 
-La guía completa está en `docs/INSTALACION.md` y la rutina de cada día en `docs/OPERACION-DIARIA.md`.
+La guía completa está en `docs/INSTALACION.md`, la rutina de cada día en `docs/OPERACION-DIARIA.md` y cómo sale cada pieza hacia las redes en `docs/CANALES-Y-PUBLICACION.md`.
 
 ## Cómo trabajan los agentes sin pagar una API
 
@@ -67,6 +70,7 @@ También hay modo **local** (Ollama, sin coste por uso) y modo **externo** (apag
 
 ```powershell
 python -m unittest discover -s tests -t .
+node --test sitio/receptor/worker.test.mjs     # receptor del formulario (Node 22)
 ```
 
 ## Reglas que no se rompen

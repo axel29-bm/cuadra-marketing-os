@@ -6,10 +6,10 @@ Las fases siguen la sección 18 del encargo. Cada fase termina con pruebas en ve
 | --- | --- | --- |
 | 0 | Auditoría de Cuadra, investigación de herramientas y arquitectura | ✓ Hecha (14/10/2026) |
 | 1 | Núcleo: base local, matriz de capacidades, auditor, 11 agentes con contrato, motor de tareas, leads, métricas, línea de comandos | ✓ Hecha (14/10/2026) |
-| 2 | Panel web local: productos, campañas, ideas, calendario, biblioteca, aprobaciones, publicaciones, leads, tareas y errores | En curso |
-| 3 | Fábrica: plantillas visuales (promoción, beneficio, educativo, noticia, carrusel, trivia, meme, lanzamiento, demostración), exportación a PNG, PDF y MP4, teleprompter y paquete de voz, calendario de 30 días y paquete de lanzamiento | Siguiente |
-| 4 | Automatizaciones locales: radar diario de fuentes oficiales, respaldos programados, resumen semanal del director, recordatorios de seguimiento de leads | Pendiente |
-| 5 | Landing con lista de espera y formulario con consentimiento (local; publicarla requiere autorización y dominio o subdominio gratuito) | Pendiente |
+| 2 | Panel web local: productos, campañas, ideas, calendario, biblioteca, aprobaciones, publicaciones, leads, tareas y errores | ✓ Hecha (14/10/2026) |
+| 3 | Fábrica: plantillas visuales (promoción, beneficio, educativo, noticia, carrusel, trivia, meme, lanzamiento, demostración), exportación a PNG, PDF y MP4, teleprompter y paquete de voz, calendario de 30 días y paquete de lanzamiento | ✓ Hecha (14/10/2026) |
+| 4 | Automatizaciones locales: radar diario de fuentes oficiales, respaldos programados, resumen semanal del director, recordatorios de seguimiento de leads (plan en `AUTOMATIZACIONES.md`) | Siguiente |
+| 5 | Landing con lista de espera y formulario con consentimiento (local; publicarla requiere autorización y dominio o subdominio gratuito) | ✓ Construida en local (14/10/2026). Publicarla espera los trámites legales y tu autorización |
 | 6 | Medición y mejora: importación de métricas desde los CSV de cada red, experimentos, reciclaje de piezas, revisión mensual | Pendiente |
 
 ## Decisiones que esperan a Didi

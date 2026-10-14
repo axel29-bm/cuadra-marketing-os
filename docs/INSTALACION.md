@@ -37,7 +37,7 @@ Tiempo estimado: 15 minutos para el núcleo. Todo es gratuito.
 > Si tu carpeta de usuario está sincronizada con OneDrive, define la carpeta de datos fuera de ella:
 > `setx MOS_ESPACIO C:\MarketingOS\espacio` y abre una consola nueva.
 
-## 2. Fábrica de contenidos (imágenes, PDF y vídeo · Fase 3, en construcción)
+## 2. Fábrica de contenidos y landing (imágenes, PDF, vídeo y la página de la lista de espera)
 
 1. Dependencias de Python:
    ```powershell
@@ -49,6 +49,12 @@ Tiempo estimado: 15 minutos para el núcleo. Todo es gratuito.
    winget install Gyan.FFmpeg
    ```
    Comprueba con `ffmpeg -version`. Se usa como programa externo; no se distribuye con el sistema.
+4. **Comprobar:**
+   ```powershell
+   python -m mos fabrica plantillas              # lista las plantillas y sus formatos
+   python -m mos sitio ver                       # abre la landing en http://127.0.0.1:8766 (solo en tu PC)
+   ```
+5. **Node.js 22** (opcional): solo para correr las pruebas del receptor del formulario (`node --test sitio/receptor/worker.test.mjs`). `winget install OpenJS.NodeJS.LTS`.
 
 ## 3. IA local (opcional)
 
@@ -80,6 +86,25 @@ git pull
 python -m mos iniciar      # aplica migraciones nuevas y recarga la configuración, sin perder datos
 python -m mos respaldar    # antes de cualquier cambio grande
 ```
+
+## 6. Restaurar una copia de seguridad
+
+`python -m mos respaldar` guarda en `espacio\respaldos` una copia verificada y conserva las 14 más recientes. Para volver a una:
+
+1. Cierra el panel (Ctrl+C) y cualquier consola que use la base.
+2. Aparta la base actual, sin borrarla:
+   ```powershell
+   Rename-Item espacio\mos.db mos-danada.db
+   Remove-Item espacio\mos.db-wal, espacio\mos.db-shm -ErrorAction SilentlyContinue
+   ```
+3. Copia la copia elegida con el nombre de la base:
+   ```powershell
+   Copy-Item espacio\respaldos\mos-AAAAMMDDTHHMMSS…Z.db espacio\mos.db
+   python -m mos estado
+   ```
+4. Si `estado` responde bien, puedes borrar `mos-danada.db` cuando quieras.
+
+Las imágenes y vídeos exportados (`espacio\salidas`) no van dentro de la base: se regeneran con `python -m mos campana render …`.
 
 ## Problemas frecuentes
 

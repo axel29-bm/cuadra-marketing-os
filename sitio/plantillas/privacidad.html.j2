@@ -1,0 +1,56 @@
+{% extends "base.html.j2" %}
+{% block titulo %}Aviso de privacidad · {{ nombre_marca }}{% endblock %}
+{% block ruta %}/privacidad.html{% endblock %}
+{% block estilos %}
+main { padding: 24px 0 0; max-width: 760px; }
+main h1 { font-size: clamp(30px, 5vw, 44px); margin-bottom: 10px; }
+main h2 { font-size: 22px; margin: 34px 0 10px; }
+main p, main li { margin: 0 0 10px; }
+main ul { padding-left: 22px; }
+.version { font: 500 14px/1.4 var(--fuente-mono); color: var(--texto-suave); }
+.pendiente { background: color-mix(in srgb, var(--alerta) 14%, transparent); color: var(--alerta); padding: 0 .25em; border-radius: 4px; font-weight: 600; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+td, th { border-bottom: 1px solid var(--borde); padding: 8px 6px; text-align: left; vertical-align: top; }
+{% endblock %}
+{% block cabecera %}<a href="index.html">Volver</a>{% endblock %}
+{% block contenido %}
+<div class="envoltura">
+<main>
+  <h1>Aviso de privacidad</h1>
+  <p class="version">Versión {{ aviso_version }}</p>
+  {% if borrador %}<p><span class="pendiente">Borrador: un abogado debe validarlo antes de publicar.</span></p>{% endif %}
+
+  <h2>Quién trata tus datos</h2>
+  <p>{{ r.nombre | pendiente }}, con {{ r.documento | pendiente }} y domicilio en {{ r.domicilio | pendiente }}, es el titular del banco de datos «Interesados», inscrito en el Registro Nacional de Protección de Datos Personales con el código {{ r.registro_banco | pendiente }}.</p>
+
+  <h2>Qué datos pedimos y para qué</h2>
+  <table>
+    <tr><th>Dato</th><th>Para qué</th><th>¿Es obligatorio?</th></tr>
+    <tr><td>Nombre y correo</td><td>Avisarte cuando abra la beta privada de Cuadra y, si la pides, coordinar una demostración</td><td>Sí. Sin ellos no podemos avisarte</td></tr>
+    <tr><td>Cuántas empresas llevas y qué te quita tiempo</td><td>Entender qué necesitas y preparar la beta y la demostración</td><td>No</td></tr>
+    <tr><td>Origen de la visita (por ejemplo, la red social desde la que llegaste) y una huella cifrada de tu conexión</td><td>Saber qué publicaciones funcionan, evitar envíos automáticos y probar que diste tu consentimiento</td><td>Se guarda solo</td></tr>
+  </table>
+  <p>Con la segunda casilla, que es opcional y aparte, también usamos tu correo para enviarte novedades de Cuadra. Si no la marcas, igual quedas en la lista.</p>
+  <p>No pedimos ni queremos RUC, claves SOL, datos de tus clientes ni información contable.</p>
+
+  <h2>Con quién se comparten</h2>
+  <p>Con nadie para fines propios. Los datos pasan por {{ r.proveedores }}. Eso implica un flujo transfronterizo de datos{% if r.flujo_comunicado %}, comunicado a la Autoridad Nacional de Protección de Datos Personales{% else %} <span class="pendiente">[COMPLETAR: comunicarlo a la Autoridad Nacional de Protección de Datos Personales]</span>{% endif %}. No vendemos ni alquilamos tus datos.</p>
+  <p>Después de recibirlos, los copiamos a una base de datos en la computadora del responsable, en Perú, y los borramos del servidor.</p>
+
+  <h2>Cuánto tiempo se guardan</h2>
+  <p>{{ r.conservacion }}.</p>
+
+  <h2>Tus derechos</h2>
+  <p>Puedes pedir información sobre tus datos, acceder a ellos, corregirlos, cancelarlos u oponerte a su uso, y retirar tu consentimiento cuando quieras, escribiendo a {{ r.correo_derechos | pendiente }}. Respondemos en los plazos de ley: 8 días hábiles para información, 20 para acceso y 10 para rectificación, cancelación y oposición.</p>
+  <p>Para dejar de recibir novedades, basta con responder «BAJA» a cualquier correo. Si no estás conforme con la respuesta, puedes acudir a la Autoridad Nacional de Protección de Datos Personales del Ministerio de Justicia y Derechos Humanos.</p>
+
+  <h2>Seguridad</h2>
+  <p>La conexión va cifrada (HTTPS), el servidor solo guarda lo necesario y la base local está protegida en la computadora del responsable. Si ocurriera un incidente que afecte tus datos, te lo comunicaremos.</p>
+
+  <h2>Cookies y analítica</h2>
+  <p>{% if analitica_token %}Usamos Cloudflare Web Analytics para contar visitas sin cookies ni identificadores en tu navegador.{% else %}Esta página no usa cookies ni herramientas de analítica.{% endif %}</p>
+
+  <p style="margin-top: 32px">Base legal: Ley N.° 29733, Ley de Protección de Datos Personales, y su reglamento aprobado por D.S. N.° 016-2024-JUS.</p>
+</main>
+</div>
+{% endblock %}

@@ -4,6 +4,44 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 ---
 
+## 14/10/2026 · Fase 5 adelantada: landing de la lista de espera y documentos de operación
+
+### Hecho
+
+- **Landing** (`sitio/`, `mos/sitio.py`, `python -m mos sitio`): se escribe en `sitio/sitio.toml` y se construye como página estática. Cada sección pasa por el auditor y cada capacidad se cita por su código de la matriz: «lo que ya hace» solo admite capacidades permitidas; las que tienen matices salen con su nota; lo que todavía no existe se dice como tal. Incluye la demostración, la trivia interactiva de la campaña, preguntas frecuentes, el aviso de privacidad en borrador e imagen para compartir. Sin nada cargado desde Internet.
+- **Formulario con consentimiento:** nombre y correo; número de empresas y problema, opcionales; y tres casillas sin marcar: demostración, consentimiento (obligatoria) y publicidad aparte. Campo trampa para robots. Mientras falte algo legal, la página sale como borrador: franja visible, sin formulario, con `noindex` y un `robots.txt` que bloquea.
+- **`sitio pendientes`** lista lo que falta para publicar: datos del responsable con el código de inscripción del banco de datos, flujo transfronterizo comunicado, aviso validado por un abogado con versión definitiva, y las direcciones de la página y del receptor. `sitio construir --publicable` se niega mientras falte algo.
+- **Prueba en local:** `sitio ver` sirve la página en `http://127.0.0.1:8766` con un receptor local que guarda cada inscripción como lead con la evidencia del consentimiento (versión del aviso, fecha, medio y origen de la visita). Quien pide demostración queda con su próxima acción en «Seguimientos».
+- **Receptor para Internet** (`sitio/receptor/`, **sin desplegar**): Cloudflare Workers + D1 en plan gratuito, código propio sin dependencias. No guarda la IP (solo su huella con una sal secreta), limita a 5 envíos por hora por conexión, no duplica, y exportar o borrar exige una clave que vive solo en Cloudflare y en tu consola. `sitio importar` trae las inscripciones a tu base y las borra del servidor; si una fila no entra, no borra nada.
+- **Documentos:** `CANALES-Y-PUBLICACION.md` (niveles de automatización, canales, recorrido de una pieza y la landing), `OPERACION-DIARIA.md` (rutina diaria, semanal y mensual), `AUTOMATIZACIONES.md` (cada flujo con razón, criterio, comprobación y estado) e `INSTALACION.md` (fábrica, landing, Node opcional y cómo restaurar una copia).
+- `semillas/canales.toml`: LinkedIn ahora lista 1200×627, el tamaño de vista de enlace que usan C22, C24 y C26. Una prueba nueva lo vigila para toda la campaña.
+
+### Cómo se verificó
+
+- `python -m unittest discover -s tests -t .` en verde con Chromium y FFmpeg (el número exacto, en la salida de la CI). Nuevas para la landing: el auditor revisa cada sección, una capacidad «no anunciar» o con matices no puede ir en «lo que ya hace», no se publica con pendientes, el borrador no lleva formulario ni nada de Internet, las casillas salen sin marcar, las reglas del formulario, el receptor local de punta a punta y la importación desde un receptor simulado (incluido que no borra nada si una fila falla).
+- `node --test sitio/receptor/worker.test.mjs`: 7 pruebas con una D1 simulada sobre SQLite (sin consentimiento no guarda, sin duplicados ni IP en claro, trampa, límite por hora, clave para exportar y borrar, y las mismas reglas que Python). La CI las corre también.
+- La página se revisó a ojo con Chromium en escritorio (1280 px) y en móvil (360 px, sin desplazamiento horizontal).
+- El procedimiento para restaurar una copia de `INSTALACION.md` se probó sobre una base de prueba.
+
+### Pendiente
+
+- Lo tuyo para publicar la landing: completar los datos del responsable, inscribir el banco de datos «Interesados», comunicar el flujo transfronterizo, que un abogado revise el aviso y las casillas, y autorizar la cuenta de Cloudflare. Si Cloudflare pide tarjeta, se para ahí.
+- Fase 4: rutina diaria con respaldo, lectura del radar y resumen semanal.
+- Fase 6: leer el CSV que exporta cada red, y los experimentos.
+
+### Defectos y límites conocidos
+
+- No hay analítica en la página: `analitica_token` queda vacío hasta decidir una herramienta sin cookies.
+- La landing usa iconos donde irían capturas reales de Cuadra (mismo motivo que en la Fase 3).
+- `metrica importar` solo entiende una planilla propia (columnas `url`, `fecha` y nombres de métrica), no el CSV de cada red.
+- No se verificó todavía si Cloudflare pide tarjeta para crear la cuenta o usar D1.
+
+### Siguiente paso
+
+Fase 4: un comando `rutina diaria` (respaldo, radar y lo pendiente del día) que puedas programar en Windows, y el resumen semanal.
+
+---
+
 ## 14/10/2026 · Fase 3: fábrica de piezas, calendario de 30 días y paquete de lanzamiento
 
 ### Hecho

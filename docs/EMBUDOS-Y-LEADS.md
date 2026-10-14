@@ -59,16 +59,18 @@ Fuente: investigación del 14/10/2026 sobre la Ley 29733, su reglamento (D.S. 01
 
 | Requisito | Qué hacer | Estado |
 | --- | --- | --- |
-| Aviso de privacidad con el contenido mínimo (reglamento art. 6.1) | Identidad y domicilio del responsable, finalidades, destinatarios, consecuencias de no dar los datos, transferencias, plazo de conservación y cómo ejercer los derechos | Borrador en la landing (Fase 3). **Validar con abogado** |
-| Consentimiento libre, previo, expreso e inequívoco | Casillas sin premarcar, una por finalidad | Diseñado así en el formulario |
+| Aviso de privacidad con el contenido mínimo (reglamento art. 6.1) | Identidad y domicilio del responsable, finalidades, destinatarios, consecuencias de no dar los datos, transferencias, plazo de conservación y cómo ejercer los derechos | Borrador en `sitio/plantillas/privacidad.html.j2`, con los datos del responsable por completar en `sitio/sitio.toml`. **Validar con abogado** |
+| Consentimiento libre, previo, expreso e inequívoco | Casillas sin premarcar, una por finalidad | Hecho en el formulario: tres casillas sin marcar (consentimiento, publicidad y demostración); sin la primera no se guarda nada, ni en local ni en el receptor |
 | Consentimiento separado para publicidad (art. 26) | Segunda casilla opcional | Implementado en el sistema |
 | Inscribir el banco de datos «Interesados» en el Registro Nacional de Protección de Datos Personales | Trámite gratuito y de aprobación automática. No hacerlo se multa con 0,5 a 5 UIT | **Pendiente: lo hace Didi** antes de captar |
-| Flujo transfronterizo (art. 21.2) | Si los datos pasan por un servidor fuera del Perú (Cloudflare, Google, Meta, un servicio de correo), declararlo en el aviso y comunicarlo e inscribirlo | **Validar con abogado** cuando se elija dónde vive el formulario |
+| Flujo transfronterizo (art. 21.2) | Si los datos pasan por un servidor fuera del Perú (Cloudflare, Google, Meta, un servicio de correo), declararlo en el aviso y comunicarlo e inscribirlo | Receptor propuesto: Cloudflare Workers + D1, sin desplegar. El aviso lo declara cuando `responsable.flujo_comunicado` sea verdadero. **Validar con abogado** |
 | Derechos ARCO en plazo | Información 8 días hábiles; acceso 20; rectificación, cancelación y oposición 10 | Comandos `acceso` y `suprimir` listos; falta el correo de contacto para derechos |
 | Incidentes en 48 horas | Procedimiento escrito para avisar a la autoridad y a los titulares | Ver `docs/SEGURIDAD-Y-PRIVACIDAD.md` |
 | Correo comercial (Ley 28493) | «PUBLICIDAD» en el asunto, remitente con domicilio, baja en un clic, procesada en menos de 2 días | Hecho en `campanas/lista-espera-beta/secuencia-seguimiento.md` |
 | Contacto masivo (Código art. 58.1 e) | Nada de llamadas, SMS, WhatsApp ni correos masivos a quien no lo pidió | Regla del sistema |
 | No comprar ni alquilar bases de datos | Prohibido por el sistema | Regla del sistema |
+
+`python -m mos sitio pendientes` revisa estos puntos y no deja construir la versión publicable mientras falte alguno.
 
 **Preguntas para el abogado:** si un contador cuenta como consumidor para el Código; cómo declarar el flujo transfronterizo de cada proveedor; el texto del aviso y de las casillas; cuánto tiempo conservar los leads; si hace falta Oficial de Datos Personales; y el Libro de Reclamaciones cuando haya venta en línea.
 

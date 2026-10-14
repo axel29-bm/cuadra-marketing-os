@@ -26,7 +26,7 @@ verificado = false
 [canal.linkedin]
 nombre = "LinkedIn (perfil de Didi)"
 programacion = "Programación nativa de LinkedIn (gratis)"
-formatos = ["1080x1350", "1200x1200", "1920x1080"]
+formatos = ["1080x1350", "1200x1200", "1920x1080", "1200x627"]
 max_copy = 3000
 recomendado_copy = 1300
 max_hashtags = 5

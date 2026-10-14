@@ -21,6 +21,11 @@ jobs:
         run: python -m unittest discover -s tests -t . -v
       - name: Comprobar que la configuración TOML se lee
         run: python -m mos --espacio "$RUNNER_TEMP/espacio" iniciar
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pruebas del receptor del formulario (Cloudflare Worker con D1 simulada)
+        run: node --test sitio/receptor/worker.test.mjs
 
   fabrica:
     runs-on: ubuntu-latest

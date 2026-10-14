@@ -117,7 +117,7 @@ def paginas(raiz: Path, nombre: str, datos: dict) -> int:
 
 # ------------------------------------------------------------------------------------------- HTML
 
-def _entorno(raiz: Path):
+def _entorno(raiz: Path, carpeta: Path | None = None):
     try:
         import jinja2
     except ImportError as ex:
@@ -130,7 +130,7 @@ def _entorno(raiz: Path):
         seguro = re.sub(r"\*(.+?)\*", r"<mark>\1</mark>", seguro)
         return Markup(seguro.replace("\n", "<br>"))
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(raiz / "plantillas")), autoescape=True,
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(carpeta or raiz / "plantillas")), autoescape=True,
                              trim_blocks=True, lstrip_blocks=True)
     env.filters["resaltar"] = resaltar
     env.filters["sin_marcas"] = lambda t: _sin_marcas(t or "")

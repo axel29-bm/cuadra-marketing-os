@@ -1,0 +1,60 @@
+// Envío del formulario de la lista de espera. Sin bibliotecas ni cookies.
+(function () {
+  "use strict";
+  const form = document.getElementById("formulario");
+  if (!form) return;
+  const mensaje = document.getElementById("mensaje");
+  const boton = form.querySelector("button[type=submit]");
+  const TEXTOS = {{ textos | tojson }};
+
+  function mostrar(texto, tipo) {
+    mensaje.textContent = texto;
+    mensaje.className = "mensaje " + tipo;
+    mensaje.hidden = false;
+  }
+
+  function origen() {
+    const q = new URLSearchParams(location.search), salida = {};
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach(function (k) {
+      const v = q.get(k);
+      if (v) salida[k] = v.slice(0, 80);
+    });
+    if (document.referrer) salida.referente = document.referrer.slice(0, 200);
+    return salida;
+  }
+
+  form.addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    const d = new FormData(form);
+    const email = String(d.get("email") || "").trim();
+    if (!String(d.get("nombre") || "").trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      mostrar(TEXTOS.DATOS_INCOMPLETOS, "error");
+      return;
+    }
+    if (!d.get("consentimiento")) {
+      mostrar(TEXTOS.SIN_CONSENTIMIENTO, "error");
+      return;
+    }
+    const cuerpo = {
+      nombre: String(d.get("nombre")).trim(), email: email, empresas: String(d.get("empresas") || "").trim(),
+      problema: String(d.get("problema") || "").trim(), demo: !!d.get("demo"), consentimiento: true,
+      publicidad: !!d.get("publicidad"), aviso_version: form.dataset.version, sitio_web: String(d.get("sitio_web") || ""),
+      origen: origen()
+    };
+    boton.disabled = true;
+    try {
+      const r = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) });
+      const j = await r.json().catch(function () { return {}; });
+      if (r.ok && j.ok) {
+        form.querySelectorAll("input, textarea, button").forEach(function (el) { el.disabled = true; });
+        mostrar(TEXTOS.GRACIAS, "ok");
+      } else {
+        mostrar(TEXTOS[j.codigo] || TEXTOS.ERROR, "error");
+        boton.disabled = false;
+      }
+    } catch (e) {
+      mostrar(TEXTOS.ERROR, "error");
+      boton.disabled = false;
+    }
+  });
+})();

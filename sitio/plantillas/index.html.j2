@@ -1,0 +1,158 @@
+{% extends "base.html.j2" %}
+{% block estilos %}
+.heroe { position: relative; overflow: hidden; padding: 40px 0 72px; }
+.heroe .envoltura { position: relative; z-index: 1; display: grid; gap: 22px; max-width: var(--ancho); }
+.heroe .chip { justify-self: start; }
+.heroe h1 { max-width: 13.5em; }
+.heroe .subtitulo { font-size: clamp(18px, 2.4vw, 21px); color: var(--texto-suave); max-width: 640px; }
+.heroe .acciones { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; margin-top: 6px; }
+.heroe .estado { font: 600 14px/1.4 var(--fuente-texto); color: var(--alerta); display: flex; gap: 8px; align-items: center; }
+.heroe .estado::before { content: ""; width: 8px; height: 8px; border-radius: 99px; background: var(--alerta); flex: none; }
+.motivo { position: absolute; right: -130px; top: -10px; width: 300px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; opacity: .9; }
+.motivo i { aspect-ratio: 1; border-radius: 26%; background: var(--superficie); }
+.motivo i:nth-child(4) { background: var(--destacado); }
+@media (max-width: 760px) { .motivo { width: 150px; right: -80px; top: -40px; opacity: .5; } }
+@media (max-width: 560px) { header .boton, .motivo { display: none; } }
+section.bloque { padding: 56px 0 8px; }
+section.bloque > .envoltura > h2 { margin-bottom: 10px; }
+section.bloque .bajada { color: var(--texto-suave); max-width: 680px; margin-bottom: 28px; }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-top: 24px; }
+.tarjeta { border: 1px solid var(--borde); border-radius: var(--radio); padding: 20px; background: var(--fondo); display: grid; gap: 12px; align-content: start; }
+.tarjeta .ic { width: 46px; height: 46px; border-radius: 14px; background: var(--destacado); color: var(--tinta); display: grid; place-items: center; }
+.tarjeta p { font-weight: 560; color: var(--tinta); }
+.matiz { display: grid; gap: 12px; margin-top: 18px; }
+.matiz .tarjeta { grid-template-columns: auto 1fr; align-items: start; background: var(--superficie); border-color: transparent; }
+.matiz .nota { font-weight: 450; color: var(--texto-suave); font-size: 15px; }
+.matiz .ic { background: var(--fondo); color: var(--alerta); width: 40px; height: 40px; border-radius: 12px; }
+.oscuro { background: var(--oscuro); color: var(--oscuro-texto); border-radius: 28px; padding: 36px 28px; margin-top: 56px; display: grid; gap: 18px; }
+.oscuro h2, .oscuro h3 { color: var(--oscuro-texto); }
+.oscuro ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.oscuro li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.oscuro li svg { color: var(--destacado); margin-top: 2px; }
+.dos { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 24px; }
+.dos .tarjeta { background: var(--superficie); border-color: transparent; padding: 26px; gap: 14px; }
+.dos .tarjeta p.t { font-weight: 450; color: var(--texto); }
+details { border-bottom: 1px solid var(--borde); padding: 16px 0; }
+details summary { cursor: pointer; font: 650 18px/1.35 var(--fuente-titulos); color: var(--tinta); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+details summary::after { content: "+"; font-weight: 500; color: var(--acento); }
+details[open] summary::after { content: "−"; }
+details p { margin-top: 10px; color: var(--texto); max-width: 720px; }
+form.lista { display: grid; gap: 16px; margin-top: 22px; max-width: 620px; }
+form.lista label.campo { display: grid; gap: 6px; font: 600 15px/1.3 var(--fuente-texto); color: var(--tinta); }
+form.lista label.campo span.opc { font-weight: 450; color: var(--texto-suave); }
+form.lista input[type=text], form.lista input[type=email], form.lista input[type=number], form.lista textarea {
+  font: 450 17px/1.4 var(--fuente-texto); color: var(--tinta); border: 1.5px solid var(--borde); border-radius: 12px; padding: 12px 14px; background: var(--fondo); width: 100%; }
+form.lista textarea { min-height: 90px; resize: vertical; }
+form.lista .casilla { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; font-size: 15px; color: var(--texto); }
+form.lista .casilla input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--tinta); }
+form.lista .trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.mensaje { border-radius: 14px; padding: 14px 16px; font-weight: 560; }
+.mensaje.ok { background: color-mix(in srgb, var(--exito) 12%, transparent); color: var(--exito); }
+.mensaje.error { background: color-mix(in srgb, var(--alerta) 12%, transparent); color: var(--alerta); }
+.aviso-sin-formulario { background: var(--superficie); border-radius: var(--radio); padding: 22px; margin-top: 18px; display: grid; gap: 14px; max-width: 620px; }
+{% endblock %}
+{% block cabecera %}<a class="boton" href="#lista">{{ p.cta if receptor else p.cta_mensaje }}</a>{% endblock %}
+{% block contenido %}
+<section class="heroe">
+  <div class="motivo" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="envoltura">
+    <span class="chip">{{ p.antetitulo }}</span>
+    <h1>{{ p.titular | resaltar }}</h1>
+    <p class="subtitulo">{{ p.subtitulo }}</p>
+    <div class="acciones">
+      <a class="boton" href="#lista">{{ p.cta if receptor else p.cta_mensaje }} {{ icono("arrow-right") }}</a>
+      <p class="estado">{{ p.estado }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" id="que-hace">
+  <div class="envoltura">
+    <h2>{{ ya_hace.titulo }}</h2>
+    <div class="rejilla">
+      {% for c in ya_hace.capacidades %}
+      <div class="tarjeta"><span class="ic">{{ icono(c.icono) }}</span><p>{{ c.frase }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="bloque" id="matices">
+  <div class="envoltura">
+    <h2>{{ matices.titulo }}</h2>
+    <p class="bajada">{{ matices.texto }}</p>
+    <div class="matiz">
+      {% for c in matices.capacidades %}
+      <div class="tarjeta"><span class="ic">{{ icono("triangle-alert") }}</span><div><p>{{ c.frase }}</p><p class="nota">{{ c.nota }}</p></div></div>
+      {% endfor %}
+    </div>
+    <div class="matiz">
+      <div class="tarjeta"><span class="ic">{{ icono("history") }}</span><div><p>{{ todavia_no.titulo }}</p><p class="nota">{{ todavia_no.texto }}</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="envoltura">
+  <section class="oscuro" id="beta">
+    <h2>{{ beta.titulo }}</h2>
+    <ul>{% for punto in beta.puntos %}<li>{{ icono("circle-check") }}<span>{{ punto }}</span></li>{% endfor %}</ul>
+  </section>
+</div>
+
+<section class="bloque">
+  <div class="envoltura">
+    <div class="dos">
+      <div class="tarjeta" id="demo">
+        <span class="chip">Demostración en vivo</span>
+        <h2>{{ demo.titulo }}</h2>
+        <p class="t">{{ demo.texto }}</p>
+        <p class="t"><strong>{{ demo.cta }}</strong></p>
+      </div>
+      <div class="tarjeta">
+        <span class="chip">{{ trivia.titulo }}</span>
+        <h2>{{ trivia.texto }}</h2>
+        <p><a class="boton claro" href="trivia.html">{{ trivia.boton }} {{ icono("circle-help") }}</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" id="lista">
+  <div class="envoltura">
+    <h2>{{ formulario.titulo }}</h2>
+    {% if receptor %}
+    <p class="bajada">{{ formulario.texto }}</p>
+    <form class="lista" id="formulario" action="{{ receptor }}" method="post" novalidate data-version="{{ aviso_version }}">
+      <label class="campo">Nombre <input type="text" name="nombre" autocomplete="name" maxlength="80" required></label>
+      <label class="campo">Correo <input type="email" name="email" autocomplete="email" maxlength="120" required></label>
+      <label class="campo"><span>¿Cuántas empresas llevas, más o menos? <span class="opc">(opcional)</span></span>
+        <input type="number" name="empresas" min="1" max="5000" inputmode="numeric"></label>
+      <label class="campo"><span>¿Qué es lo que más tiempo te quita cada mes? <span class="opc">(opcional)</span></span>
+        <textarea name="problema" maxlength="500"></textarea></label>
+      <div class="trampa" aria-hidden="true"><label>No llenes este campo <input type="text" name="sitio_web" tabindex="-1" autocomplete="off"></label></div>
+      <label class="casilla"><input type="checkbox" name="demo"> <span>{{ formulario.quiere_demo }}</span></label>
+      <label class="casilla"><input type="checkbox" name="consentimiento" required> <span>{{ formulario.consentimiento }} <a href="privacidad.html" target="_blank">Leer el aviso de privacidad</a>.</span></label>
+      <label class="casilla"><input type="checkbox" name="publicidad"> <span>{{ formulario.publicidad }}</span></label>
+      <div class="mensaje" id="mensaje" role="status" aria-live="polite" hidden></div>
+      <p><button class="boton" type="submit">{{ formulario.boton }} {{ icono("arrow-right") }}</button></p>
+    </form>
+    {% else %}
+    <div class="aviso-sin-formulario">
+      <p>{{ formulario.sin_formulario }}</p>
+      {% if redes or whatsapp %}<p>{% if whatsapp %}<a class="boton" href="https://wa.me/{{ whatsapp }}?text=BETA" rel="noopener" target="_blank">Escribir «BETA» por WhatsApp</a> {% endif %}
+      {% for nombre, enlace in redes %}<a href="{{ enlace }}" rel="noopener" target="_blank">{{ nombre }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="bloque" id="preguntas">
+  <div class="envoltura">
+    <h2>Preguntas frecuentes</h2>
+    <div style="margin-top: 18px">
+      {% for f in faq %}<details><summary>{{ f.pregunta }}</summary><p>{{ f.respuesta }}</p></details>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}{% if receptor %}<script src="lista.js" defer></script>{% endif %}{% endblock %}

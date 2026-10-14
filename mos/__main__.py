@@ -549,6 +549,12 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--destino", help="Carpeta de salida (calendario o paquete)")
     sp.add_argument("--semanas", type=int, help="Para mover: cuántas semanas correr todas las fechas")
 
+    sp = sub.add_parser("sitio", help="La landing de la lista de espera: construir, ver en local, pendientes e importar")
+    sp.add_argument("accion", choices=["construir", "ver", "pendientes", "importar"])
+    sp.add_argument("--publicable", action="store_true", help="Negarse a construir si falta algo para publicar")
+    sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador")
+    sp.add_argument("--sin-borrar", action="store_true", help="Al importar, no borrar las inscripciones del servidor")
+
     sp = sub.add_parser("web", help="Abre el panel local en el navegador (solo en esta PC)")
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador automáticamente")
     return ap
@@ -673,12 +679,43 @@ def cmd_campana(cfg: config.Config, args) -> int:
     return 0
 
 
+def cmd_sitio(cfg: config.Config, args) -> int:
+    import os
+    from . import sitio
+    if args.accion == "pendientes":
+        faltan = sitio.pendientes_para_publicar(sitio.leer(cfg.raiz))
+        print("Lista para publicar (con tu autorización)." if not faltan else "Falta para publicar la landing:")
+        for f in faltan:
+            print("  - " + f)
+        return 0
+    if args.accion == "construir":
+        res = sitio.construir(cfg.raiz, publicable=args.publicable)
+        print(f"Landing en {cfg.raiz / 'sitio' / 'dist'}: {len(res.archivos)} archivos." +
+              (f" Es un borrador: faltan {len(res.pendientes)} cosas para publicarla (python -m mos sitio pendientes)."
+               if res.pendientes else ""))
+        for aviso in res.avisos:
+            print("Aviso: " + aviso)
+        return 0
+    if args.accion == "ver":
+        sitio.servir(cfg, abrir=not args.sin_abrir)
+        return 0
+    datos = sitio.leer(cfg.raiz)
+    receptor = datos["publicacion"].get("receptor", "")
+    if not receptor:
+        print("La landing todavía no tiene receptor publicado (publicacion.receptor en sitio/sitio.toml).", file=sys.stderr)
+        return 2
+    conteo = sitio.importar_remoto(_cx(cfg), cfg, receptor, os.environ.get("MOS_CLAVE_LISTA", ""), borrar=not args.sin_borrar)
+    print(f"Inscripciones: {conteo['nuevos']} nuevas, {conteo['actualizados']} ya estaban, {conteo['invalidos']} no válidas; "
+          f"{conteo['borrados']} borradas del servidor.")
+    return 0
+
+
 COMANDOS = {
     "iniciar": cmd_iniciar, "estado": cmd_estado, "capacidades": cmd_capacidades, "agentes": cmd_agentes,
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
     "metrica": cmd_metrica, "calendario": cmd_calendario, "fabrica": cmd_fabrica, "web": cmd_web,
-    "campana": cmd_campana,
+    "campana": cmd_campana, "sitio": cmd_sitio,
 }
 
 

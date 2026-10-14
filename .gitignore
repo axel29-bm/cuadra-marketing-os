@@ -22,3 +22,7 @@ dist/
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Receptor del formulario: la configuración real de Cloudflare no se sube (usa wrangler.toml.ejemplo)
+sitio/receptor/wrangler.toml
+sitio/receptor/.wrangler/
