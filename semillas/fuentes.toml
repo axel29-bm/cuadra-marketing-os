@@ -1,0 +1,230 @@
+# Fuentes que vigila el radar. Las oficiales son las únicas que cuentan como fuente primaria de una noticia.
+# Revisado el 2026-10-14 (investigación D). Reglas de cortesía: respetar robots.txt, una petición por recurso
+# y pasada, 5 s entre peticiones al mismo dominio, nunca rutas prohibidas ni sistemas con clave (SOL).
+# metodo: SITEMAP (lee un sitemap XML), RSS, HTML (detecta cambios en la página) o MANUAL (lo revisa una persona).
+
+[[fuente]]
+slug = "elperuano-normas-sitemap"
+tipo = "OFICIAL"
+organismo = "Editora Perú · El Peruano"
+titulo = "Normas legales del día (buscador de El Peruano)"
+url = "https://busquedas.elperuano.pe/"
+rss_url = "https://busquedas.elperuano.pe/sitemap/sitemap-normas_legales.xml"
+metodo = "SITEMAP"
+frecuencia_horas = 12
+notas = "robots.txt permite todo (Allow: /). Filtrar por emisor SUNAT o MEF en og:title. No usar diariooficial.elperuano.pe/NormasElperuano ni /DatosAbiertos: están prohibidas por robots.txt."
+
+[[fuente]]
+slug = "elperuano-noticias"
+tipo = "MEDIO"
+organismo = "Editora Perú · El Peruano"
+titulo = "Noticias de El Peruano"
+url = "https://www.elperuano.pe/"
+metodo = "MANUAL"
+frecuencia_horas = 24
+notas = "Explica normas, pero la fuente primaria es la norma. Declara sitemaps de noticias; ruta exacta PENDIENTE de confirmar antes de automatizar."
+
+[[fuente]]
+slug = "sunat-resoluciones"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Índice de Resoluciones de Superintendencia 2026"
+url = "https://www.sunat.gob.pe/legislacion/superin/2026/indices/indcor.htm"
+metodo = "HTML"
+frecuencia_horas = 24
+notas = "Patrón /legislacion/superin/AAAA/indices/indcor.htm; cambiar el año en enero. La mayoría son internas: filtrar por SIRE, libros, comprobantes, IGV, renta, detracciones, percepciones, retenciones, cronograma, GRE. robots.txt de SUNAT PENDIENTE de leer."
+
+[[fuente]]
+slug = "sunat-comunicados"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Comunicados y avisos de SUNAT"
+url = "https://www.sunat.gob.pe/mensajes/mensajes-SUNAT.html"
+metodo = "HTML"
+frecuencia_horas = 24
+notas = "Avisos operativos: mantenimientos, prórrogas por emergencia, GRE. Marcar los vencimientos especiales como aviso con impacto en vencimientos."
+
+[[fuente]]
+slug = "sunat-sala-prensa"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Sala de prensa de SUNAT"
+url = "https://www.sunat.gob.pe/salaprensa/lima/index.html"
+metodo = "HTML"
+frecuencia_horas = 24
+notas = "Notas en .doc o .docx. Última vista: N.° 056-2026 del 28/09/2026."
+
+[[fuente]]
+slug = "sunat-cronograma-2026"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Cronograma de obligaciones mensuales 2026"
+url = "https://www.sunat.gob.pe/orientacion/cronogramas/2026/cObligacionMensual2026.html"
+metodo = "HTML"
+frecuencia_horas = 168
+notas = "Página estable. En diciembre buscar el cronograma 2027."
+
+[[fuente]]
+slug = "sunat-uit"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Valor de la UIT"
+url = "https://www.sunat.gob.pe/indicestasas/uit.html"
+metodo = "HTML"
+frecuencia_horas = 168
+notas = "UIT 2026 = S/ 5 500 (D.S. 301-2025-EF)."
+
+[[fuente]]
+slug = "sunat-orientacion-sire"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Orientación SUNAT · SIRE"
+url = "https://orientacion.sunat.gob.pe/05-registros-electronicos-sire"
+metodo = "HTML"
+frecuencia_horas = 168
+notas = "No se pudo leer desde el entorno de investigación; confirmar desde un navegador."
+
+[[fuente]]
+slug = "sunat-cpe-sire"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Normas de CPE y calendario del SIRE"
+url = "https://cpe.sunat.gob.pe/node/131"
+metodo = "HTML"
+frecuencia_horas = 168
+notas = "Preguntas frecuentes y calendario de obligatoriedad del SIRE."
+
+[[fuente]]
+slug = "sunat-whatsapp"
+tipo = "OFICIAL"
+organismo = "SUNAT"
+titulo = "Canal de WhatsApp de SUNAT"
+url = "https://whatsapp.com/channel/0029VawVXUN8vd1HMi5jXq2R"
+metodo = "MANUAL"
+frecuencia_horas = 24
+notas = "Solo lectura manual. No automatizar."
+
+[[fuente]]
+slug = "gobpe-sunat-noticias"
+tipo = "OFICIAL"
+organismo = "SUNAT · gob.pe"
+titulo = "Noticias de SUNAT en gob.pe"
+url = "https://www.gob.pe/institucion/sunat/noticias"
+metodo = "HTML"
+frecuencia_horas = 24
+activa = false
+notas = "gob.pe dio error desde el entorno de investigación. Activar después de confirmarlo desde un navegador normal."
+
+[[fuente]]
+slug = "gobpe-mef-noticias"
+tipo = "OFICIAL"
+organismo = "MEF · gob.pe"
+titulo = "Noticias del MEF en gob.pe"
+url = "https://www.gob.pe/institucion/mef/noticias"
+metodo = "HTML"
+frecuencia_horas = 24
+activa = false
+notas = "Igual que la fuente anterior: confirmar antes de activar."
+
+[[fuente]]
+slug = "mef-decretos-supremos"
+tipo = "OFICIAL"
+organismo = "MEF"
+titulo = "Decretos supremos del MEF"
+url = "https://www.mef.gob.pe/es/normatividad-sp-9867/por-instrumento/decretos-supremos"
+metodo = "HTML"
+frecuencia_horas = 168
+notas = "La mayoría son transferencias de partidas: filtrar por tribut, UIT, IGV, renta. El RSS general de Joomla sale vacío."
+
+# Competencia: revisión manual de sus webs públicas. Nunca se copian textos ni se nombran en publicidad sin validación legal.
+
+[[fuente]]
+slug = "competidor-concar"
+tipo = "COMPETIDOR"
+organismo = "Real Systems"
+titulo = "CONCAR CB y SQL"
+url = "https://realsystems.com.pe/concar/concar-cb/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-siscont"
+tipo = "COMPETIDOR"
+organismo = "SISCONT"
+titulo = "SISCONT"
+url = "https://www.siscont.com/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-starsoft"
+tipo = "COMPETIDOR"
+organismo = "StarSoft"
+titulo = "StarSoft ERP"
+url = "https://www.starsoft.com.pe/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-siigo"
+tipo = "COMPETIDOR"
+organismo = "Siigo del Perú"
+titulo = "Siigo Nube · precios"
+url = "https://www.siigo.com/pe/precios-siigo/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-nubecont"
+tipo = "COMPETIDOR"
+organismo = "NubeCont"
+titulo = "NubeCont · precios"
+url = "https://nubecont.com/precios"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-contauno"
+tipo = "COMPETIDOR"
+organismo = "Rapifac"
+titulo = "ContaUno"
+url = "https://contauno.com/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-dora"
+tipo = "COMPETIDOR"
+organismo = "Dora"
+titulo = "Dora"
+url = "https://www.dora.pe/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-defontana"
+tipo = "COMPETIDOR"
+organismo = "Defontana"
+titulo = "Defontana Software Contable"
+url = "https://www.defontana.com/pe/software-contable"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-adiasoft"
+tipo = "COMPETIDOR"
+organismo = "Adiasoft"
+titulo = "Adiasoft · precios"
+url = "https://www.adiasoft.com/precios?rubro=contable"
+metodo = "MANUAL"
+frecuencia_horas = 720
+
+[[fuente]]
+slug = "competidor-contasis"
+tipo = "COMPETIDOR"
+organismo = "Contasiscorp"
+titulo = "Contasis"
+url = "https://contasis.com/"
+metodo = "MANUAL"
+frecuencia_horas = 720
+notas = "Sitio de una sola página: precios y modelo PENDIENTES."
