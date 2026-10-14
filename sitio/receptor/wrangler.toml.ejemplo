@@ -1,0 +1,17 @@
+# Copia este archivo como wrangler.toml cuando autorices desplegar el receptor (sitio/receptor/LEEME.md).
+# No pongas claves aquí: van con `npx wrangler secret put`.
+name = "cuadra-lista"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cuadra-lista"
+database_id = "PEGA-AQUI-EL-ID-QUE-TE-DA-wrangler-d1-create"
+
+[vars]
+ORIGEN = "https://PEGA-AQUI-LA-DIRECCION-DE-LA-LANDING.pages.dev"
+
+# Secretos (se piden por consola y no quedan en archivos):
+#   npx wrangler secret put SAL              -> texto aleatorio de 32 caracteres o más
+#   npx wrangler secret put CLAVE_EXPORTAR   -> otro texto aleatorio de 32 caracteres o más

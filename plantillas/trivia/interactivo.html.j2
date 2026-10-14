@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ tema or "Trivia" }} · {{ nombre_marca }}</title>
+<style>
+{{ fuentes_css }}
+:root { {{ variables_css }}; }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--fuente-texto); background: var(--superficie); color: var(--texto); min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.tarjeta { background: var(--fondo); max-width: 560px; width: 100%; border-radius: 24px; padding: 28px; border: 1px solid var(--borde); display: flex; flex-direction: column; gap: 18px; }
+.marca { display: flex; align-items: center; gap: 10px; font: 700 18px/1 var(--fuente-titulos); color: var(--tinta); }
+.marca img { width: 32px; height: 32px; }
+.tema { font: 600 13px/1 var(--fuente-texto); letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+h1 { font: 750 26px/1.15 var(--fuente-titulos); letter-spacing: -0.02em; color: var(--tinta); }
+h1 mark, p mark { background: var(--destacado); color: var(--destacado-texto); padding: 0 .12em; border-radius: .12em; }
+button { all: unset; cursor: pointer; display: flex; gap: 12px; align-items: center; border: 2px solid var(--borde); border-radius: 16px; padding: 14px 16px;
+  font: 560 17px/1.3 var(--fuente-texto); color: var(--tinta); }
+button:hover, button:focus-visible { border-color: var(--acento); }
+button .l { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--superficie); display: grid; place-items: center; font-weight: 750; }
+.hecho button { cursor: default; opacity: .5; }
+.hecho button.ok { opacity: 1; border-color: var(--exito); background: color-mix(in srgb, var(--exito) 8%, var(--fondo)); }
+.hecho button.ok .l { background: var(--exito); color: #fff; }
+.hecho button.mal { opacity: 1; border-color: var(--error, #B42318); }
+#r { display: none; background: var(--superficie); border-radius: 16px; padding: 16px; font-size: 16px; line-height: 1.45; color: var(--tinta); }
+.hecho #r { display: block; }
+#r small { display: block; color: var(--texto-suave); margin-top: 8px; }
+</style></head>
+<body><main class="tarjeta" id="t">
+<div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}{{ nombre_marca }}</div>
+<div class="tema">{{ tema or "Trivia" }}</div>
+<h1>{{ pregunta | resaltar }}</h1>
+{% for o in opciones %}<button data-i="{{ loop.index }}"><span class="l">{{ "ABCD"[loop.index0] }}</span>{{ o }}</button>{% endfor %}
+<div id="r" role="status"><b id="v"></b> {{ explicacion | resaltar }}{% if fuente %}<small>Fuente: {{ fuente }}</small>{% endif %}</div>
+</main>
+<script>
+const correcta = {{ correcta | int }};
+document.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+  const t = document.getElementById('t'); if (t.classList.contains('hecho')) return;
+  t.classList.add('hecho');
+  const i = +b.dataset.i;
+  document.querySelector(`button[data-i="${correcta}"]`).classList.add('ok');
+  if (i !== correcta) b.classList.add('mal');
+  document.getElementById('v').textContent = i === correcta ? '¡Correcto!' : 'No exactamente.';
+}));
+</script></body></html>

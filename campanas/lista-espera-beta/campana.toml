@@ -1,0 +1,799 @@
+# Campaña de prelanzamiento de Cuadra: 30 días, del jueves 15/10/2026 al viernes 13/11/2026.
+# Para empezar otro día: python -m mos campana mover campanas/lista-espera-beta --semanas 1 (mueve todas las fechas).
+# Cada [[pieza]] es una publicación en un canal. `basado_en` reutiliza otra pieza y cambia solo lo suyo.
+# Cargar en la base:   python -m mos campana cargar campanas/lista-espera-beta
+# Renderizar archivos: python -m mos campana render campanas/lista-espera-beta
+# Calendario legible:  python -m mos campana calendario campanas/lista-espera-beta
+# Paquete para publicar: python -m mos campana paquete campanas/lista-espera-beta
+# Nada de esto se publica solo: cada pieza espera tu aprobación en el panel.
+
+[campana]
+slug = "lista-espera-beta"
+producto = "cuadra"
+nombre = "Lista de espera de la beta privada"
+objetivo = "Reunir a los primeros contadores interesados en probar Cuadra en la beta privada, con su consentimiento, y aprender qué problema les pesa más."
+hipotesis = "Los contadores que llevan muchas empresas responden más al contenido práctico del oficio (cierre, SIRE, correlativos, copias) que a los anuncios. Si ese contenido lo firma alguien que construye la herramienta con ellos, genera conversaciones y pedidos de beta."
+oferta = "Participar en la beta privada y ver una demostración en vivo con una empresa de ejemplo"
+cta = "Escríbenos «BETA» por mensaje"
+metrica_exito = "Contadores en la lista de espera con consentimiento registrado"
+meta_valor = 30
+audiencia = "contador-multiempresa"
+inicio = "2026-10-15"
+fin = "2026-11-13"
+
+# ---------------------------------------------------------------- días sin publicación
+
+[[dia]]
+fecha = "2026-10-18"
+actividad = "Revisión semanal: registra las métricas de la semana, responde los mensajes, registra los leads con su consentimiento y graba la voz del vídeo C13 con su teleprompter."
+objetivo = "Medir y preparar"
+
+[[dia]]
+fecha = "2026-10-25"
+actividad = "Revisión semanal: métricas, mensajes y leads. Publica en historias la lámina de respuesta de la trivia. Pide a un contador que revise la noticia C12."
+objetivo = "Medir y preparar"
+
+[[dia]]
+fecha = "2026-11-01"
+actividad = "Revisión semanal: métricas, mensajes y leads. Decide si autorizas publicar la landing con el formulario de la lista de espera (desde ahí, el llamado cambia a «Únete a la lista de espera»)."
+objetivo = "Medir y decidir"
+
+[[dia]]
+fecha = "2026-11-08"
+actividad = "Revisión semanal: métricas, mensajes y leads. Agenda las demostraciones pedidas y elige qué tres piezas repetir en noviembre."
+objetivo = "Medir y decidir"
+
+# ---------------------------------------------------------------- semana 1
+
+[[pieza]]
+clave = "C01-fb"
+fecha = "2026-10-15"
+canal = "facebook"
+formato = "imagen"
+plantilla = "lanzamiento"
+formatos = ["vertical"]
+tipo = "CAPTACION"
+etapa = "ATENCION"
+pilar = "Invitación"
+tema = "Abrimos la lista de la beta privada"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Presentar Cuadra con honestidad y recibir los primeros mensajes"
+metrica = "Mensajes con «BETA»"
+verificacion = "Afirmaciones contrastadas con la matriz de capacidades (CU-EMP-01 con su matiz, CU-EMP-02, CU-SIRE-02, CU-LIB-05, CU-SEG-01). Dice que está en desarrollo y sin fecha ni precio."
+capacidades = ["CU-EMP-01", "CU-EMP-02", "CU-SIRE-02", "CU-LIB-05", "CU-SEG-01"]
+[pieza.contenido]
+gancho = "¿Llevas muchas empresas y cada mes es abrir archivo por archivo?"
+antetitulo = "Beta privada en preparación"
+titular = "Un sistema contable pensado para el contador que lleva *muchas empresas*"
+subtitulo = "De escritorio, con tus datos en tu PC. Lo estamos construyendo y queremos hacerlo con contadores peruanos."
+puntos = ["Todas tus empresas en una pantalla", "Importa la propuesta del SIRE descargada de SOL", "Cierre del mes con bloqueo real"]
+cta = "Escríbenos «BETA» por mensaje"
+pie = "Cuadra está en desarrollo. Todavía no tiene fecha de lanzamiento ni precio."
+copy = """¿Llevas muchas empresas y cada mes es abrir archivo por archivo?
+
+Estamos construyendo Cuadra, un sistema contable de escritorio pensado para el contador que lleva muchas empresas. Tus datos se quedan en tu PC.
+
+Lo que ya hace en nuestras pruebas:
+✔ Todas tus empresas en una pantalla, con lo que toca hacer en cada una.
+✔ Importa el ZIP de la propuesta del SIRE tal como lo bajas de SOL, sin duplicar.
+✔ Cierras el mes y queda cerrado de verdad. Si hay que reabrirlo, queda el motivo.
+
+Todavía no está a la venta y no tiene fecha ni precio. Estamos armando una beta privada con contadores que quieran probarlo y decirnos qué le falta.
+
+Si te interesa, escríbenos «BETA» por mensaje.
+
+#contadoresperu #contabilidad #SIRE"""
+
+[[pieza]]
+clave = "C02-ig"
+fecha = "2026-10-16"
+canal = "instagram"
+formato = "imagen"
+plantilla = "meme"
+formatos = ["cuadrado"]
+tipo = "HUMOR"
+etapa = "ATENCION"
+pilar = "Humor del oficio"
+tema = "Meme: el día 1 contra el día 16"
+audiencia = "Contadores y asistentes contables"
+objetivo = "Alcance y comentarios en la semana de vencimientos"
+metrica = "Comentarios y compartidos"
+verificacion = "Humor sobre la propia rutina del contador, sin personas, clientes ni marcas reales. El cronograma de SUNAT 2026 pone los vencimientos del periodo setiembre entre el 16 y el 23 de octubre."
+[pieza.contenido]
+estilo = "paneles"
+panel_a_titulo = "Lo que digo el día 1"
+panel_a = "Este mes cierro *todo* con calma, con tiempo."
+icono_a = "sparkles"
+panel_b_titulo = "Lo que pasa el día 16"
+panel_b = "Son las 11:48 p. m. y sigo buscando *un céntimo*."
+icono_b = "triangle-alert"
+remate = "Etiqueta al colega que vive esto cada mes."
+copy = """Día 1: optimismo. Día 16: la diferencia de un céntimo. 😅
+
+¿A qué hora terminaste el último cierre? Cuéntanos en los comentarios.
+
+#contadoresperu #contabilidad #cierredemes"""
+
+[[pieza]]
+clave = "C03-fb"
+fecha = "2026-10-17"
+canal = "facebook"
+formato = "imagen"
+plantilla = "educativo"
+formatos = ["vertical"]
+tipo = "EDUCATIVA"
+etapa = "INTERES"
+pilar = "Oficio y control"
+tema = "5 cosas que revisar antes de cerrar el mes"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Que lo guarden y lo compartan"
+metrica = "Guardados y compartidos"
+verificacion = "Práctica general del oficio, sin cifras ni normas. Conviene que un contador lo lea antes de publicar. La mención a Cuadra usa CU-EMP-03."
+capacidades = ["CU-EMP-03"]
+[pieza.contenido]
+gancho = "Antes de cerrar el mes, cinco revisiones que te ahorran sustos después."
+antetitulo = "Cierre de mes"
+titular = "5 cosas que revisar *antes* de cerrar el mes"
+puntos = ["Correlativos de cada serie de venta, sin huecos", "Compras del mes contra la propuesta del SIRE", "Tipo de cambio de cada comprobante en dólares", "Detracciones y retenciones del periodo", "Copia de seguridad hecha y comprobada"]
+nota = "Guárdalo para tu próximo cierre."
+cta = "Escríbenos «BETA» por mensaje"
+copy = """Antes de cerrar el mes, cinco revisiones que te ahorran sustos después:
+
+1. Correlativos de cada serie de venta: que no falte ningún número.
+2. Compras del mes contra la propuesta del SIRE: qué está en la propuesta y no en tu registro, y al revés.
+3. Tipo de cambio de cada comprobante en dólares.
+4. Detracciones y retenciones del periodo.
+5. Una copia de seguridad hecha y comprobada: que se pueda abrir, no solo que exista.
+
+¿Cuál agregarías tú? Te leemos en los comentarios.
+
+En Cuadra, los correlativos faltantes, los posibles duplicados y los meses sin cerrar aparecen como pendientes de cada empresa. Está en desarrollo: si quieres probarlo en la beta privada, escríbenos «BETA».
+
+#contadoresperu #cierredemes #SIRE"""
+
+[[pieza]]
+clave = "C04-li"
+basado_en = "C03-fb"
+fecha = "2026-10-19"
+canal = "linkedin"
+tema = "5 revisiones antes de cerrar el mes (LinkedIn)"
+objetivo = "Conversación entre profesionales y primeros contactos de estudios"
+metrica = "Comentarios y mensajes"
+verificacion = "Igual que C03. Menciona CU-EMP-01 con su matiz (sin prometer rendimiento)."
+capacidades = ["CU-EMP-01", "CU-EMP-03"]
+[pieza.contenido]
+copy = """Cinco revisiones antes de cerrar el mes que, en estudios con muchas empresas, evitan reabrir periodos:
+
+1. Correlativos de cada serie de venta, sin huecos.
+2. Compras del mes contra la propuesta del SIRE.
+3. Tipo de cambio de cada comprobante en dólares.
+4. Detracciones y retenciones del periodo.
+5. Copia de seguridad hecha y comprobada.
+
+La quinta es la que más se salta y la que más duele cuando falla una PC.
+
+Estoy construyendo Cuadra, un sistema contable de escritorio pensado para contadores que llevan muchas empresas. Busco colegas que quieran probarlo en una beta privada: si te interesa, escríbeme «BETA» por mensaje.
+
+¿Qué revisión agregarías?"""
+
+[[pieza]]
+clave = "C05-fb"
+fecha = "2026-10-20"
+canal = "facebook"
+formato = "imagen"
+plantilla = "meme"
+formatos = ["cuadrado"]
+tipo = "HUMOR"
+etapa = "ATENCION"
+pilar = "Humor del oficio"
+tema = "Meme «Nadie:» en semana de vencimientos"
+audiencia = "Contadores y asistentes contables"
+objetivo = "Alcance y compartidos"
+metrica = "Reacciones y compartidos"
+verificacion = "Humor sobre la propia rutina, sin tono despectivo hacia SUNAT ni hacia personas."
+[pieza.contenido]
+estilo = "nadie"
+panel_a_titulo = "Nadie:"
+panel_b_titulo = "El contador en semana de vencimientos:"
+panel_b = "Abre SOL «solo para revisar una cosa» a la *1:00 a. m.*"
+remate = "¿Te pasó esta semana?"
+copy = """Semana de vencimientos. Ánimo, colega: ya falta poco. 💪
+
+#contadoresperu #contador #vencimientos"""
+
+[[pieza]]
+clave = "C06-ig"
+fecha = "2026-10-21"
+canal = "instagram"
+formato = "imagen"
+plantilla = "beneficio"
+formatos = ["vertical"]
+tipo = "CAPTACION"
+etapa = "INTERES"
+pilar = "Producto real"
+tema = "Mis empresas: todas en una pantalla"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Mostrar el beneficio central y recibir mensajes"
+metrica = "Mensajes con «BETA» y guardados"
+verificacion = "CU-EMP-02 y CU-EMP-03 permitidos; CU-EMP-01 con su matiz. Lleva icono porque todavía no hay captura real de Mis empresas: cuando la tengas, reemplázalo con el campo «captura»."
+capacidades = ["CU-EMP-01", "CU-EMP-02", "CU-EMP-03"]
+[pieza.contenido]
+gancho = "Cuando llevas muchas empresas, lo difícil no es registrar: es acordarte de qué falta en cada una."
+etiqueta = "Mis empresas"
+icono = "building-2"
+titular = "Todas tus empresas en *una pantalla*, con lo que toca hacer en cada una"
+apoyo = "Correlativos faltantes, posibles duplicados y meses sin cerrar aparecen como pendientes."
+estado = "Cuadra está en desarrollo"
+cta = "Escríbenos «BETA» por mensaje"
+copy = """Cuando llevas muchas empresas, lo difícil no es registrar: es acordarte de qué falta en cada una.
+
+En Cuadra, la pantalla Mis empresas te muestra todas tus empresas juntas, con lo que toca hacer en cada una. Los correlativos faltantes, los posibles duplicados y los meses sin cerrar aparecen como pendientes.
+
+Cuadra está en desarrollo y todavía no está a la venta. Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #contabilidad #software"""
+
+[[pieza]]
+clave = "C07-tt"
+fecha = "2026-10-22"
+canal = "tiktok"
+formato = "video"
+plantilla = "motion"
+formatos = ["historia"]
+tipo = "HUMOR"
+etapa = "ATENCION"
+pilar = "Humor del oficio"
+tema = "Vídeo meme: del día 16 al día 23"
+audiencia = "Contadores y asistentes contables, incluidos los más jóvenes"
+objetivo = "Alcance en TikTok"
+metrica = "Reproducciones completas y compartidos"
+verificacion = "Humor sobre la propia rutina. Sin música incluida: agrega un sonido de la biblioteca comercial de TikTok, nunca una canción de moda sin licencia. Concepto ampliado en concepto-video-meme.md."
+activos = "Vídeo vertical sin voz y su portada"
+[pieza.contenido]
+tema = "Semana de vencimientos"
+mostrar_locucion = "no"
+cierre_titular = "Estamos construyendo Cuadra *con contadores*"
+cta = "Síguenos para más"
+cierre_pie = "Cuadra está en desarrollo."
+portada_escena = 3
+escenas = [
+  { pantalla = "Nadie:", segundos = 2 },
+  { pantalla = "El contador el día *16*:", apoyo = "«Este mes salgo temprano.»", icono = "sparkles", segundos = 3 },
+  { pantalla = "El contador el día *23*:", apoyo = "Sigue buscando un céntimo.", icono = "search", segundos = 3 },
+  { pantalla = "Ánimo, colega.", apoyo = "Ya casi.", icono = "check", segundos = 2 },
+]
+copy = """Del 16 al 23: el viaje completo. 😅 ¿En qué día estás tú?
+
+#contadoresperu #contador #humorcontable #vencimientos"""
+
+[[pieza]]
+clave = "C08-fb"
+fecha = "2026-10-23"
+canal = "facebook"
+formato = "carrusel"
+plantilla = "trivia"
+formatos = ["vertical"]
+tipo = "EDUCATIVA"
+etapa = "INTERES"
+pilar = "Oficio y control"
+tema = "Trivia: la propuesta del SIRE frente a tu registro"
+audiencia = "Contadores que ya trabajan con el SIRE"
+objetivo = "Comentarios y conversación"
+metrica = "Comentarios"
+verificacion = "Criterio general del oficio (la propuesta se revisa antes de aceptarla). Sin cita normativa. Conviene que un contador lo lea antes de publicar."
+activos = "Dos láminas (pregunta y respuesta) y la versión interactiva en HTML para la landing"
+[pieza.contenido]
+gancho = "¿Qué pasa si un comprobante de compra está en la propuesta del SIRE y no en tu registro?"
+tema = "Trivia del contador"
+pregunta = "¿Qué pasa si un comprobante de compra está en la propuesta del SIRE y no en tu registro?"
+opciones = ["Nada, la propuesta siempre manda", "Hay que revisarlo antes de aceptar", "Se borra solo al mes siguiente"]
+correcta = 2
+explicacion = "La propuesta es eso: una propuesta. Antes de aceptarla, revisa si el comprobante es del periodo, si corresponde a la empresa y si ya lo registraste con otra fecha."
+cta = "Escríbenos «BETA» por mensaje"
+copy = """Trivia del contador 🧠
+
+¿Qué pasa si un comprobante de compra está en la propuesta del SIRE y no en tu registro?
+
+A) Nada, la propuesta siempre manda
+B) Hay que revisarlo antes de aceptar
+C) Se borra solo al mes siguiente
+
+Responde con la letra en los comentarios. La respuesta está en la segunda imagen.
+
+#contadoresperu #SIRE #trivia"""
+
+[[pieza]]
+clave = "C09-ig"
+basado_en = "C08-fb"
+fecha = "2026-10-24"
+canal = "instagram"
+formato = "historia"
+formatos = ["historia"]
+tema = "Trivia en historias con encuesta"
+objetivo = "Respuestas en la encuesta de historias"
+metrica = "Respuestas a la encuesta"
+activos = "Lámina 1 con la encuesta nativa de Instagram (A, B, C). Lámina 2 al día siguiente."
+[pieza.contenido]
+invitacion = "Vota en la encuesta. Mañana, la respuesta."
+copy = """Historia 1: la lámina de la pregunta con el sticker de encuesta de Instagram (opciones A, B y C).
+Historia 2, al día siguiente: la lámina de la respuesta."""
+
+# ---------------------------------------------------------------- semana 2
+
+[[pieza]]
+clave = "C10-li"
+fecha = "2026-10-26"
+canal = "linkedin"
+formato = "documento"
+plantilla = "carrusel"
+formatos = ["vertical"]
+tipo = "EDUCATIVA"
+etapa = "INTERES"
+pilar = "Oficio y control"
+tema = "Guía: cotejar la propuesta del SIRE sin perder la tarde"
+audiencia = "Estudios contables pequeños y contadores multiempresa"
+objetivo = "Autoridad en el tema del SIRE y mensajes de estudios"
+metrica = "Guardados, comentarios y mensajes"
+verificacion = "Pasos generales de trabajo, sin interpretación normativa. CU-SIRE-03 con su matiz (tolerancias provisionales) dicho en el texto. Conviene que un contador lo lea antes de publicar."
+capacidades = ["CU-SIRE-03"]
+activos = "Seis láminas en PNG y el PDF para subir como documento en LinkedIn"
+[pieza.contenido]
+gancho = "Cotejar la propuesta del SIRE con lo registrado es de las tareas que más tiempo se comen en un estudio con muchas empresas."
+serie = "Guía del SIRE"
+cta = "Escríbenos «BETA» por mensaje"
+laminas = [
+  { tipo = "portada", titulo = "Cómo cotejar la propuesta del SIRE *sin perder la tarde*", texto = "4 pasos que puedes hacer hoy, con o sin sistema." },
+  { tipo = "paso", titulo = "Descarga la propuesta desde SOL", texto = "Guarda el ZIP del periodo tal como viene. Así siempre sabes de dónde salió cada dato.", icono = "file-spreadsheet" },
+  { tipo = "paso", titulo = "Ordena por RUC y serie", texto = "Así ves enseguida qué comprobantes están en la propuesta y no en tu registro, y al revés.", icono = "table-2" },
+  { tipo = "paso", titulo = "Revisa importes y tipo de cambio", texto = "Muchas diferencias pequeñas vienen del tipo de cambio o del redondeo. Revísalas antes de buscar errores más grandes.", icono = "git-compare" },
+  { tipo = "paso", titulo = "Anota qué decidiste con cada diferencia", texto = "Si agregas, excluyes o corriges un comprobante, deja escrito el motivo. El próximo mes lo vas a agradecer.", icono = "list-checks" },
+  { tipo = "cierre", titulo = "Estamos construyendo una herramienta que hace este cotejo contigo", texto = "Cuadra compara la propuesta del SIRE con lo que registraste y te dice qué falta y dónde. Está en desarrollo." },
+]
+copy = """Cotejar la propuesta del SIRE con lo registrado es de las tareas que más tiempo se comen en un estudio con muchas empresas.
+
+En el documento van cuatro pasos para hacerlo con orden, con o sin sistema.
+
+Estoy construyendo Cuadra, que hace este cotejo con el contador: compara la propuesta con lo registrado y te dice qué falta y dónde. Está en desarrollo y las tolerancias del cotejo todavía son provisionales.
+
+Si quieres probarlo en la beta privada, escríbeme «BETA».
+
+¿Qué paso agregarías?"""
+
+[[pieza]]
+clave = "C11-ig"
+basado_en = "C10-li"
+fecha = "2026-10-27"
+canal = "instagram"
+formato = "carrusel"
+tema = "Guía del SIRE en carrusel (Instagram)"
+objetivo = "Guardados"
+metrica = "Guardados y compartidos"
+activos = "Seis láminas en PNG"
+[pieza.contenido]
+copy = """Guarda esta guía para tu próximo cotejo del SIRE 📌
+
+4 pasos para cotejar la propuesta con tu registro sin perder la tarde. Desliza 👉
+
+Cuadra, que estamos construyendo, compara la propuesta con lo que registraste y te dice qué falta y dónde (las tolerancias todavía son provisionales). Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #SIRE #contabilidad"""
+
+[[pieza]]
+clave = "C12-fb"
+fecha = "2026-10-28"
+canal = "facebook"
+formato = "imagen"
+plantilla = "noticia"
+formatos = ["vertical"]
+tipo = "NOTICIA"
+etapa = "INTERES"
+pilar = "Normativa verificada"
+tema = "Noticia: SIRE para principales contribuyentes de más de 2 300 UIT desde el periodo octubre de 2026"
+audiencia = "Contadores que llevan principales contribuyentes"
+objetivo = "Utilidad y confianza"
+metrica = "Compartidos y guardados"
+fuentes = ["https://www.sunat.gob.pe/legislacion/superin/2026/000125-2026.pdf"]
+verificacion = "Fuente oficial leída el 14/10/2026: R.S. N.° 000125-2026/SUNAT (PDF de SUNAT), emitida el 30/06/2026, vigente desde el 01/07/2026, art. 1.1. Falta la revisión de un contador: el auditor la bloquea hasta que la marques como revisada."
+[pieza.contenido]
+gancho = "Para los estudios que llevan principales contribuyentes grandes."
+fecha_publicacion_fuente = "2026-06-30"
+organismo = "SUNAT"
+norma = "Resolución de Superintendencia N.° 000125-2026/SUNAT"
+fecha_publicacion = "30/06/2026"
+titular = "Principales contribuyentes de más de 2 300 UIT: SIRE *desde el periodo octubre 2026*"
+que_cambia = [
+  "El inicio del SIRE para el registro de ventas y el de compras pasa de junio a octubre de 2026",
+  "Modifica las R.S. N.° 000112-2021/SUNAT y N.° 000040-2022/SUNAT",
+]
+afecta_a = "Principales contribuyentes al 31/12/2024 con ingresos netos 2024 sobre 2 300 UIT"
+vigencia = "Rige desde el 01/07/2026"
+fuente = "R.S. N.° 000125-2026/SUNAT, portal de SUNAT, emitida el 30/06/2026"
+copy = """📌 Para los estudios que llevan principales contribuyentes grandes:
+
+Con la R.S. N.° 000125-2026/SUNAT, los principales contribuyentes designados al 31/12/2024 con ingresos netos del 2024 por encima de 2 300 UIT llevan el Registro de Ventas e Ingresos y el Registro de Compras en el SIRE desde el periodo octubre de 2026. Antes era desde el periodo junio.
+
+La resolución rige desde el 1 de julio de 2026 y modifica las R.S. N.° 000112-2021/SUNAT y N.° 000040-2022/SUNAT.
+
+Fuente oficial: https://www.sunat.gob.pe/legislacion/superin/2026/000125-2026.pdf
+
+Resumen informativo: lee la norma completa antes de aplicarla.
+
+#SIRE #SUNAT #contadoresperu"""
+
+[[pieza]]
+clave = "C13-ig"
+fecha = "2026-10-29"
+canal = "instagram"
+formato = "reel"
+plantilla = "motion"
+formatos = ["historia"]
+tipo = "CAPTACION"
+etapa = "INTERES"
+pilar = "Producto real"
+tema = "Vídeo con tu voz: un cierre que no se reabre"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Mostrar el cierre con bloqueo y recibir mensajes"
+metrica = "Reproducciones completas y mensajes con «BETA»"
+verificacion = "CU-LIB-05 permitido. Animación de texto e iconos: no simula la pantalla de Cuadra."
+capacidades = ["CU-LIB-05"]
+activos = "Vídeo vertical con subtítulos, portada, guion, teleprompter y SRT. Graba la voz con el teleprompter y vuelve a renderizar con --audio."
+[pieza.contenido]
+gancho = "Cierras el mes… y a la semana aparece un comprobante."
+tema = "Cierre de mes"
+mostrar_locucion = "si"
+cierre_titular = "¿Quieres probarlo en la *beta privada*?"
+cta = "Escríbenos «BETA» por mensaje"
+cierre_pie = "Cuadra está en desarrollo. Sin fecha ni precio todavía."
+escenas = [
+  { pantalla = "¿Cierras el mes y luego *lo vuelves a abrir*?", icono = "history", segundos = 5, locucion = "¿Te ha pasado que cierras el mes y después tienes que volver a abrirlo porque apareció un comprobante?" },
+  { pantalla = "Un cierre con *lista de control*", apoyo = "Antes de cerrar, ves qué falta.", icono = "list-checks", segundos = 5, locucion = "En Cuadra, el cierre del mes tiene una lista de control: antes de cerrar, ves qué falta en esa empresa." },
+  { pantalla = "Cerrado *de verdad*", apoyo = "Y si hay que reabrirlo, queda el motivo.", icono = "lock", segundos = 5, locucion = "Cuando cierras, queda cerrado de verdad. Y si hay que reabrirlo, queda registrado el motivo." },
+  { pantalla = "Lo estamos construyendo *con contadores*", apoyo = "Cuadra está en desarrollo.", icono = "users", segundos = 5, locucion = "Cuadra todavía está en desarrollo. Si quieres probarlo en la beta privada, escríbenos BETA por mensaje." },
+]
+copy = """Cierras el mes… y a la semana aparece un comprobante. 🙃
+
+En Cuadra, el cierre del mes tiene lista de control y bloqueo real. Si hay que reabrirlo, queda el motivo.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #cierredemes #contabilidad"""
+
+[[pieza]]
+clave = "C14-tt"
+basado_en = "C13-ig"
+fecha = "2026-10-30"
+canal = "tiktok"
+tema = "Vídeo con tu voz: un cierre que no se reabre (TikTok)"
+objetivo = "Alcance y mensajes"
+[pieza.contenido]
+copy = """¿Te ha pasado? 😅 Cierras el mes y aparece un comprobante.
+
+Estamos construyendo Cuadra para que el cierre quede cerrado de verdad. Si quieres probarlo en la beta privada, escríbenos BETA.
+
+#contadoresperu #contador #cierredemes"""
+
+[[pieza]]
+clave = "C15-fb"
+fecha = "2026-10-31"
+canal = "facebook"
+formato = "imagen"
+plantilla = "beneficio"
+formatos = ["vertical"]
+tipo = "CAPTACION"
+etapa = "CONSIDERACION"
+pilar = "Producto real"
+tema = "Tus datos se quedan en tu PC"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Responder a la objeción de dónde quedan los datos"
+metrica = "Mensajes con «BETA»"
+verificacion = "CU-SEG-01 y CU-SEG-05 permitidos. No dice que funcione sin Internet (CU-SEG-06 no se anuncia)."
+capacidades = ["CU-SEG-01", "CU-SEG-05"]
+[pieza.contenido]
+gancho = "¿Dónde quedan los datos de tus clientes?"
+etiqueta = "Tus datos"
+icono = "shield-check"
+titular = "Tu información contable se queda *en tu PC*, cifrada empresa por empresa"
+apoyo = "Y no te deja trabajar con la base dentro de una carpeta que se sincroniza, para que no se dañe."
+estado = "Cuadra está en desarrollo"
+cta = "Escríbenos «BETA» por mensaje"
+copy = """¿Dónde quedan los datos de tus clientes?
+
+En Cuadra, tu información contable se queda en tu PC, cifrada empresa por empresa. Y no te deja trabajar con la base dentro de una carpeta de OneDrive, Google Drive o Dropbox, porque la sincronización puede dañarla.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #seguridad #contabilidad"""
+
+# ---------------------------------------------------------------- semana 3
+
+[[pieza]]
+clave = "C16-li"
+fecha = "2026-11-02"
+canal = "linkedin"
+formato = "documento"
+plantilla = "carrusel"
+formatos = ["vertical"]
+tipo = "DESARROLLO"
+etapa = "CONSIDERACION"
+pilar = "Construcción en público"
+tema = "Lo que Cuadra ya hace y lo que todavía no"
+audiencia = "Contadores y estudios que evalúan herramientas"
+objetivo = "Confianza por transparencia"
+metrica = "Comentarios y mensajes"
+verificacion = "Separa lo implementado (CU-EMP-02, CU-REG-03, CU-SIRE-02, CU-LIB-05), lo que tiene matices (CU-SIRE-03, CU-LIB-04, dichos) y lo que no existe todavía (CU-DIS-01, CU-DIS-02, CU-DIS-04, CU-SIRE-05, CU-IA-01), como historia de desarrollo."
+capacidades = ["CU-EMP-02", "CU-REG-03", "CU-SIRE-02", "CU-LIB-05", "CU-SIRE-03", "CU-LIB-04", "CU-DIS-01", "CU-DIS-02", "CU-DIS-04", "CU-SIRE-05", "CU-IA-01"]
+activos = "Cinco láminas en PNG y el PDF para LinkedIn"
+[pieza.contenido]
+gancho = "Antes de abrir la beta privada de Cuadra, quiero ser claro con lo que hace hoy y lo que todavía no."
+serie = "Construyendo Cuadra"
+cta = "Escríbenos «BETA» por mensaje"
+laminas = [
+  { tipo = "portada", titulo = "Lo que Cuadra *ya hace* y lo que *todavía no*", texto = "Transparencia antes de la beta privada." },
+  { tipo = "dato", titulo = "Ya hace, en nuestras pruebas", texto = "Todas tus empresas en una pantalla. Importar desde Excel con vista previa. Importar la propuesta del SIRE descargada de SOL. Cierre del mes con bloqueo.", icono = "circle-check" },
+  { tipo = "dato", titulo = "Con matices", texto = "El cotejo con el SIRE usa tolerancias provisionales. Los TXT del PLE todavía no se validan con el programa oficial de SUNAT.", icono = "triangle-alert" },
+  { tipo = "dato", titulo = "Todavía no", texto = "Instalador público, cuenta y licencia, precio, envío a SUNAT por API ni asistente con IA. Están en desarrollo o planificados.", icono = "history" },
+  { tipo = "cierre", titulo = "¿Nos ayudas a decidir qué sigue?", texto = "Buscamos contadores para la beta privada." },
+]
+copy = """Antes de abrir la beta privada de Cuadra, quiero ser claro con lo que hace hoy y lo que todavía no.
+
+Ya hace, en nuestras pruebas: todas tus empresas en una pantalla, importar compras y ventas desde Excel con vista previa, importar la propuesta del SIRE descargada de SOL y cerrar el mes con bloqueo real.
+
+Con matices: el cotejo con el SIRE usa tolerancias provisionales y los TXT del PLE todavía no se validan con el programa oficial de SUNAT.
+
+Todavía no: instalador público, cuenta y licencia, precio, envío a SUNAT por API ni asistente con IA.
+
+Si llevas muchas empresas y quieres probarlo y decirme qué falta, escríbeme «BETA».
+
+#contabilidad #contadoresperu #software"""
+
+[[pieza]]
+clave = "C17-ig"
+fecha = "2026-11-03"
+canal = "instagram"
+formato = "imagen"
+plantilla = "beneficio"
+formatos = ["vertical"]
+tipo = "CAPTACION"
+etapa = "CONSIDERACION"
+pilar = "Producto real"
+tema = "Copias de seguridad que se comprueban solas"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Responder al miedo de perder información"
+metrica = "Guardados y mensajes"
+verificacion = "CU-SEG-02 permitido."
+capacidades = ["CU-SEG-02"]
+[pieza.contenido]
+gancho = "¿Cuándo fue la última vez que probaste restaurar una copia de seguridad?"
+etiqueta = "Copias de seguridad"
+icono = "database-backup"
+titular = "Copias de seguridad que *se comprueban solas*"
+apoyo = "Y un botón para probar que se pueden restaurar, antes de que las necesites."
+estado = "Cuadra está en desarrollo"
+cta = "Escríbenos «BETA» por mensaje"
+copy = """¿Cuándo fue la última vez que probaste restaurar una copia de seguridad? 🤔
+
+Hacer copias no basta: hay que saber que se pueden abrir. En Cuadra, las copias de seguridad se comprueban solas y tienes un botón para probar que se pueden restaurar.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #copiasdeseguridad #contabilidad"""
+
+[[pieza]]
+clave = "C18-yt"
+fecha = "2026-11-04"
+canal = "youtube"
+formato = "short"
+plantilla = "motion"
+formatos = ["historia"]
+tipo = "CAPTACION"
+etapa = "INTERES"
+pilar = "Producto real"
+tema = "Demo animada: importar compras desde Excel"
+audiencia = "Contador independiente que lleva muchas empresas (hipótesis)"
+objetivo = "Mostrar la importación y recibir mensajes"
+metrica = "Reproducciones completas y mensajes"
+verificacion = "CU-REG-03 y CU-REG-04 permitidos. Animación de texto e iconos: no simula la pantalla. Cuando tengas capturas reales de la importación, agrégalas a las escenas con el campo «captura»."
+capacidades = ["CU-REG-03", "CU-REG-04"]
+activos = "Vídeo vertical con subtítulos, portada, guion, teleprompter y SRT"
+[pieza.contenido]
+gancho = "¿Todavía digitas compras que ya tienes en Excel?"
+tema = "Importar compras"
+mostrar_locucion = "si"
+cierre_titular = "Cuadra está en desarrollo. ¿Quieres *probarlo*?"
+cta = "Escríbenos «BETA» por mensaje"
+cierre_pie = "Sin fecha ni precio todavía."
+escenas = [
+  { pantalla = "¿Todavía *digitas* compras que ya están en Excel?", icono = "keyboard", segundos = 4, locucion = "¿Todavía digitas compras que ya tienes en Excel?" },
+  { pantalla = "Pegas tu Excel", apoyo = "Y ves fila por fila qué va a pasar antes de guardar.", icono = "clipboard-paste", segundos = 5, locucion = "En Cuadra pegas tu Excel y ves, fila por fila, qué va a pasar antes de guardar." },
+  { pantalla = "¿Te equivocaste?", apoyo = "Deshaces la importación *entera*.", icono = "undo-2", segundos = 4, locucion = "Y si te equivocaste, deshaces la importación entera." },
+  { pantalla = "La segunda vez", apoyo = "Reconoce las columnas de tu archivo sola.", icono = "file-check-2", segundos = 4, locucion = "La segunda vez, reconoce las columnas de tu archivo por su cuenta." },
+]
+copy = """Pegas tu Excel de compras y ves fila por fila qué va a pasar antes de guardar. Si te equivocas, deshaces la importación entera.
+
+Así funciona la importación en Cuadra, el sistema contable que estamos construyendo para contadores que llevan muchas empresas. Está en desarrollo: si quieres probarlo en la beta privada, escríbenos «BETA».
+
+#contadoresperu #excel #contabilidad #Shorts"""
+
+[[pieza]]
+clave = "C19-fb"
+basado_en = "C18-yt"
+fecha = "2026-11-05"
+canal = "facebook"
+formato = "reel"
+tema = "Demo animada: importar compras desde Excel (Facebook)"
+objetivo = "Alcance en Facebook y mensajes"
+[pieza.contenido]
+copy = """¿Todavía digitas compras que ya tienes en Excel? 👀
+
+En Cuadra pegas tu Excel y ves fila por fila qué va a pasar antes de guardar. Si te equivocas, deshaces la importación entera.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbenos «BETA» por mensaje.
+
+#contadoresperu #excel #contabilidad"""
+
+[[pieza]]
+clave = "C20-fb"
+fecha = "2026-11-06"
+canal = "facebook"
+formato = "imagen"
+plantilla = "invitacion-demo"
+formatos = ["vertical"]
+tipo = "CAPTACION"
+etapa = "CONVERSION"
+pilar = "Invitación"
+tema = "Invitación a una demostración en vivo"
+audiencia = "Contadores que ya interactuaron con las piezas anteriores"
+objetivo = "Pedidos de demostración"
+metrica = "Mensajes con «DEMO» y demostraciones agendadas"
+verificacion = "Lo que se muestra está implementado (CU-EMP-02, CU-REG-03, CU-LIB-05) y la demo usa la empresa de ejemplo (CU-DEM-01). Requiere que tengas horarios libres para demostraciones."
+capacidades = ["CU-EMP-02", "CU-REG-03", "CU-LIB-05", "CU-DEM-01"]
+[pieza.contenido]
+gancho = "¿Quieres ver Cuadra funcionando antes de la beta?"
+antetitulo = "Demostración en vivo"
+titular = "Te mostramos cómo se *cierra un mes* en Cuadra"
+que_veras = ["Todas tus empresas en una pantalla", "Importar compras desde Excel con vista previa", "El cierre del mes con su lista de control"]
+modalidad = "Por videollamada · unos 30 minutos"
+nota = "Con una empresa de ejemplo y datos inventados."
+cta = "Pide una demostración"
+copy = """¿Quieres ver Cuadra funcionando antes de la beta? 👀
+
+Te hacemos una demostración en vivo por videollamada, de unos 30 minutos, con una empresa de ejemplo y datos inventados. Vas a ver:
+
+• Todas tus empresas en una pantalla.
+• Cómo se importan compras desde Excel con vista previa.
+• El cierre del mes con su lista de control.
+
+Cuadra está en desarrollo y todavía no está a la venta. Para pedir tu demostración, escríbenos «DEMO» por mensaje y coordinamos el día.
+
+#contadoresperu #contabilidad"""
+
+[[pieza]]
+clave = "C21-ig"
+fecha = "2026-11-07"
+canal = "instagram"
+formato = "imagen"
+plantilla = "educativo"
+formatos = ["vertical"]
+tipo = "EDUCATIVA"
+etapa = "INTERES"
+pilar = "Oficio y control"
+tema = "3 señales de que algo no cuadra en tu serie de ventas"
+audiencia = "Contadores y asistentes contables"
+objetivo = "Guardados"
+metrica = "Guardados y compartidos"
+verificacion = "Práctica general, sin normas citadas. La mención a Cuadra usa la frase de CU-REG-05."
+capacidades = ["CU-REG-05"]
+[pieza.contenido]
+gancho = "Tres señales de que algo no cuadra en una serie de ventas."
+antetitulo = "Correlativos"
+titular = "3 señales de que algo *no cuadra* en tu serie de ventas"
+puntos = ["El número salta: del 120 pasa al 122", "Las fechas retroceden: el 121 es de antes que el 120", "Aparece una serie que no tenías registrada"]
+nota = "Revísalo antes de cerrar el mes."
+cta = "Escríbenos «BETA» por mensaje"
+copy = """Tres señales de que algo no cuadra en una serie de ventas:
+
+1. El número salta: del 120 pasa al 122. ¿Dónde está el 121? ¿Anulado, pendiente o sin registrar?
+2. Las fechas retroceden: el 121 tiene fecha anterior al 120.
+3. Aparece una serie que no tenías registrada.
+
+Cuadra te muestra los huecos y saltos de fecha en tus series de venta. Está en desarrollo: si quieres probarlo en la beta privada, escríbenos «BETA».
+
+#contadoresperu #facturacion #contabilidad"""
+
+# ---------------------------------------------------------------- semana 4
+
+[[pieza]]
+clave = "C22-li"
+basado_en = "C20-fb"
+fecha = "2026-11-09"
+canal = "linkedin"
+formatos = ["enlace"]
+tema = "Invitación a una demostración en vivo (LinkedIn)"
+audiencia = "Estudios contables pequeños"
+[pieza.contenido]
+copy = """Estoy haciendo demostraciones en vivo de Cuadra para contadores y estudios que llevan muchas empresas.
+
+Son unos 30 minutos por videollamada, con una empresa de ejemplo y datos inventados. Muestro cómo se ven todas las empresas en una pantalla, cómo se importan compras desde Excel con vista previa y cómo se cierra un mes.
+
+Cuadra está en desarrollo y todavía no está a la venta. Si quieres verlo, escríbeme «DEMO» y coordinamos el día."""
+
+[[pieza]]
+clave = "C23-ig"
+fecha = "2026-11-10"
+canal = "instagram"
+formato = "imagen"
+plantilla = "meme"
+formatos = ["cuadrado"]
+tipo = "HUMOR"
+etapa = "ATENCION"
+pilar = "Humor del oficio"
+tema = "Meme: expectativa y realidad del balance"
+audiencia = "Contadores y asistentes contables"
+objetivo = "Alcance y comentarios"
+metrica = "Comentarios y compartidos"
+verificacion = "Humor sobre la propia rutina, sin importes en soles ni personas reales."
+[pieza.contenido]
+estilo = "paneles"
+panel_a_titulo = "Expectativa"
+panel_a = "Cuadro el balance *en cinco minutos*."
+icono_a = "sparkles"
+panel_b_titulo = "Realidad"
+panel_b = "Dos horas buscando de dónde salió *un céntimo*."
+icono_b = "search"
+remate = "¿Cuánto te demoraste en el último?"
+copy = """Spoiler: era el redondeo. 🫠
+
+¿Cuál fue tu récord buscando una diferencia? Cuéntalo en los comentarios.
+
+#contadoresperu #humorcontable #contabilidad"""
+
+[[pieza]]
+clave = "C24-li"
+basado_en = "C01-fb"
+fecha = "2026-11-11"
+canal = "linkedin"
+formatos = ["enlace"]
+tema = "La beta privada busca contadores (LinkedIn)"
+audiencia = "Contadores y estudios en LinkedIn"
+capacidades = ["CU-EMP-01", "CU-DEM-01"]
+verificacion = "CU-EMP-01 con su matiz y CU-DEM-01 permitido. Sin fecha ni precio."
+[pieza.contenido]
+copy = """Estoy armando la beta privada de Cuadra, un sistema contable de escritorio pensado para contadores que llevan muchas empresas.
+
+Busco colegas que quieran probarlo con una empresa de ejemplo y decirme con franqueza qué le falta. No hay nada que comprar: todavía no tiene fecha de lanzamiento ni precio.
+
+Si te interesa, escríbeme «BETA» por mensaje y te cuento cómo será.
+
+#contadoresperu #contabilidad #software"""
+
+[[pieza]]
+clave = "C25-yt"
+basado_en = "C13-ig"
+fecha = "2026-11-12"
+canal = "youtube"
+formato = "short"
+tema = "Vídeo con tu voz: un cierre que no se reabre (YouTube)"
+objetivo = "Alcance en YouTube y mensajes"
+[pieza.contenido]
+copy = """Cierras el mes y a la semana aparece un comprobante. En Cuadra, el cierre del mes tiene lista de control y bloqueo real; si hay que reabrirlo, queda el motivo.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbenos «BETA».
+
+#contadoresperu #cierredemes #Shorts"""
+
+[[pieza]]
+clave = "C26-li"
+basado_en = "C06-ig"
+fecha = "2026-11-13"
+canal = "linkedin"
+formatos = ["enlace"]
+tema = "Mis empresas: todas en una pantalla (LinkedIn)"
+audiencia = "Estudios contables pequeños"
+[pieza.contenido]
+copy = """Cuando un estudio lleva muchas empresas, lo difícil no es registrar: es saber qué falta en cada una sin abrirlas una por una.
+
+En Cuadra, la pantalla Mis empresas muestra todas las empresas juntas, con lo que toca hacer en cada una: correlativos faltantes, posibles duplicados y meses sin cerrar.
+
+Cuadra está en desarrollo. Si quieres probarlo en la beta privada, escríbeme «BETA».
+
+#contadoresperu #contabilidad #software"""

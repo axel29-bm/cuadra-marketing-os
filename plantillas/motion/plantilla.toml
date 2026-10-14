@@ -1,0 +1,42 @@
+nombre = "motion"
+titulo = "Vídeo animado"
+descripcion = "Vídeo corto por escenas: texto animado, iconos o capturas reales con zoom suave, barra de progreso y cierre con llamado. Si las escenas traen locución, genera también guion, teleprompter y subtítulos."
+uso = "Reels, TikTok, shorts y vídeo en LinkedIn. Con la voz de Didi grabada aparte, se une al vídeo con --audio."
+tipos_afirmacion = ["EDUCATIVA", "CAPTACION", "DESARROLLO", "HUMOR"]
+formatos = ["historia", "vertical", "cuadrado", "horizontal"]
+video = true
+fps = 30
+
+[campos]
+tema = { tipo = "texto", max = 30 }
+mostrar_locucion = { tipo = "opcion", valores = ["si", "no"] }
+cierre_titular = { tipo = "texto", max = 70, requerido = true }
+cta = { tipo = "texto", max = 34, requerido = true }
+cierre_pie = { tipo = "texto", max = 90 }
+portada_escena = { tipo = "entero", min = 1, max = 8 }
+
+[campos.escenas]
+tipo = "objetos"
+min = 2
+max_items = 8
+requerido = true
+
+[campos.escenas.campos]
+pantalla = { tipo = "texto", max = 80, requerido = true }
+apoyo = { tipo = "texto", max = 110 }
+icono = { tipo = "icono" }
+captura = { tipo = "captura" }
+locucion = { tipo = "texto", max = 320 }
+segundos = { tipo = "entero", min = 2, max = 15, requerido = true }
+
+[ejemplo]
+tema = "Cierre de mes"
+mostrar_locucion = "si"
+cierre_titular = "Estamos construyendo Cuadra con contadores *como tú*"
+cta = "Únete a la lista de espera"
+cierre_pie = "En desarrollo. Sin fecha ni precio todavía."
+escenas = [
+  { pantalla = "¿Cierras el mes y luego *lo vuelves a abrir*?", icono = "history", locucion = "¿Te ha pasado que cierras el mes y luego tienes que volver a abrirlo?", segundos = 4 },
+  { pantalla = "Un cierre con lista de control", apoyo = "Ves qué falta antes de cerrar.", icono = "list-checks", locucion = "En Cuadra, el cierre del mes tiene su lista de control: ves qué falta antes de cerrar.", segundos = 5 },
+  { pantalla = "Cerrado *de verdad*", apoyo = "Y si hay que reabrirlo, queda el motivo.", icono = "lock", locucion = "Cuando cierras, queda cerrado de verdad. Y si hay que reabrirlo, queda registrado el motivo.", segundos = 5 },
+]

@@ -1,0 +1,28 @@
+nombre = "trivia"
+titulo = "Trivia"
+descripcion = "Pregunta del oficio con 2 a 4 opciones. Lámina 1: la pregunta; lámina 2: la respuesta explicada. Incluye una versión interactiva en HTML."
+uso = "Interacción y comentarios. La respuesta necesita fuente si es normativa."
+tipos_afirmacion = ["EDUCATIVA", "HUMOR", "CAPTACION"]
+formatos = ["vertical", "cuadrado", "historia"]
+paginas = 2
+pdf = false
+interactivo = true
+
+[campos]
+tema = { tipo = "texto", max = 30 }
+pregunta = { tipo = "texto", max = 110, requerido = true }
+opciones = { tipo = "lista", min = 2, max_items = 4, max = 60, requerido = true }
+correcta = { tipo = "entero", min = 1, max = 4, requerido = true }
+explicacion = { tipo = "texto", max = 220, requerido = true }
+fuente = { tipo = "texto", max = 90 }
+cta = { tipo = "texto", max = 34 }
+invitacion = { tipo = "texto", max = 90 }
+
+[ejemplo]
+tema = "Trivia del contador"
+pregunta = "¿Qué pasa si un comprobante de compra está en la propuesta del SIRE y no en tu registro?"
+opciones = ["Nada, la propuesta siempre manda", "Hay que revisarlo antes de aceptar", "Se borra solo al mes siguiente"]
+correcta = 2
+explicacion = "La propuesta es eso: una propuesta. Antes de aceptarla, revisa si el comprobante es del periodo, si es deducible y si ya lo registraste con otra fecha."
+fuente = "SUNAT, Orientación SIRE"
+cta = "Únete a la lista de espera"

@@ -1,0 +1,26 @@
+nombre = "promocion"
+titulo = "Promoción"
+descripcion = "Oferta comercial con condiciones y vigencia obligatorias. Solo se usa cuando el producto está a la venta y tiene precio aprobado."
+uso = "Conversión. El auditor la bloquea mientras el producto esté en prelanzamiento. El precio va con «IGV incluido» o «+ IGV»."
+tipos_afirmacion = ["PROMOCIONAL"]
+formatos = ["vertical", "cuadrado", "historia"]
+
+[campos]
+antetitulo = { tipo = "texto", max = 32 }
+titular = { tipo = "texto", max = 70, requerido = true }
+oferta = { tipo = "texto", max = 60, requerido = true }
+precio = { tipo = "texto", max = 30 }
+precio_nota = { tipo = "texto", max = 30 }
+condiciones = { tipo = "texto", max = 170, requerido = true }
+vigencia = { tipo = "texto", max = 60, requerido = true }
+cta = { tipo = "texto", max = 34, requerido = true }
+
+[ejemplo]
+antetitulo = "Promoción"
+titular = "Titular de la oferta *cuando exista*"
+oferta = "Beneficio concreto de la oferta"
+precio = "Precio por definir"
+precio_nota = "IGV incluido"
+condiciones = "Aquí van las condiciones completas: a quién aplica, qué incluye y qué no. Sin letra chica escondida."
+vigencia = "Fechas por definir"
+cta = "Pide una demostración"

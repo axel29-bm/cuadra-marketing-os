@@ -1,0 +1,75 @@
+# Formatos y límites por canal que usan la fábrica (tamaños de exportación) y el auditor (longitudes).
+# Los máximos de texto son límites prácticos conocidos y quedan POR VERIFICAR en la ayuda oficial de cada red
+# (las páginas de ayuda no cargaron durante la investigación del 2026-10-14). Si un límite real es mayor,
+# el auditor solo será más estricto de la cuenta; nunca dejará pasar algo que la red rechace por largo.
+# recomendado_* son longitudes que se leen sin cortar en el móvil; superarlas da advertencia, no bloqueo.
+
+[canal.facebook]
+nombre = "Facebook (Página)"
+programacion = "Meta Business Suite (nativa y gratis)"
+formatos = ["1080x1350", "1080x1080", "1080x1920"]
+max_copy = 5000
+recomendado_copy = 500
+max_hashtags = 5
+verificado = false
+
+[canal.instagram]
+nombre = "Instagram (cuenta profesional)"
+programacion = "Meta Business Suite (nativa y gratis)"
+formatos = ["1080x1350", "1080x1080", "1080x1920"]
+max_copy = 2200
+recomendado_copy = 400
+max_hashtags = 30
+max_carrusel = 10
+verificado = false
+
+[canal.linkedin]
+nombre = "LinkedIn (perfil de Didi)"
+programacion = "Programación nativa de LinkedIn (gratis)"
+formatos = ["1080x1350", "1200x1200", "1920x1080", "1200x627"]
+max_copy = 3000
+recomendado_copy = 1300
+max_hashtags = 5
+verificado = false
+
+[canal.tiktok]
+nombre = "TikTok"
+programacion = "TikTok Studio web (nativo y gratis)"
+formatos = ["1080x1920"]
+max_copy = 2200
+recomendado_copy = 150
+max_hashtags = 5
+verificado = false
+
+[canal.youtube]
+nombre = "YouTube"
+programacion = "YouTube Studio (nativo y gratis)"
+formatos = ["1920x1080", "1080x1920"]
+max_titulo = 100
+max_copy = 5000
+recomendado_copy = 1000
+max_hashtags = 15
+verificado = false
+
+[canal.whatsapp]
+nombre = "WhatsApp Business (app)"
+programacion = "Manual: estados y mensajes a quien te escribió primero"
+formatos = ["1080x1920", "1080x1080"]
+max_copy = 700
+recomendado_copy = 300
+verificado = false
+
+[canal.landing]
+nombre = "Landing de lista de espera"
+programacion = "Despliegue con autorización de Didi"
+formatos = ["web"]
+max_copy = 4000
+verificado = true
+
+[canal.correo]
+nombre = "Correo a quien dio su consentimiento"
+programacion = "Manual o servicio de correo con dominio propio (requiere autorización)"
+formatos = ["html"]
+max_titulo = 90
+max_copy = 4000
+verificado = true

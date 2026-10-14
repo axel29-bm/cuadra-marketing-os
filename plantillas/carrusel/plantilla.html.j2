@@ -1,0 +1,45 @@
+{% extends "_base/base.html.j2" %}
+{% block clase_body %}{% set l = laminas[pagina] %}{% if l.tipo == "cierre" %} oscuro{% endif %}{% endblock %}
+{% block estilos %}
+.motivo { right: calc(-170 * var(--u)); top: calc(-170 * var(--u)); width: calc(420 * var(--u)); }
+.serie { font: 600 calc(24 * var(--u)) / 1 var(--fuente-texto); color: var(--texto-suave); }
+.oscuro .serie { color: color-mix(in srgb, var(--oscuro-texto) 70%, transparent); }
+.contador { font: 600 calc(24 * var(--u)) / 1 var(--fuente-mono); color: var(--texto-suave); }
+.oscuro .contador { color: color-mix(in srgb, var(--oscuro-texto) 70%, transparent); }
+.numero { width: calc(120 * var(--u)); height: calc(120 * var(--u)); border-radius: var(--r); background: var(--destacado); color: var(--destacado-texto);
+  display: grid; place-items: center; font: 750 calc(54 * var(--u)) / 1 var(--fuente-titulos); letter-spacing: -0.03em; }
+.fila-num { display: flex; align-items: center; gap: calc(24 * var(--u)); }
+.fila-num .icono-caja { width: calc(120 * var(--u)); height: calc(120 * var(--u)); }
+.portada .titular { font-size: calc(100 * var(--u)); }
+.paso .titular { font-size: calc(84 * var(--u)); }
+.paso .texto, .dato .texto { font-size: calc(40 * var(--u)); }
+.cierre .titular { font-size: calc(78 * var(--u)); }
+.desliza { display: inline-flex; align-items: center; gap: calc(14 * var(--u)); font: 650 calc(30 * var(--u)) / 1 var(--fuente-texto); color: var(--acento); }
+.desliza span { width: calc(40 * var(--u)); height: calc(40 * var(--u)); }
+.puntitos { display: flex; gap: calc(10 * var(--u)); }
+.puntitos i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); border-radius: 50%; background: var(--borde); }
+.puntitos i.si { background: var(--tinta); width: calc(36 * var(--u)); border-radius: 999px; }
+.oscuro .puntitos i { background: color-mix(in srgb, var(--oscuro-texto) 25%, transparent); }
+.oscuro .puntitos i.si { background: var(--destacado); }
+.formato-cuadrado .portada .titular { font-size: calc(86 * var(--u)); }
+.formato-cuadrado .paso .titular { font-size: calc(66 * var(--u)); }
+{% endblock %}
+{% block fondo %}{% set l = laminas[pagina] %}{% if l.tipo in ("portada", "cierre") %}<div class="motivo"><i></i><i></i><i></i><i></i></div>{% endif %}{% endblock %}
+{% block contenido %}
+{% set l = laminas[pagina] %}
+{% set n_paso = laminas[:pagina + 1] | selectattr("tipo", "in", ["paso", "dato"]) | list | length %}
+<div class="cabecera"><div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div>
+  <span class="contador">{{ "%02d" | format(pagina + 1) }} / {{ "%02d" | format(paginas) }}</span></div>
+<div class="empuje"></div>
+<div class="{{ l.tipo }}" style="display:flex;flex-direction:column;gap:calc(34 * var(--u))">
+  {% if l.tipo == "portada" %}{% if serie %}<div class="antetitulo">{{ serie }}</div>{% endif %}
+  {% elif l.tipo == "paso" %}<div class="fila-num"><div class="numero">{{ n_paso }}</div>{% if l.icono %}<div class="icono-caja azul">{{ icono(l.icono) }}</div>{% endif %}</div>
+  {% elif l.tipo == "dato" and l.icono %}<div class="icono-caja">{{ icono(l.icono) }}</div>{% endif %}
+  <h1 class="titular ajustar">{{ l.titulo | resaltar }}</h1>
+  {% if l.texto %}<p class="texto ajustar">{{ l.texto | resaltar }}</p>{% endif %}
+  {% if l.tipo == "cierre" and cta %}<div class="cta">{{ cta }}<span class="flecha">{{ icono("arrow-right") }}</span></div>{% endif %}
+</div>
+<div class="empuje"></div>
+<div class="pie-fila"><div class="puntitos">{% for i in range(paginas) %}<i class="{{ 'si' if i == pagina }}"></i>{% endfor %}</div>
+  {% if pagina == 0 %}<span class="desliza">Desliza <span>{{ icono("arrow-right") }}</span></span>{% elif serie %}<span class="serie">{{ serie }}</span>{% endif %}</div>
+{% endblock %}

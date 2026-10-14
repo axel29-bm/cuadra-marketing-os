@@ -1,0 +1,26 @@
+nombre = "meme"
+titulo = "Meme"
+descripcion = "Humor del oficio en formato de texto: dos paneles (expectativa y realidad, lunes y viernes…) o «Nadie:». Sin imágenes de terceros."
+uso = "Atención y alcance. Humor sobre situaciones del oficio, nunca sobre clientes, colegas con nombre, SUNAT en tono despectivo ni competidores."
+tipos_afirmacion = ["HUMOR"]
+formatos = ["cuadrado", "vertical", "historia"]
+
+[campos]
+estilo = { tipo = "opcion", valores = ["paneles", "nadie"], requerido = true }
+panel_a_titulo = { tipo = "texto", max = 30 }
+panel_a = { tipo = "texto", max = 110 }
+icono_a = { tipo = "icono" }
+panel_b_titulo = { tipo = "texto", max = 40 }
+panel_b = { tipo = "texto", max = 110, requerido = true }
+icono_b = { tipo = "icono" }
+remate = { tipo = "texto", max = 70 }
+
+[ejemplo]
+estilo = "paneles"
+panel_a_titulo = "Lo que digo el día 1"
+panel_a = "Este mes cierro *todo* con calma, con tiempo."
+icono_a = "sparkles"
+panel_b_titulo = "Lo que pasa el día 9"
+panel_b = "Tres clientes mandan sus compras por WhatsApp, en foto, a las 11:48 p. m."
+icono_b = "triangle-alert"
+remate = "Etiqueta al colega que vive esto cada mes."

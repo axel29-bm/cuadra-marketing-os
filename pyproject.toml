@@ -1,0 +1,20 @@
+[project]
+name = "cuadra-marketing-os"
+version = "0.1.0"
+description = "Sistema operativo de marketing local-first para los productos de Didi, empezando por Cuadra."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+fabrica = ["jinja2>=3.1,<4", "playwright>=1.48,<2"]
+
+[project.scripts]
+mos = "mos.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["mos*"]
+
+[tool.setuptools.package-data]
+"mos.migraciones" = ["*.sql"]
+"mos.web" = ["*.css"]

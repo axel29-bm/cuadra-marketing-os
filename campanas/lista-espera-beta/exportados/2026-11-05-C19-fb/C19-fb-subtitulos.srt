@@ -1,0 +1,15 @@
+1
+00:00:00,000 --> 00:00:04,000
+¿Todavía digitas compras que ya tienes en Excel?
+
+2
+00:00:04,000 --> 00:00:09,000
+En Cuadra pegas tu Excel y ves, fila por fila, qué va a pasar antes de guardar.
+
+3
+00:00:09,000 --> 00:00:13,000
+Y si te equivocaste, deshaces la importación entera.
+
+4
+00:00:13,000 --> 00:00:17,000
+La segunda vez, reconoce las columnas de tu archivo por su cuenta.

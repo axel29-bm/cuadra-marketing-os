@@ -1,0 +1,22 @@
+nombre = "lanzamiento"
+titulo = "Lanzamiento"
+descripcion = "Anuncio grande sobre fondo azul noche: lista de espera, beta privada o, cuando exista, la versión disponible."
+uso = "Hitos del producto. En prelanzamiento solo anuncia la lista de espera o la beta, sin fechas ni precios inventados."
+tipos_afirmacion = ["CAPTACION", "DESARROLLO", "PROMOCIONAL"]
+formatos = ["vertical", "cuadrado", "historia", "horizontal", "enlace"]
+
+[campos]
+antetitulo = { tipo = "texto", max = 32 }
+titular = { tipo = "texto", max = 80, requerido = true }
+subtitulo = { tipo = "texto", max = 160 }
+puntos = { tipo = "lista", max_items = 3, max = 60 }
+cta = { tipo = "texto", max = 34, requerido = true }
+pie = { tipo = "texto", max = 90 }
+
+[ejemplo]
+antetitulo = "Lista de espera abierta"
+titular = "Un sistema contable pensado para el contador que lleva *muchas empresas*"
+subtitulo = "De escritorio, con tus datos en tu PC. Lo estamos construyendo con contadores peruanos."
+puntos = ["Todas tus empresas en una pantalla", "Importa la propuesta del SIRE descargada de SOL", "Cierre del mes con bloqueo real"]
+cta = "Únete a la lista de espera"
+pie = "Cuadra está en desarrollo. Todavía no tiene fecha ni precio."

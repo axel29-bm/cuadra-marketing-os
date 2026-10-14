@@ -1,0 +1,77 @@
+# Experimentos de la campaña «Lista de espera de la beta privada».
+# Detalle y razones: docs/METRICAS-Y-EXPERIMENTOS.md, sección 9. Todos los criterios son hipótesis. Ninguno cuesta dinero.
+#
+#   python -m mos experimento cargar campanas/lista-espera-beta     # crea o actualiza (no toca estado ni decisión)
+#   python -m mos experimento resultado EXP-01                        # calcula con las métricas MEDIDAS
+#   python -m mos experimento cerrar EXP-01 --decision CONTINUAR --resultado "…"
+#
+# tipo = "PIEZAS": el resultado se calcula con las métricas medidas de las publicaciones de cada grupo.
+# tipo = "MANUAL": se mide fuera de las publicaciones (leads, conversaciones) y el resultado se anota al cerrar.
+# metrica: suma de los numeradores dividida por la suma del denominador, solo con publicaciones que tienen
+# el denominador medido. umbral: A / B igual o mayor que el umbral favorece a A; igual o menor que 1 / umbral, a B.
+
+[[experimento]]
+codigo = "EXP-01"
+titulo = "Oficio primero o producto primero"
+tipo = "PIEZAS"
+hipotesis = "Las piezas de Oficio y control generan más guardados y conversaciones por alcance que las de Producto real."
+cambio = "Comparar los dos pilares con más piezas de la campaña."
+variable = "pilar"
+metrica = { numerador = ["guardados", "conversaciones"], denominador = "alcance" }
+grupos = { A = ["C03-fb", "C04-li", "C08-fb", "C09-ig", "C10-li", "C11-ig", "C21-ig"], B = ["C06-ig", "C13-ig", "C14-tt", "C15-fb", "C17-ig", "C18-yt", "C19-fb", "C25-yt", "C26-li"] }
+nombres = { A = "Oficio y control", B = "Producto real" }
+umbral = 1.5
+inicio = "2026-10-15"
+fin = "2026-11-13"
+limitaciones = "Cada grupo mezcla canales y formatos; la atribución de conversaciones depende de que la persona diga dónde nos vio."
+
+[[experimento]]
+codigo = "EXP-02"
+titulo = "Captura real o icono"
+tipo = "PIEZAS"
+hipotesis = "Una pieza de beneficio con captura real de la empresa de ejemplo gana más guardados y conversaciones que la misma plantilla con icono."
+cambio = "C17 lleva una captura real; C06, un icono. Igual en ambas: Instagram, plantilla beneficio, llamado BETA."
+variable = "visual"
+metrica = { numerador = ["guardados", "conversaciones"], denominador = "alcance" }
+grupos = { A = ["C17-ig"], B = ["C06-ig"] }
+nombres = { A = "Con captura real", B = "Con icono" }
+umbral = 1.3
+inicio = "2026-10-21"
+fin = "2026-11-10"
+condicion = "Que Didi tenga la captura antes del 01/11/2026. Si no, se cancela."
+limitaciones = "Temas distintos y una pieza por grupo: es un indicio, no una prueba."
+
+[[experimento]]
+codigo = "EXP-03"
+titulo = "Documento o imagen en LinkedIn"
+tipo = "PIEZAS"
+hipotesis = "En LinkedIn, el documento PDF genera más comentarios y mensajes por impresión que la imagen única."
+cambio = "Comparar las piezas de LinkedIn en documento con las de imagen."
+variable = "formato"
+metrica = { numerador = ["comentarios", "conversaciones"], denominador = "impresiones" }
+grupos = { A = ["C10-li", "C16-li"], B = ["C04-li", "C22-li", "C24-li", "C26-li"] }
+nombres = { A = "Documento", B = "Imagen" }
+umbral = 1.5
+inicio = "2026-10-19"
+fin = "2026-11-13"
+limitaciones = "Temas distintos; las métricas de LinkedIn se copian a mano."
+
+[[experimento]]
+codigo = "EXP-04"
+titulo = "Cuándo preguntar por la cartera"
+tipo = "MANUAL"
+hipotesis = "Si la pregunta por la cartera va en un mensaje aparte, al día siguiente del SÍ, responden más personas que si va junto con la pregunta de novedades."
+cambio = "A: guion actual de mensajes-y-demo.md. B: la pregunta de cartera al día siguiente. Se alterna por día del mes (impar A, par B)."
+variable = "momento de la pregunta"
+condicion = "Que la lista esté abierta. La variante se anota en el lead con lead actualizar --nota."
+limitaciones = "Pocos casos."
+
+[[experimento]]
+codigo = "EXP-05"
+titulo = "Mensaje o landing"
+tipo = "MANUAL"
+hipotesis = "Con la landing publicada entran más contadores con consentimiento por semana que solo con el mensaje BETA."
+cambio = "Publicar la landing con el llamado «Únete a la lista de espera»."
+variable = "vía de inscripción"
+condicion = "Que Didi autorice publicar la landing y que python -m mos sitio pendientes salga vacío. Si no, se cancela sin coste."
+limitaciones = "Comparación de antes y después; el contenido cambia de una semana a otra."

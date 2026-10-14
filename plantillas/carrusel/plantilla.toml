@@ -1,0 +1,35 @@
+nombre = "carrusel"
+titulo = "Carrusel"
+descripcion = "De 3 a 10 láminas: portada, pasos o datos y cierre con llamado. Se exporta cada lámina en PNG y todo en un PDF."
+uso = "Guías paso a paso y listas largas. El PDF sirve como documento en LinkedIn."
+tipos_afirmacion = ["EDUCATIVA", "CAPTACION", "DESARROLLO"]
+formatos = ["vertical", "cuadrado"]
+paginas = "laminas"
+pdf = true
+
+[campos]
+serie = { tipo = "texto", max = 30 }
+cta = { tipo = "texto", max = 34 }
+
+[campos.laminas]
+tipo = "objetos"
+min = 3
+max_items = 10
+requerido = true
+
+[campos.laminas.campos]
+tipo = { tipo = "opcion", valores = ["portada", "paso", "dato", "cierre"], requerido = true }
+titulo = { tipo = "texto", max = 80, requerido = true }
+texto = { tipo = "texto", max = 190 }
+icono = { tipo = "icono" }
+
+[ejemplo]
+serie = "Guía del SIRE"
+cta = "Únete a la lista de espera"
+laminas = [
+  { tipo = "portada", titulo = "Cómo cotejar la propuesta del SIRE *sin perder la tarde*", texto = "4 pasos que puedes hacer hoy, con o sin sistema." },
+  { tipo = "paso", titulo = "Descarga la propuesta desde SOL", texto = "Baja el ZIP del periodo. No lo descomprimas a mano ni cambies el nombre del archivo.", icono = "file-spreadsheet" },
+  { tipo = "paso", titulo = "Ordena por RUC y serie", texto = "Así ves enseguida los comprobantes que están en la propuesta y no en tu registro.", icono = "table-2" },
+  { tipo = "paso", titulo = "Revisa importes y tipo de cambio", texto = "Las diferencias de céntimos casi siempre vienen del tipo de cambio o del redondeo.", icono = "git-compare" },
+  { tipo = "cierre", titulo = "Estamos construyendo una herramienta que hace este cotejo contigo", texto = "Cuadra está en desarrollo. Si quieres probarla en la beta privada, déjanos tu correo." },
+]

@@ -1,0 +1,10 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Teleprompter · [C18-yt] Demo animada: importar compras desde Excel</title>
+<style>body{margin:0;background:#0B1626;color:#F2F6EE;font:600 56px/1.45 'Segoe UI',system-ui,sans-serif}
+#t{padding:40vh 8vw;transform:scaleX(var(--espejo,1))}hr{border:0;border-top:2px solid #D4FF3F;opacity:.5;margin:1.2em 0}
+#c{position:fixed;top:0;left:0;right:0;padding:8px 16px;font:14px system-ui;background:#000a}</style></head><body>
+<div id="c">Espacio: iniciar o pausar · flechas: velocidad · E: espejo · Inicio: volver arriba</div><div id="t"><p>¿Todavía digitas compras que ya tienes en Excel?</p><hr><p>En Cuadra pegas tu Excel y ves, fila por fila, qué va a pasar antes de guardar.</p><hr><p>Y si te equivocaste, deshaces la importación entera.</p><hr><p>La segunda vez, reconoce las columnas de tu archivo por su cuenta.</p><hr></div>
+<script>let v=0,on=false,last=null;function f(ts){if(on&&last!==null)scrollBy(0,v*(ts-last)/16);last=ts;requestAnimationFrame(f)}
+v=1.2;requestAnimationFrame(f);addEventListener('keydown',e=>{if(e.code==='Space'){on=!on;e.preventDefault()}
+if(e.key==='ArrowUp')v+=.2;if(e.key==='ArrowDown')v=Math.max(.2,v-.2);if(e.key==='Home')scrollTo(0,0);
+if(e.key==='e'||e.key==='E')document.body.style.setProperty('--espejo',getComputedStyle(document.body).getPropertyValue('--espejo')==='-1'?'1':'-1')})</script>
+</body></html>

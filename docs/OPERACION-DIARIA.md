@@ -1,0 +1,52 @@
+# Operación diaria
+
+La rutina para llevar el marketing de Cuadra en poco tiempo al día. Todo corre en tu PC; nada se publica ni se envía sin que tú lo hagas.
+
+Abre una consola en la carpeta del proyecto. Si usas un espacio distinto del predeterminado, define `MOS_ESPACIO` antes (ver `INSTALACION.md`).
+
+## Cada día (15 a 25 minutos)
+
+0. **La rutina diaria** hace sola la copia de seguridad, lee el radar y deja en `espacio\salidas\rutinas\diaria-AAAA-MM-DD.md` lo que espera por ti. Si la programaste (`python -m mos rutina programar`), ya corrió a las 08:00; si no, ejecútala: `python -m mos rutina diaria`.
+1. **Abre el panel:** `python -m mos web`. La página «Hoy» muestra lo que espera por ti: piezas para aprobar, tareas para revisar, publicaciones para hoy o atrasadas, seguimientos de interesados, novedades del radar por verificar y errores.
+2. **Aprueba o corrige** las piezas del día siguiente en «Aprobaciones». Si el auditor frenó una, el motivo está en la ficha; corrige el texto en `campanas/<campaña>/campana.toml` y vuelve a cargar:
+   ```powershell
+   python -m mos campana cargar campanas\lista-espera-beta
+   python -m mos campana render campanas\lista-espera-beta
+   ```
+3. **Programa** lo aprobado: `python -m mos publicacion preparar --pieza <código>` te da el número de la publicación; sube los archivos a la herramienta nativa de la red (ver `CANALES-Y-PUBLICACION.md`) y regístralo con `python -m mos publicacion programar <número> --fecha AAAA-MM-DD`.
+4. **Confirma** lo que salió ayer con su enlace: `python -m mos publicacion confirmar <número> --url https://…`.
+5. **Responde** a quien escribió «BETA» o comentó. Las respuestas modelo están en `campanas/lista-espera-beta/mensajes-y-demo.md`.
+   - **Mientras el banco de datos «Interesados» no esté inscrito** y el aviso de privacidad no esté validado, conversa en el chat de la red sin anotar a nadie fuera de él (`EMBUDOS-Y-LEADS.md`, sección 4).
+   - Después, registra solo a quien dio su consentimiento, con la versión del aviso que aceptó:
+     ```powershell
+     python -m mos lead registrar --producto cuadra --fuente whatsapp --campana lista-espera-beta --nombre "…" --telefono "…" --consentimiento --finalidad "lista de espera de la beta privada y demostración" --version-aviso <versión vigente> --medio "mensaje de WhatsApp"
+     ```
+6. **Seguimientos del día:** `python -m mos lead seguimientos`. Después de cada contacto: `python -m mos lead actualizar <uid> --estado … --proxima "…" --fecha AAAA-MM-DD`.
+
+## Cada semana (domingo, 45 minutos)
+
+1. **Resumen semanal:** si no está programado, `python -m mos rutina semanal`. Léelo primero: trae publicaciones, métricas, interesados, aprobaciones, radar y la semana siguiente. Copia también la carpeta `espacio\respaldos` a un disco externo o a otra carpeta que no sea la de trabajo.
+2. **Métricas:** exporta el CSV de estadísticas de cada red y pásalo primero en modo revisión: `python -m mos metrica importar --archivo instagram.csv --fecha 2026-10-18 --revisar`. Dice qué columnas entiende, cuáles no y qué filas no coinciden con una publicación confirmada; si todo está bien, repite sin `--revisar`. Lo que la red no exporta se anota a mano: `python -m mos metrica registrar --publicacion <número> --nombre alcance --valor 1200 --naturaleza MEDIDA`. Detalle en `docs/METRICAS-Y-EXPERIMENTOS.md`, sección 6.
+3. **Embudo:** `python -m mos lead embudo --campana lista-espera-beta` muestra cuántos interesados hay en cada etapa y, al final, la métrica norte: cuántos siguen en la lista con consentimiento.
+4. **Experimentos:** `python -m mos experimento listar` y `experimento resultado EXP-01` (o la pantalla Métricas) dicen cómo va cada uno, solo con lo medido. Cuando toque decidir: `experimento cerrar EXP-01 --decision CONTINUAR --resultado "…"`.
+5. **Radar:** revisa las novedades de SUNAT, El Peruano y el MEF en el panel (o `python -m mos radar pendientes`). Si una fuente marca error varios días seguidos, `python -m mos radar fuentes` dice cuál y por qué. Una noticia solo se convierte en pieza si tiene enlace a la fuente oficial y la revisa un contador.
+6. **Plan de la semana siguiente:** revisa `CALENDARIO.md` de la campaña. Si algo se retrasó, `python -m mos campana mover campanas\lista-espera-beta --semanas 1` corre todas las fechas.
+7. **Errores:** `python -m mos errores` no debería mostrar nada pendiente.
+
+## Cada mes
+
+- **Revisión mensual:** si no está programada, `python -m mos rutina mensual` el día 1 (revisa el mes anterior; `--mes 2026-10` para otro). Trae métricas e interesados del mes, cómo va cada experimento, las piezas que conviene reutilizar y las herramientas gratuitas verificadas hace más de 90 días, para que confirmes que siguen sin coste.
+- Revisa la matriz de capacidades con lo nuevo de Cuadra (`python -m mos capacidades cuadra`). Si una función pasa a verificada, ya se puede anunciar; si no, el auditor la sigue frenando.
+- Compara las métricas del mes con las metas de cada campaña y decide qué repetir y qué dejar.
+- Prueba los derechos de las personas con un interesado ficticio: exporta y suprime sus datos (`lead acceso --contacto …`, `lead suprimir --contacto …`) para comprobar que el procedimiento sigue funcionando.
+
+## Cuando algo sale mal
+
+| Situación | Qué hacer |
+| --- | --- |
+| Una red rechazó una publicación | `python -m mos publicacion fallo <número> --error "…"` y vuelve a programarla |
+| El auditor frena una pieza que crees correcta | Lee el motivo. Si la regla está mal, anótalo como defecto en `PROGRESO.md`; no se aprueba saltándola |
+| Alguien pide que borres sus datos | `python -m mos lead suprimir --contacto <correo o teléfono>` el mismo día. Queda solo una huella para no volver a escribirle |
+| Alguien pide ver sus datos | `python -m mos lead acceso --contacto <correo o teléfono>` genera el archivo; envíaselo y bórralo |
+| Alguien ya no quiere mensajes | `python -m mos lead baja --contacto <correo o teléfono>` |
+| La base no abre | Restaura la última copia de `espacio\respaldos` (`INSTALACION.md`, sección 7) |

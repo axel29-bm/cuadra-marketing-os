@@ -1,0 +1,52 @@
+# Identidad provisional de Cuadra para marketing (ver docs/IDENTIDAD-VISUAL.md).
+# Une lo que pidió Didi para la publicidad (fondos claros, azul noche, verdes, acentos azules) con la
+# apariencia real del producto desde el 12/10/2026 (negro con lima y letra Geist), para que las
+# capturas del programa se vean como parte de la misma marca.
+slug = "cuadra"
+nombre = "Cuadra"
+descripcion = "Provisional. Fondos blancos, azul noche para los titulares, lima del producto como sello y verde para lo que cuadra."
+provisional = true
+logo = "marcas/cuadra/logo.svg"
+
+[color]
+fondo = "#FFFFFF"
+superficie = "#F3F6F1"
+borde = "#D9E1D3"
+tinta = "#0B1626"          # azul noche: titulares y bloques oscuros
+texto = "#1C2733"
+texto_suave = "#4A5868"
+acento = "#1E50D6"         # azul: enlaces, iconos, detalles
+acento_texto = "#FFFFFF"
+destacado = "#D4FF3F"      # lima del producto: solo como fondo, con texto en tinta
+destacado_texto = "#0B1626"
+exito = "#147A3B"          # verde: lo que cuadra, lo que está bien
+alerta = "#A84B0C"
+oscuro = "#0B1626"
+oscuro_texto = "#F2F6EE"
+producto_fondo = "#0D0D0D" # fondo real de la interfaz de Cuadra (Negro + Lima)
+
+[tipografia]
+titulos = "Geist"
+texto = "Geist"
+mono = "Geist Mono"
+respaldo = "Inter, 'Segoe UI', system-ui, sans-serif"
+archivo_titulos = "recursos/tipografias/geist/Geist-Variable.woff2"
+archivo_mono = "recursos/tipografias/geist/GeistMono-Variable.woff2"
+
+[forma]
+radio = 24
+radio_chico = 12
+margen = 72
+espacio = 24
+grosor_icono = 1.75
+
+[voz]
+persona = "Un colega contador que sabe de sistemas: claro, cercano, sin jerga técnica"
+trato = "tú"
+reglas = [
+  "Frases cortas y completas. Verbo primero en las llamadas a la acción",
+  "Siglas que el contador ya usa sin explicarlas: RUC, SUNAT, SIRE, SOL, IGV, PLE, PCGE",
+  "Un importe nunca se separa de su moneda: S/ 1,180.00",
+  "Nada de promesas que no se puedan mostrar en pantalla",
+  "Nombres de pantallas como en el producto: Mis empresas, Vencimientos, Libro diario, Cierre del mes",
+]

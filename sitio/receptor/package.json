@@ -1,0 +1,7 @@
+{
+  "name": "cuadra-lista-receptor",
+  "private": true,
+  "type": "module",
+  "description": "Receptor del formulario de la lista de espera (Cloudflare Workers + D1). Sin dependencias.",
+  "scripts": { "test": "node --test worker.test.mjs" }
+}

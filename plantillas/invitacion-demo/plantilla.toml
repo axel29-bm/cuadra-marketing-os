@@ -1,0 +1,22 @@
+nombre = "invitacion-demo"
+titulo = "Invitación a demostración"
+descripcion = "Invita a una demostración en vivo: qué se verá, cómo es la sesión y cómo pedirla."
+uso = "Consideración y conversión. Lo que se lista debe poder mostrarse en vivo (capacidades PERMITIDO, CON_MATICES o SOLO_DEMO)."
+tipos_afirmacion = ["CAPTACION"]
+formatos = ["vertical", "cuadrado", "historia", "enlace"]
+
+[campos]
+antetitulo = { tipo = "texto", max = 32 }
+titular = { tipo = "texto", max = 80, requerido = true }
+que_veras = { tipo = "lista", min = 2, max_items = 4, max = 70, requerido = true }
+modalidad = { tipo = "texto", max = 60 }
+nota = { tipo = "texto", max = 100 }
+cta = { tipo = "texto", max = 34, requerido = true }
+
+[ejemplo]
+antetitulo = "Demostración en vivo"
+titular = "Te mostramos cómo se *cierra un mes* en Cuadra"
+que_veras = ["Todas tus empresas en una pantalla", "Importar compras desde Excel con vista previa", "El cierre del mes con su lista de control"]
+modalidad = "Por videollamada · unos 30 minutos"
+nota = "Con una empresa de ejemplo y datos inventados."
+cta = "Pide una demostración"

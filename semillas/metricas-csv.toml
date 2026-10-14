@@ -1,0 +1,34 @@
+# Cómo reconocer las columnas de los CSV que exporta cada red, para `python -m mos metrica importar`.
+#
+# Los encabezados cambian según la red, el idioma de la cuenta y el año. Estos nombres son PROBABLES y quedan
+# POR VERIFICAR con el primer archivo real de cada red: el importador lista las columnas que no reconoce, y basta
+# con agregar aquí su nombre (sin importar mayúsculas ni tildes). Una columna que no está aquí no se importa:
+# mejor sin dato que con un dato equivocado.
+#
+# Cada fila del CSV se enlaza con una publicación por su URL (sin parámetros) o por su identificador en la red,
+# que se guardan al confirmar la publicación (`publicacion confirmar --url … --id-externo …`).
+
+[columnas]
+url = ["url", "enlace", "enlace permanente", "permalink", "link", "post link", "post url", "url de la publicacion",
+       "enlace de la publicacion", "video link"]
+id = ["id", "id externo", "post id", "id de la publicacion", "media id", "video id", "id del video"]
+# Día en que se tomó el dato (AAAA-MM-DD), para una planilla propia. No confundir con la fecha de publicación que
+# traen los CSV de las redes: esa no se usa. Sin esta columna vale `--fecha` o, si falta, el día de hoy.
+fecha = ["fecha", "fecha de la medicion"]
+
+[metricas]
+impresiones = ["impresiones", "impressions"]
+alcance = ["alcance", "reach", "cuentas alcanzadas", "accounts reached"]
+visualizaciones = ["visualizaciones", "views", "reproducciones", "video views", "vistas"]
+reacciones = ["reacciones", "reactions", "me gusta", "likes"]
+comentarios = ["comentarios", "comments"]
+compartidos = ["compartidos", "shares", "veces compartido", "veces que se compartio"]
+guardados = ["guardados", "saves", "saved"]
+clics = ["clics", "clicks", "clics en el enlace", "link clicks"]
+visitas = ["visitas", "visits", "visitas al perfil", "profile visits"]
+conversaciones = ["conversaciones", "conversations"]
+leads = ["leads", "interesados"]
+formularios = ["formularios", "form submissions"]
+solicitudes_demo = ["solicitudes_demo", "solicitudes de demostracion"]
+demos_realizadas = ["demos_realizadas", "demostraciones realizadas"]
+retencion_promedio_ms = ["retencion_promedio_ms"]

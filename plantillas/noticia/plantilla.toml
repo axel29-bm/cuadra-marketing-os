@@ -1,0 +1,30 @@
+nombre = "noticia"
+titulo = "Noticia normativa"
+descripcion = "Resumen de una norma o comunicado oficial: qué cambia, a quién afecta, desde cuándo y la fuente."
+uso = "Solo con un elemento del radar VERIFICADO, enlace a la fuente oficial y revisión de un contador."
+tipos_afirmacion = ["NOTICIA"]
+formatos = ["vertical", "cuadrado", "historia"]
+
+[campos]
+organismo = { tipo = "texto", max = 30, requerido = true }
+norma = { tipo = "texto", max = 70 }
+fecha_publicacion = { tipo = "texto", max = 20, requerido = true }
+titular = { tipo = "texto", max = 90, requerido = true }
+que_cambia = { tipo = "lista", min = 1, max_items = 4, max = 95, requerido = true }
+afecta_a = { tipo = "texto", max = 80 }
+vigencia = { tipo = "texto", max = 50 }
+fuente = { tipo = "texto", max = 90, requerido = true }
+
+[ejemplo]
+organismo = "SUNAT"
+norma = "Resolución de Superintendencia de ejemplo N.° 000-2026/SUNAT"
+fecha_publicacion = "13/10/2026"
+titular = "Ejemplo: SUNAT *amplía el plazo* para una obligación del SIRE"
+que_cambia = [
+  "Qué se modifica, en una frase que se entienda sin leer la norma",
+  "Si hay un plazo nuevo, con su fecha exacta",
+  "Qué pasa si no se cumple, solo si la norma lo dice",
+]
+afecta_a = "Contribuyentes obligados a llevar el registro de compras electrónico"
+vigencia = "Desde el día siguiente de su publicación"
+fuente = "Diario oficial El Peruano, edición del 13/10/2026"

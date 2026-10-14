@@ -1,0 +1,4 @@
+# El núcleo (base, auditor, agentes, leads, métricas, línea de comandos) solo usa la biblioteca estándar de Python 3.11+.
+# Estas dependencias son para la fábrica de contenidos (Fase 3): plantillas y exportación a PNG, PDF y vídeo.
+jinja2>=3.1,<4          # BSD-3-Clause
+playwright>=1.48,<2     # Apache-2.0 · después de instalar: python -m playwright install chromium (en Windows puede usar Edge)

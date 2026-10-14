@@ -1,0 +1,138 @@
+# La landing de Cuadra: lista de espera de la beta privada.
+# Todos los textos visibles viven aquí y pasan por el auditor al construir. Las capacidades se citan por código y
+# la frase sale de productos/cuadra/capacidades.toml, así la landing nunca dice más que la matriz.
+#
+#   python -m mos sitio construir      -> sitio/dist/ (borrador; se puede abrir con doble clic)
+#   python -m mos sitio ver            -> http://127.0.0.1:8766 con un receptor local que guarda en tu base
+#   python -m mos sitio construir --publicable   -> se niega si falta algo para publicar (ver docs/CANALES-Y-PUBLICACION.md)
+#
+# Publicarla en Internet necesita tu autorización: crear la cuenta de Cloudflare y desplegar (sitio/receptor/LEEME.md).
+
+producto = "cuadra"
+marca = "cuadra"
+campana = "lista-espera-beta"
+
+[publicacion]
+url = ""                                  # por ejemplo https://cuadra-beta.pages.dev, cuando esté publicada
+receptor = ""                             # URL del receptor (…/api/lista). Vacío: el formulario no se muestra
+analitica_token = ""                      # Cloudflare Web Analytics (sin cookies). Vacío: sin analítica
+aviso_version = "2026-10-14-borrador"     # cambia cada vez que cambie el texto del aviso de privacidad
+aviso_validado = false                    # true cuando un abogado haya revisado el aviso y las casillas
+
+[contacto]
+# Vacíos no se muestran. WhatsApp: número con código de país, sin + ni espacios (por ejemplo 51 y los 9 dígitos).
+whatsapp = ""
+facebook = ""
+instagram = ""
+linkedin = ""
+tiktok = ""
+
+[responsable]
+# Datos del titular del banco de datos para el aviso de privacidad. Con [COMPLETAR] no se puede publicar.
+nombre = "[COMPLETAR: nombre completo o razón social]"
+documento = "[COMPLETAR: DNI o RUC]"
+domicilio = "[COMPLETAR: domicilio]"
+correo_derechos = "[COMPLETAR: correo para ejercer tus derechos]"
+registro_banco = "[COMPLETAR: código de inscripción del banco de datos «Interesados» en el Registro Nacional de Protección de Datos Personales]"
+proveedores = "Cloudflare, Inc. (Estados Unidos), que aloja esta página y recibe el formulario"
+conservacion = "Hasta que termine la beta privada o hasta que pidas que los borremos, lo que ocurra primero"
+flujo_comunicado = false                  # true cuando el flujo transfronterizo esté comunicado e inscrito
+
+[pagina]
+titulo = "Cuadra · Beta privada para contadores que llevan muchas empresas"
+descripcion = "Un sistema contable de escritorio para Windows, pensado para el contador peruano que lleva muchas empresas. Está en desarrollo y buscamos contadores para la beta privada."
+antetitulo = "Beta privada en preparación"
+titular = "Un sistema contable pensado para el contador que lleva *muchas empresas*"
+subtitulo = "De escritorio, para Windows, con tus datos en tu PC. Lo estamos construyendo y queremos hacerlo con contadores peruanos."
+cta = "Únete a la lista de espera"
+cta_mensaje = "Escríbenos «BETA» por mensaje"
+estado = "Cuadra está en desarrollo. Todavía no tiene fecha de lanzamiento ni precio."
+capacidades = ["CU-EMP-01"]
+# Imagen para cuando se comparte el enlace (1200 × 627). Admite comodines porque la carpeta lleva la fecha.
+imagen_compartir = "campanas/lista-espera-beta/exportados/*-C24-li/C24-li-enlace.png"
+
+[ya_hace]
+titulo = "Lo que ya hace, en nuestras pruebas"
+capacidades = [
+  { codigo = "CU-EMP-02", icono = "building-2" },
+  { codigo = "CU-EMP-03", icono = "triangle-alert" },
+  { codigo = "CU-REG-03", icono = "clipboard-paste" },
+  { codigo = "CU-SIRE-02", icono = "file-spreadsheet" },
+  { codigo = "CU-LIB-05", icono = "lock" },
+  { codigo = "CU-SEG-01", icono = "shield-check" },
+  { codigo = "CU-SEG-02", icono = "database-backup" },
+  { codigo = "CU-UI-01", icono = "keyboard" },
+]
+
+[matices]
+titulo = "Con matices"
+texto = "Esto ya funciona, pero preferimos decirte hasta dónde llega."
+capacidades = [
+  { codigo = "CU-SIRE-03", nota = "Las tolerancias del cotejo todavía son provisionales." },
+  { codigo = "CU-LIB-04", nota = "Todavía no se validan con el programa oficial de SUNAT." },
+  { codigo = "CU-EMP-01", nota = "Todavía estamos midiendo el rendimiento: no te prometemos un número de empresas." },
+]
+
+[todavia_no]
+titulo = "Lo que todavía no tiene"
+texto = "Instalador público, cuenta y licencia, precio, envío a SUNAT por API y asistente con IA. Estamos trabajando en eso o está planificado; no lo prometemos para la beta."
+capacidades = ["CU-DIS-01", "CU-DIS-02", "CU-DIS-04", "CU-SIRE-05", "CU-IA-01"]
+
+[beta]
+titulo = "Cómo será la beta privada"
+puntos = [
+  "Con un grupo pequeño de contadores, para escucharlos de verdad.",
+  "Para Windows, de escritorio.",
+  "Empiezas con una empresa de ejemplo con datos inventados, para probar sin miedo.",
+  "No hay nada que comprar: todavía no tiene precio ni fecha. Si estás en la lista, te avisamos primero.",
+]
+capacidades = ["CU-DEM-01"]
+
+[demo]
+titulo = "¿Prefieres verlo en vivo?"
+texto = "Te hacemos una demostración de unos 30 minutos por videollamada, con una empresa de ejemplo: todas tus empresas en una pantalla, la importación de compras desde Excel y el cierre del mes."
+cta = "Marca la casilla de demostración en el formulario o escríbenos «DEMO» por mensaje."
+capacidades = ["CU-EMP-02", "CU-REG-03", "CU-LIB-05", "CU-DEM-01"]
+
+[trivia]
+titulo = "Trivia del contador"
+texto = "Una pregunta sobre la propuesta del SIRE. ¿Aciertas?"
+boton = "Responder la trivia"
+
+[formulario]
+titulo = "Únete a la lista de espera"
+texto = "Te escribimos solo para avisarte cuando abra la beta y, si lo pides, para coordinar una demostración."
+consentimiento = "Acepto que Cuadra use mi nombre, mi correo y lo que cuente en este formulario para avisarme de la beta privada y coordinar una demostración, según el aviso de privacidad."
+publicidad = "Además, quiero recibir novedades de Cuadra por correo. Puedo darme de baja cuando quiera."
+quiere_demo = "Quiero una demostración en vivo."
+boton = "Anotarme en la lista"
+gracias = "¡Listo! Quedaste en la lista. Te escribiremos cuando abra la beta."
+sin_formulario = "La inscripción por la web abre pronto. Mientras tanto, escríbenos «BETA» por mensaje y te anotamos."
+finalidad = "lista de espera de la beta privada y demostración"
+
+[[faq]]
+pregunta = "¿Cuánto cuesta?"
+respuesta = "Todavía no tiene precio. La beta privada es para probarlo y decirnos qué le falta."
+
+[[faq]]
+pregunta = "¿Cuándo sale?"
+respuesta = "No tiene fecha todavía. Si estás en la lista, te avisamos primero."
+
+[[faq]]
+pregunta = "¿Funciona en Mac o en el celular?"
+respuesta = "Es para Windows, de escritorio."
+
+[[faq]]
+pregunta = "¿Dónde quedan mis datos contables?"
+respuesta = "En tu PC, cifrados empresa por empresa. Y no te deja trabajar con la base dentro de una carpeta que se sincroniza, para que no se dañe."
+capacidades = ["CU-SEG-01", "CU-SEG-05"]
+
+[[faq]]
+pregunta = "¿Envía a SUNAT?"
+respuesta = "Hoy importa la propuesta del SIRE que descargas de SOL y la compara con lo que registraste. El envío directo a SUNAT todavía no existe."
+capacidades = ["CU-SIRE-02", "CU-SIRE-03"]
+
+[[faq]]
+pregunta = "¿Puedo traer mi información de otro sistema?"
+respuesta = "Puedes traer tu libro diario desde Excel o desde el TXT del PLE y comparar el balance cuenta por cuenta."
+capacidades = ["CU-MIG-01"]

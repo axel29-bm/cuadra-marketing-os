@@ -1,0 +1,412 @@
+# Matriz de capacidades de Cuadra para marketing.
+# La lee el auditor de calidad: una pieza solo puede afirmar lo que esta matriz permite.
+# Fuente: auditoría del repositorio axel29-bm/contatony-2, commit 0411f76, 14/10/2026.
+# Al cambiar un estado, anota la evidencia y la fecha. Ver docs/AUDITORIA-CUADRA.md.
+#
+# estado: IMPLEMENTADO_VERIFICADO | IMPLEMENTADO_PARCIAL | EN_DESARROLLO | PLANIFICADO | SIN_EVIDENCIA
+# uso:    PERMITIDO     se puede afirmar con la frase sugerida
+#         CON_MATICES   se puede afirmar solo con la aclaración indicada
+#         SOLO_DEMO     solo se muestra en una demostración guiada, no se promete
+#         NO_ANUNCIAR   no aparece en ninguna pieza como prestación
+
+[meta]
+producto = "cuadra"
+repositorio = "axel29-bm/contatony-2"
+commit_auditado = "0411f76"
+fecha_auditoria = "2026-10-14"
+etapa_comercial = "PRELANZAMIENTO"
+disponible_al_publico = false
+precio_definido = false
+validacion_contable = "PENDIENTE"  # ningún caso CC firmado por contador colegiado
+
+[[capacidad]]
+codigo = "CU-EMP-01"
+nombre = "Sin tope de empresas en el diseño"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "CON_MATICES"
+evidencia = "PRD ADR-06; POC-3 parte 2 con 100 empresas en la PC de desarrollo"
+frase = "Pensado para el contador que lleva muchas empresas."
+matiz = "No prometer rendimiento con cientos o miles de RUC hasta medir en la PC de referencia."
+prohibido = ["1[.,]?000 (empresas|RUC)", "RUC ilimitados", "empresas ilimitadas", "sin l[ií]mite de empresas"]
+
+[[capacidad]]
+codigo = "CU-EMP-02"
+nombre = "Mis empresas: todas en una pantalla con semáforo y siguiente acción"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO Paso 29 Mi Cartera; 15 pruebas de dominio y 10 de integración; recorrido de interfaz"
+frase = "Todas tus empresas en una pantalla, con lo que toca hacer en cada una."
+
+[[capacidad]]
+codigo = "CU-EMP-03"
+nombre = "Pendientes automáticos"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO Paso 29; detectores de correlativo, duplicado, caja negativa, mes sin cerrar, copia fallida, claves rechazadas y diferencias SIRE"
+frase = "Te avisa de correlativos faltantes, posibles duplicados y meses sin cerrar."
+
+[[capacidad]]
+codigo = "CU-EMP-04"
+nombre = "Vencimientos por último dígito del RUC"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "NO_ANUNCIAR"
+evidencia = "Motor existe; normative/cronograma.csv vacío a propósito"
+matiz = "Se anuncia cuando el cronograma oficial esté cargado."
+prohibido = ["calendario de vencimientos autom[aá]tico", "vencimientos por d[ií]gito"]
+
+[[capacidad]]
+codigo = "CU-EMP-05"
+nombre = "Búsqueda global Ctrl+K y cambio de empresa Ctrl+Tab"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO Ctrl+K y Ctrl+Tab; prueba de interfaz"
+frase = "Escribe Ctrl+K y llega a cualquier empresa, comprobante o cuenta."
+
+[[capacidad]]
+codigo = "CU-EMP-06"
+nombre = "Etiquetas y archivo de empresas"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO FR-004"
+frase = "Agrupa tus empresas con etiquetas y archiva las que ya no llevas."
+
+[[capacidad]]
+codigo = "CU-EMP-07"
+nombre = "Reportes para varias empresas a la vez"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO FR-074; 7 pruebas de integración"
+frase = "Saca el mismo reporte de varias empresas en un solo paso."
+
+[[capacidad]]
+codigo = "CU-REG-01"
+nombre = "Compras y ventas con el asiento a la vista"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO pasos 24 y 25; ImpuestosTests; CorteVertical1Tests"
+frase = "Mientras registras la compra, ves el asiento que se va a generar."
+matiz = "Tratamientos contables sin firma de contador colegiado."
+prohibido = ["asientos? (100 ?%|siempre) correctos?", "garantiza(mos)? (el|los) asientos?"]
+
+[[capacidad]]
+codigo = "CU-REG-02"
+nombre = "Impuestos en el comprobante (ISC, ICBPER, percepción, detracción, renta de cuarta)"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "SOLO_DEMO"
+evidencia = "PROGRESO Paso 25 (parte)"
+matiz = "Sin firma contable; descuentos globales e IVAP de ventas pendientes."
+
+[[capacidad]]
+codigo = "CU-REG-03"
+nombre = "Pegar e importar compras y ventas desde Excel, CSV o TXT con vista previa y deshacer"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO paso 24; 26 pruebas de lectura y 5 de punta a punta"
+frase = "Pegas tu Excel y ves fila por fila qué va a pasar antes de guardar. Si te equivocas, deshaces la importación entera."
+prohibido = ["5[.,]?000 comprobantes en", "en segundos importa"]
+
+[[capacidad]]
+codigo = "CU-REG-04"
+nombre = "Reconoce el formato de cada archivo la segunda vez"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO plantillas en el catálogo (FR-029)"
+frase = "La segunda vez reconoce las columnas de tu archivo sola."
+
+[[capacidad]]
+codigo = "CU-REG-05"
+nombre = "Correlatividad de series de venta"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO paso 24 (ventas)"
+frase = "Te muestra los huecos y saltos de fecha en tus series de venta."
+
+[[capacidad]]
+codigo = "CU-REG-06"
+nombre = "Libro diario con asientos manuales, destinos y anulación con motivo"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO paso 26 (adelanto)"
+frase = "Los destinos se agregan solos y ves el asiento completo antes de guardarlo."
+matiz = "Destinos sin firma de contador."
+
+[[capacidad]]
+codigo = "CU-REG-07"
+nombre = "Reglas automáticas que aprenden la cuenta de cada proveedor"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO FR-040 y FR-041; 15 pruebas del motor"
+frase = "Aprende qué cuenta usas con cada proveedor y te explica por qué la sugiere."
+prohibido = ["clasifica todo solo", "contabiliza solo sin revisar"]
+
+[[capacidad]]
+codigo = "CU-REG-08"
+nombre = "Plan de cuentas basado en el PCGE, editable"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO FR-020; decisiones D1 a D4 (1,832 cuentas desde plantillas de ContaExcel)"
+frase = "Plan de cuentas basado en el PCGE, que puedes ampliar con tus subcuentas."
+prohibido = ["PCGE oficial completo"]
+
+[[capacidad]]
+codigo = "CU-REG-09"
+nombre = "Tipo de cambio desde la tabla pegada o desde el SIRE"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "CON_MATICES"
+evidencia = "PROGRESO FR-025; no hay descarga automática"
+frase = "Pegas la tabla del tipo de cambio una vez y la usan todas tus empresas."
+prohibido = ["tipo de cambio autom[aá]tico"]
+
+[[capacidad]]
+codigo = "CU-SIRE-01"
+nombre = "Descargar la propuesta del SIRE por el API oficial"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "SOLO_DEMO"
+evidencia = "Probado con un RUC real, 11 meses, 98 comprobantes en coincide (PROGRESO paso 9, 11/10/2026). Límite HTTP 429 de SUNAT"
+matiz = "Demostración solo con autorización del titular del RUC. Lote con varios RUC sin medir."
+prohibido = ["toda tu cartera en un clic", "descarga masiva del SIRE", "SIRE de (todas|cientos de) (tus )?empresas"]
+
+[[capacidad]]
+codigo = "CU-SIRE-02"
+nombre = "Importar la propuesta del SIRE descargada de SOL"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO FR-052; PropuestaSireTests; RevisorSireTests"
+frase = "Importa el ZIP de la propuesta del SIRE tal como lo bajas de SOL, sin duplicar."
+
+[[capacidad]]
+codigo = "CU-SIRE-03"
+nombre = "Cotejo de la propuesta del SIRE con la contabilidad"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO FR-052 y FR-053"
+frase = "Compara la propuesta del SIRE con lo que registraste y te dice qué falta y dónde."
+matiz = "Tolerancias provisionales sin firma contable."
+
+[[capacidad]]
+codigo = "CU-SIRE-04"
+nombre = "Archivos de reemplazo y complemento del RCE"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "SOLO_DEMO"
+evidencia = "PROGRESO FR-054; RVIE pendiente; sin firma"
+matiz = "Solo compras; el archivo se sube en SOL."
+
+[[capacidad]]
+codigo = "CU-SIRE-05"
+nombre = "Enviar a SUNAT por API (aceptar, reemplazo, preliminar)"
+estado = "EN_DESARROLLO"
+uso = "NO_ANUNCIAR"
+evidencia = "Adaptador escrito; nunca probado contra SUNAT real"
+prohibido = ["env[ií]a (tu|el) SIRE", "presenta (tu|el) SIRE autom", "SIRE autom[aá]tico"]
+
+[[capacidad]]
+codigo = "CU-SIRE-06"
+nombre = "Claves SOL y del SIRE cifradas en la PC"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO pasos 14 y 15; 9 pruebas de bóveda"
+frase = "Las claves SOL se guardan cifradas en tu PC y cada uso queda registrado."
+matiz = "La custodia de claves de terceros espera dictamen legal."
+
+[[capacidad]]
+codigo = "CU-LIB-01"
+nombre = "Libro mayor y balance de comprobación"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "Corte vertical 1"
+frase = "Mayor y balance de comprobación siempre al día."
+
+[[capacidad]]
+codigo = "CU-LIB-02"
+nombre = "Hoja de trabajo y estados financieros"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO paso 27; 8 pruebas"
+frase = "Hoja de trabajo y estados financieros con comparativo, sin procesar nada."
+matiz = "Sin firma contable; formatos SMV pendientes."
+
+[[capacidad]]
+codigo = "CU-LIB-03"
+nombre = "Exportar a PDF y Excel"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO paso 27"
+frase = "Registros, diario, mayor, balance y estados a PDF o Excel."
+prohibido = ["formato oficial 8\\.1", "formato oficial 14\\.1"]
+
+[[capacidad]]
+codigo = "CU-LIB-04"
+nombre = "Libros electrónicos PLE en TXT"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "CON_MATICES"
+evidencia = "PROGRESO paso 27 (PLE); sin validación con el validador oficial"
+frase = "Genera los TXT del PLE de diario, mayor, caja, bancos y plan de cuentas."
+matiz = "Aún sin validar con el programa oficial de SUNAT."
+prohibido = ["PLE listo para (presentar|enviar)"]
+
+[[capacidad]]
+codigo = "CU-LIB-05"
+nombre = "Cierre del mes con lista de control, sello y bloqueo real"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "Corte vertical 1; CA-05 y CA-06"
+frase = "Cierras el mes y queda cerrado de verdad. Si hay que reabrirlo, queda el motivo."
+
+[[capacidad]]
+codigo = "CU-LIB-06"
+nombre = "Cierre anual, apertura e importación del balance de apertura"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "CierreAnualTests; AperturaTests"
+frase = "Cierra el ejercicio y abre el siguiente con los saldos por documento."
+matiz = "Sin firma contable."
+
+[[capacidad]]
+codigo = "CU-LIB-07"
+nombre = "Cobros y pagos, caja y bancos"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "TesoreriaTests (12)"
+frase = "Cobros y pagos parciales, detracciones, retenciones y antigüedad de saldos."
+matiz = "Sin firma contable."
+
+[[capacidad]]
+codigo = "CU-SEG-01"
+nombre = "Datos en la PC del contador, cifrados por empresa"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO paso 5; ADR-08"
+frase = "Tu información contable se queda en tu PC, cifrada empresa por empresa."
+
+[[capacidad]]
+codigo = "CU-SEG-02"
+nombre = "Copias de seguridad cifradas y verificadas, con prueba de restauración"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO pasos 21 y 22"
+frase = "Copias de seguridad que se comprueban solas, y un botón para probar que se pueden restaurar."
+
+[[capacidad]]
+codigo = "CU-SEG-03"
+nombre = "Historial de cambios a prueba de alteraciones y deshacer"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "ADR-14; ADR-15; corte vertical 1"
+frase = "Cada cambio queda en el historial y casi todo se puede deshacer."
+
+[[capacidad]]
+codigo = "CU-SEG-04"
+nombre = "Clave de recuperación"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO paso 15"
+frase = "Con tu clave de recuperación abres tus empresas en otra PC."
+
+[[capacidad]]
+codigo = "CU-SEG-05"
+nombre = "Protege las bases de OneDrive, Drive, Dropbox, red y USB"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "CA-14"
+frase = "No te deja trabajar con la base dentro de una carpeta que se sincroniza, para que no se dañe."
+
+[[capacidad]]
+codigo = "CU-SEG-06"
+nombre = "Funciona sin Internet"
+estado = "IMPLEMENTADO_PARCIAL"
+uso = "NO_ANUNCIAR"
+evidencia = "Contabilidad local; servicio de licencias no operativo"
+matiz = "Se anuncia cuando la licencia funcione con sus 30 días sin conexión."
+prohibido = ["funciona sin internet", "sin conexi[oó]n"]
+
+[[capacidad]]
+codigo = "CU-MIG-01"
+nombre = "Migrar el libro diario del sistema anterior y comparar el balance"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "CON_MATICES"
+evidencia = "PROGRESO FT-101; tres bases reales en la PC de Didi"
+frase = "Trae tu libro diario desde Excel o desde el TXT del PLE y compara el balance cuenta por cuenta."
+matiz = "No publicar nombres ni cifras de esas bases."
+prohibido = ["reemplaza a ContaExcel", "mejor que ContaExcel"]
+
+[[capacidad]]
+codigo = "CU-DEM-01"
+nombre = "Empresa de ejemplo y modo demostración"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO Empresa de ejemplo y modo demostración"
+frase = "Una empresa de ejemplo con datos inventados para probar sin miedo."
+
+[[capacidad]]
+codigo = "CU-UI-01"
+nombre = "Interfaz en español de contador, atajos, temas y tamaños de texto"
+estado = "IMPLEMENTADO_VERIFICADO"
+uso = "PERMITIDO"
+evidencia = "PROGRESO Rediseño vivo"
+frase = "Hecho para el teclado del contador: Ctrl+S, Ctrl+N, Ctrl+V, Ctrl+K."
+
+[[capacidad]]
+codigo = "CU-IA-01"
+nombre = "Asistente IA con cifras verificadas"
+estado = "EN_DESARROLLO"
+uso = "NO_ANUNCIAR"
+evidencia = "Funciona en desarrollo con modelos gratuitos y datos sintéticos; sin pasarela de producción"
+matiz = "Solo como historia de desarrollo, aclarando que no está disponible."
+prohibido = ["con inteligencia artificial", "asistente IA (incluido|disponible)", "la IA (te )?hace"]
+
+[[capacidad]]
+codigo = "CU-DIS-01"
+nombre = "Instalador y actualización automática"
+estado = "EN_DESARROLLO"
+uso = "NO_ANUNCIAR"
+evidencia = "Sin release publicado; sin firma de código; POC-4 pendiente"
+prohibido = ["desc[aá]rga(lo|la|r|las|los)?\\b(?! (de|del|el|la|los|las|tu|tus|su|sus) (sire|propuesta|archivo|txt|zip|excel|reporte|pdf))", "instala(lo)? (hoy|ya)", "disponible (hoy|ya)", "b[aá]ja(lo|la)", "link de descarga"]
+
+[[capacidad]]
+codigo = "CU-DIS-02"
+nombre = "Cuenta, licencia y prueba de 30 días"
+estado = "EN_DESARROLLO"
+uso = "NO_ANUNCIAR"
+evidencia = "Código con nube simulada; nube real a medio configurar"
+prohibido = ["prueba (gratis|gratuita)", "30 d[ií]as gratis"]
+
+[[capacidad]]
+codigo = "CU-DIS-03"
+nombre = "Portal web y pago"
+estado = "PLANIFICADO"
+uso = "NO_ANUNCIAR"
+evidencia = "web/index.html es una página Muy pronto"
+prohibido = ["c[oó]mpralo", "suscr[ií]bete al plan", "paga con (Yape|Plin)"]
+
+[[capacidad]]
+codigo = "CU-DIS-04"
+nombre = "Precio"
+estado = "PLANIFICADO"
+uso = "NO_ANUNCIAR"
+evidencia = "PRD §X.8: agnóstico al precio"
+prohibido = ["S/ ?\\d", "precio de (lanzamiento|fundador)", "\\d+ ?% de descuento", "antes S/"]
+
+[[capacidad]]
+codigo = "CU-DIS-05"
+nombre = "Rendimiento en PC de 4 GB y Windows 10"
+estado = "SIN_EVIDENCIA"
+uso = "NO_ANUNCIAR"
+evidencia = "FALTANTES 5.4 y 6.1"
+prohibido = ["funciona en cualquier PC", "requisitos m[ií]nimos", "PC de 4 ?GB"]
+
+# Afirmaciones prohibidas en cualquier pieza de Cuadra, independientes de una capacidad.
+[[prohibicion_global]]
+patron = "cumple(n)? con (la )?SUNAT|homologad[oa]|certificad[oa] por SUNAT"
+motivo = "Ningún caso contable está firmado y no consta homologación."
+
+[[prohibicion_global]]
+patron = "(miles|cientos|\\d+) de contadores (ya )?(lo )?usan|usado por \\d+"
+motivo = "No hay usuarios."
+
+[[prohibicion_global]]
+patron = "ahorra(s|r[aá]s)? \\d+ ?(%|horas)|\\d+ ?% m[aá]s r[aá]pido"
+motivo = "No hay mediciones de ahorro de tiempo."
+
+[[prohibicion_global]]
+patron = "[uú]ltimos? cupos|solo quedan \\d+|oferta termina (hoy|ma[nñ]ana)"
+motivo = "Escasez inventada."

@@ -1,0 +1,41 @@
+{% extends "_base/base.html.j2" %}
+{% block estilos %}
+.motivo { left: calc(-210 * var(--u)); bottom: calc(-210 * var(--u)); width: calc(440 * var(--u)); }
+.bloque { display: flex; flex-direction: column; gap: calc(34 * var(--u)); }
+.titular { font-size: calc(92 * var(--u)); }
+.formato-cuadrado .titular { font-size: calc(80 * var(--u)); }
+.formato-historia .lienzo { padding-top: calc(150 * var(--u)); padding-bottom: calc(170 * var(--u)); }
+.formato-historia .titular { font-size: calc(104 * var(--u)); }
+.formato-enlace .lienzo { flex-direction: row; align-items: center; gap: calc(60 * var(--u)); }
+.formato-enlace .titular { font-size: calc(76 * var(--u)); }
+.formato-enlace .lado { flex: 0 0 34%; display: flex; flex-direction: column; gap: calc(30 * var(--u)); align-items: flex-start; }
+.estado { display: inline-flex; align-items: center; gap: calc(10 * var(--u)); font: 600 calc(22 * var(--u)) / 1 var(--fuente-texto);
+  color: var(--alerta); }
+.estado::before { content: ""; width: calc(10 * var(--u)); height: calc(10 * var(--u)); border-radius: 50%; background: currentColor; }
+.cuerpo-cta { display: flex; flex-direction: column; align-items: flex-end; gap: calc(14 * var(--u)); }
+{% endblock %}
+{% block fondo %}<div class="motivo"><i></i><i></i><i></i><i></i></div>{% endblock %}
+{% block contenido %}
+{% if formato == "enlace" %}
+<div class="lado"><div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div>
+  {% if d.icono %}<div class="icono-caja">{{ icono(d.icono) }}</div>{% endif %}
+  {% if etiqueta %}<div class="antetitulo">{{ etiqueta }}</div>{% endif %}</div>
+<div class="bloque"><h1 class="titular ajustar">{{ titular | resaltar }}</h1>{% if apoyo %}<p class="texto ajustar">{{ apoyo | resaltar }}</p>{% endif %}
+  {% if estado %}<span class="estado">{{ estado }}</span>{% endif %}</div>
+{% else %}
+<div class="cabecera"><div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div>
+  {% if etiqueta %}<div class="antetitulo">{{ etiqueta }}</div>{% endif %}</div>
+<div class="empuje"></div>
+<div class="bloque">
+  {% if d.icono and not d.captura %}<div class="icono-caja">{{ icono(d.icono) }}</div>{% endif %}
+  <h1 class="titular ajustar">{{ titular | resaltar }}</h1>
+  {% if apoyo %}<p class="texto ajustar">{{ apoyo | resaltar }}</p>{% endif %}
+  {% if estado %}<span class="estado">{{ estado }}</span>{% endif %}
+  {% if d.captura %}<div><div class="captura"><img src="{{ captura(d.captura) }}" alt=""></div>
+    <p class="captura-nota">{{ nota_captura or "Captura real de " ~ nombre_marca ~ " con una empresa de ejemplo" }}</p></div>{% endif %}
+</div>
+<div class="empuje"></div>
+<div class="pie-fila"><div></div>
+  {% if cta %}<div class="cta">{{ cta }}<span class="flecha">{{ icono("arrow-right") }}</span></div>{% endif %}</div>
+{% endif %}
+{% endblock %}

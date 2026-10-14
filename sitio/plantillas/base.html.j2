@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{{ csp }}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>{% block titulo %}{{ p.titulo }}{% endblock %}</title>
+<meta name="description" content="{{ p.descripcion }}">
+{% if url %}<link rel="canonical" href="{{ url }}{% block ruta %}{% endblock %}">
+<meta property="og:url" content="{{ url }}">{% endif %}
+<meta property="og:title" content="{{ p.titulo }}">
+<meta property="og:description" content="{{ p.descripcion }}">
+<meta property="og:type" content="website">
+{% if url %}<meta property="og:image" content="{{ url }}/compartir.png">{% endif %}
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+{% if borrador %}<meta name="robots" content="noindex">{% endif %}
+<style>
+@font-face { font-family: 'Geist'; src: url('fuentes/Geist-Variable.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Geist Mono'; src: url('fuentes/GeistMono-Variable.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+:root { {{ variables_css }}; --ancho: 1080px; --radio: 20px; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font: 450 17px/1.55 var(--fuente-texto); }
+a { color: var(--acento); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--fuente-titulos); color: var(--tinta); letter-spacing: -0.025em; margin: 0; }
+h1 { font-weight: 760; font-size: clamp(36px, 7vw, 64px); line-height: 1.05; }
+h2 { font-weight: 740; font-size: clamp(26px, 4.4vw, 38px); line-height: 1.12; }
+h3 { font-weight: 680; font-size: 19px; line-height: 1.3; }
+p { margin: 0; }
+mark { background: linear-gradient(var(--destacado), var(--destacado)) no-repeat 0 62% / 100% 84%; color: var(--destacado-texto);
+  padding: 0 .1em; margin: 0 -.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.envoltura { max-width: var(--ancho); margin: 0 auto; padding: 0 20px; }
+.borrador { background: var(--alerta); color: #fff; text-align: center; font: 600 14px/1.4 var(--fuente-texto); padding: 8px 16px; }
+header.cabecera { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; }
+.marca { display: inline-flex; align-items: center; gap: 10px; font: 720 20px/1 var(--fuente-titulos); color: var(--tinta); text-decoration: none; }
+.marca img { width: 34px; height: 34px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--borde); background: var(--superficie);
+  border-radius: 99px; padding: 6px 14px; font: 600 14px/1.2 var(--fuente-texto); color: var(--tinta); }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 99px; background: var(--acento); }
+.boton { display: inline-flex; align-items: center; gap: 10px; background: var(--tinta); color: var(--oscuro-texto); border: 0;
+  border-radius: 99px; padding: 14px 22px; font: 650 17px/1.2 var(--fuente-texto); text-decoration: none; cursor: pointer; }
+.boton svg { width: 20px; height: 20px; }
+.boton.claro { background: var(--destacado); color: var(--destacado-texto); }
+.boton:hover { filter: brightness(1.12); }
+.icono-svg { width: 24px; height: 24px; flex: none; }
+footer.pie { border-top: 1px solid var(--borde); margin-top: 72px; padding: 28px 0 40px; font-size: 14px; color: var(--texto-suave); }
+footer.pie .fila { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+footer.pie nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+{% block estilos %}{% endblock %}
+</style>
+</head>
+<body>
+{% if borrador %}<div class="borrador">Borrador sin publicar: {{ motivo_borrador }}</div>{% endif %}
+<div class="envoltura">
+<header class="cabecera">
+  <a class="marca" href="index.html">{% if logo %}<img src="logo.svg" alt="">{% endif %}{{ nombre_marca }}</a>
+  {% block cabecera %}{% endblock %}
+</header>
+</div>
+{% block contenido %}{% endblock %}
+<div class="envoltura">
+<footer class="pie">
+  <div class="fila">
+    <p>{{ p.estado }}</p>
+    <nav>
+      <a href="privacidad.html">Aviso de privacidad</a>
+      {% for nombre, enlace in redes %}<a href="{{ enlace }}" rel="noopener" target="_blank">{{ nombre }}</a>{% endfor %}
+    </nav>
+  </div>
+</footer>
+</div>
+{% block scripts %}{% endblock %}
+{% if analitica_token %}<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ analitica_token }}"}'></script>{% endif %}
+</body>
+</html>
