@@ -318,11 +318,16 @@ def cmd_lead(cfg, args) -> int:
     from . import leads
     cx = _cx(cfg)
     if args.accion == "registrar":
+        if args.campana and not cx.execute("SELECT 1 FROM campana WHERE slug = ?", (args.campana,)).fetchone():
+            print(f"No existe la campaña «{args.campana}» en la base. Cárgala con: python -m mos campana cargar campanas/{args.campana}",
+                  file=sys.stderr)
+            return 2
         uid, nuevo = leads.registrar(
             cx, args.producto or _producto_unico(cfg), fuente=args.fuente, email=args.email, telefono=args.telefono,
             nombre=args.nombre or "", problema_principal=args.problema or "", empresas_que_lleva=args.empresas,
             campana=args.campana, consentimiento=args.consentimiento, consentimiento_publicidad=args.publicidad,
-            finalidad=args.finalidad or "", consentimiento_version=args.version_aviso, consentimiento_medio=args.medio)
+            finalidad=args.finalidad or "", consentimiento_version=args.version_aviso, consentimiento_medio=args.medio,
+            notas=args.nota or "")
         print(f"Lead {uid[:8]} {'registrado' if nuevo else 'ya existía: actualizado sin duplicar'}.")
         return 0
     if args.accion == "seguimientos":
@@ -555,6 +560,16 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador")
     sp.add_argument("--sin-borrar", action="store_true", help="Al importar, no borrar las inscripciones del servidor")
 
+    sp = sub.add_parser("rutina", help="Rutina diaria (respaldo, radar, pendientes) y resumen semanal; se pueden programar")
+    sp.add_argument("accion", choices=["diaria", "semanal", "estado", "programar"])
+    sp.add_argument("--sin-radar", action="store_true", help="En la diaria, no leer las fuentes del radar")
+    sp.add_argument("--hasta", help="En la semanal, último día del resumen (AAAA-MM-DD; por defecto hoy)")
+
+    sp = sub.add_parser("radar", help="Fuentes oficiales: leer las automáticas y ver lo que espera verificación")
+    sp.add_argument("accion", choices=["leer", "pendientes", "fuentes"])
+    sp.add_argument("--fuente", action="append", help="Solo esta fuente (slug, se puede repetir)")
+    sp.add_argument("--forzar", action="store_true", help="Leer aunque todavía no toque según su frecuencia")
+
     sp = sub.add_parser("web", help="Abre el panel local en el navegador (solo en esta PC)")
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador automáticamente")
     return ap
@@ -710,12 +725,62 @@ def cmd_sitio(cfg: config.Config, args) -> int:
     return 0
 
 
+def cmd_rutina(cfg: config.Config, args) -> int:
+    from datetime import date
+    from . import rutina
+    cx = _cx(cfg)
+    if args.accion == "programar":
+        print("Para que la rutina corra sola, copia estos comandos en una consola de Windows (no se ejecutan desde aquí):\n")
+        crear, semanal, quitar1, quitar2 = rutina.preparar_programacion(cfg)
+        print(f"  {crear}\n  {semanal}\n\nPara quitarlas:\n\n  {quitar1}\n  {quitar2}")
+        print("\nLa PC tiene que estar encendida a esa hora. Si no lo está, la rutina corre la próxima vez.")
+        return 0
+    if args.accion == "estado":
+        for tipo, fila in rutina.ultimas(cx).items():
+            print(f"{tipo.lower():<8} " + (f"{fila['fecha']} · {fila['estado'].lower()} · {fila['informe']}" if fila else "nunca corrió"))
+        for aviso in rutina.alertas(cx):
+            print("Aviso: " + aviso)
+        return 0
+    if args.accion == "diaria":
+        inf = rutina.diaria(cx, cfg, leer_radar=not args.sin_radar)
+    else:
+        inf = rutina.semanal(cx, cfg, hasta=date.fromisoformat(args.hasta) if args.hasta else None)
+    print(f"Rutina {inf.tipo.lower()} del {inf.fecha}: {'todo bien' if inf.estado == 'OK' else 'con fallos'}. Informe en {inf.ruta}")
+    for paso, resultado in inf.pasos.items():
+        if resultado not in ("OK", "OMITIDO"):
+            print(f"  {paso}: {resultado}")
+    return 0 if inf.estado == "OK" else 3
+
+
+def cmd_radar(cfg: config.Config, args) -> int:
+    from . import radar, radar_lector
+    cx = _cx(cfg)
+    if args.accion == "leer":
+        for r in radar_lector.leer_fuentes(cx, forzar=args.forzar, solo=args.fuente):
+            extra = f" · {r.nuevas} nuevas" if r.nuevas else ""
+            print(f"{r.fuente:<28} {radar_lector.ESTADOS_TEXTO.get(r.estado, r.estado)}{extra}" + (f" · {r.detalle}" if r.detalle else ""))
+        return 0
+    if args.accion == "fuentes":
+        for f in cx.execute("SELECT * FROM fuente ORDER BY activa DESC, metodo, slug"):
+            estado = "inactiva" if not f["activa"] else ("manual" if f["metodo"] == "MANUAL" else f["metodo"].lower())
+            ultima = (f["ultima_consulta"] or "nunca")[:16]
+            print(f"{f['slug']:<28} {estado:<9} cada {f['frecuencia_horas']:>3} h · última {ultima}"
+                  + (f" · error: {f['ultimo_error']}" if f["ultimo_error"] else ""))
+        return 0
+    filas = radar.pendientes(cx)
+    if not filas:
+        print("No hay novedades esperando verificación.")
+    for r in filas:
+        print(f"{r['id']:>4}  {(r['fecha_publicacion'] or r['detectado_en'])[:10]}  {r['fuente'] or '—':<26} {r['titulo'][:70]}\n      {r['url']}")
+    return 0
+
+
 COMANDOS = {
     "iniciar": cmd_iniciar, "estado": cmd_estado, "capacidades": cmd_capacidades, "agentes": cmd_agentes,
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
     "metrica": cmd_metrica, "calendario": cmd_calendario, "fabrica": cmd_fabrica, "web": cmd_web,
-    "campana": cmd_campana, "sitio": cmd_sitio,
+    "campana": cmd_campana, "sitio": cmd_sitio, "rutina": cmd_rutina, "radar": cmd_radar,
 }
 
 

@@ -1,5 +1,7 @@
 """Métricas: lo medido no se mezcla con lo estimado y registrar dos veces no duplica."""
 
+import unittest
+
 from mos import contenido, metricas
 from tests.base import ConBase
 
@@ -48,3 +50,11 @@ class Metricas(ConBase):
     def test_una_metrica_inventada_no_existe(self):
         with self.assertRaises(metricas.ErrorMetrica):
             metricas.registrar(self.cx, "felicidad", 10, "2026-10-06", campana=None, publicacion_id=1)
+
+
+class NumerosDeLasRedes(unittest.TestCase):
+    def test_separadores_de_miles_si_decimales_no(self):
+        for texto, esperado in (("1234", 1234), ("1,234", 1234), ("1.234", 1234), ("1 234", 1234), ("1 234", 1234),
+                                ("1,234,567", 1234567), ("12.5", None), ("3,7", None), ("1,23", None), ("12k", None)):
+            with self.subTest(texto=texto):
+                self.assertEqual(metricas.entero(texto), esperado)

@@ -23,7 +23,7 @@ from typing import Callable
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 
-from .. import __version__, config, contenido, db, leads, metricas, radar, util
+from .. import __version__, config, contenido, db, leads, metricas, radar, rutina, util
 from ..agentes import motor
 from ..agentes.contrato import ErrorContrato
 from ..agentes.registro import AGENTES
@@ -248,6 +248,7 @@ def hoy(req: Peticion) -> str:
     ideas = contenido.ideas_priorizadas(cx, limite=5)
     filas_ideas = [[f"<b>{i['puntuacion']}</b>", e(i["idea_central"]), e(i["canal"]), chip(i["etapa_embudo"], "gris")] for i in ideas]
     aviso_vencidas = f'<div class="aviso info">Se cerraron por vencimiento: {e(", ".join(vencidas))}.</div>' if vencidas else ""
+    aviso_vencidas += "".join(f'<div class="aviso error">{e(a)}</div>' for a in rutina.alertas(cx))
     cuerpo = f"""{aviso_vencidas}<div class="tarjetas">{''.join(tarjetas)}
       <div class="tarjeta destacada"><h3>Gasto del mes</h3><div class="cifra">{soles(gasto)}</div>
       Nada se paga sin tu autorización.</div></div>

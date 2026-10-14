@@ -13,7 +13,7 @@ Cuadra no se vende todavía (ver `docs/AUDITORIA-CUADRA.md`). El embudo termina 
 | 3. Contenido de atención | Situaciones reales del oficio: memes, trivias, novedades normativas con fuente oficial |
 | 4. Contenido de interés | Carruseles educativos y vídeos cortos que muestran una pantalla real con la empresa de ejemplo |
 | 5. Prueba de confianza | Demostraciones grabadas sin cortes engañosos, historia del desarrollo, datos en la PC del contador |
-| 6. Oferta | Lugar en la beta privada y una demostración en vivo de 20 minutos. Nunca un precio |
+| 6. Oferta | Lugar en la beta privada y una demostración en vivo de unos 30 minutos. Nunca un precio |
 | 7. Llamado a la acción | «Quiero participar en la beta» · «Pide una demostración» · «Escríbeme por WhatsApp» |
 | 8. Captura | Formulario de la landing (lista de espera) o mensaje que inicia el propio contador |
 | 9. Seguimiento | Respuesta en menos de 48 horas, una pregunta para cualificar (cuántas empresas lleva, qué usa hoy) y propuesta de demostración |

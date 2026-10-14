@@ -6,6 +6,7 @@ Abre una consola en la carpeta del proyecto. Si usas un espacio distinto del pre
 
 ## Cada día (15 a 25 minutos)
 
+0. **La rutina diaria** hace sola la copia de seguridad, lee el radar y deja en `espacio\salidas\rutinas\diaria-AAAA-MM-DD.md` lo que espera por ti. Si la programaste (`python -m mos rutina programar`), ya corrió a las 08:00; si no, ejecútala: `python -m mos rutina diaria`.
 1. **Abre el panel:** `python -m mos web`. La página «Hoy» muestra lo que espera por ti: piezas para aprobar, tareas para revisar, publicaciones para hoy o atrasadas, seguimientos de interesados, novedades del radar por verificar y errores.
 2. **Aprueba o corrige** las piezas del día siguiente en «Aprobaciones». Si el auditor frenó una, el motivo está en la ficha; corrige el texto en `campanas/<campaña>/campana.toml` y vuelve a cargar:
    ```powershell
@@ -18,16 +19,16 @@ Abre una consola en la carpeta del proyecto. Si usas un espacio distinto del pre
    - **Mientras el banco de datos «Interesados» no esté inscrito** y el aviso de privacidad no esté validado, conversa en el chat de la red sin anotar a nadie fuera de él (`EMBUDOS-Y-LEADS.md`, sección 4).
    - Después, registra solo a quien dio su consentimiento, con la versión del aviso que aceptó:
      ```powershell
-     python -m mos lead registrar --producto cuadra --fuente whatsapp --nombre "…" --telefono "…" --consentimiento --version-aviso <versión vigente> --medio "mensaje de WhatsApp"
+     python -m mos lead registrar --producto cuadra --fuente whatsapp --campana lista-espera-beta --nombre "…" --telefono "…" --consentimiento --finalidad "lista de espera de la beta privada y demostración" --version-aviso <versión vigente> --medio "mensaje de WhatsApp"
      ```
 6. **Seguimientos del día:** `python -m mos lead seguimientos`. Después de cada contacto: `python -m mos lead actualizar <uid> --estado … --proxima "…" --fecha AAAA-MM-DD`.
 
 ## Cada semana (domingo, 45 minutos)
 
-1. **Copia de seguridad verificada:** `python -m mos respaldar`. Copia también la carpeta `espacio\respaldos` a un disco externo o a otra carpeta que no sea la de trabajo.
+1. **Resumen semanal:** si no está programado, `python -m mos rutina semanal`. Léelo primero: trae publicaciones, métricas, interesados, aprobaciones, radar y la semana siguiente. Copia también la carpeta `espacio\respaldos` a un disco externo o a otra carpeta que no sea la de trabajo.
 2. **Métricas:** anota las cifras de cada publicación que ves en la red: `python -m mos metrica registrar --publicacion <número> --nombre alcance --valor 1200 --naturaleza MEDIDA`. También acepta una planilla con columnas `url`, `fecha` y los nombres de métrica (`metrica importar --archivo …`); leer directamente el CSV que exporta cada red llega en la Fase 6.
 3. **Embudo:** `python -m mos lead embudo` muestra cuántos interesados hay en cada etapa.
-4. **Radar:** revisa las novedades de SUNAT, El Peruano y el MEF en el panel. Una noticia solo se convierte en pieza si tiene enlace a la fuente oficial y la revisa un contador.
+4. **Radar:** revisa las novedades de SUNAT, El Peruano y el MEF en el panel (o `python -m mos radar pendientes`). Si una fuente marca error varios días seguidos, `python -m mos radar fuentes` dice cuál y por qué. Una noticia solo se convierte en pieza si tiene enlace a la fuente oficial y la revisa un contador.
 5. **Plan de la semana siguiente:** revisa `CALENDARIO.md` de la campaña. Si algo se retrasó, `python -m mos campana mover campanas\lista-espera-beta --semanas 1` corre todas las fechas.
 6. **Errores:** `python -m mos errores` no debería mostrar nada pendiente.
 
@@ -46,4 +47,4 @@ Abre una consola en la carpeta del proyecto. Si usas un espacio distinto del pre
 | Alguien pide que borres sus datos | `python -m mos lead suprimir --contacto <correo o teléfono>` el mismo día. Queda solo una huella para no volver a escribirle |
 | Alguien pide ver sus datos | `python -m mos lead acceso --contacto <correo o teléfono>` genera el archivo; envíaselo y bórralo |
 | Alguien ya no quiere mensajes | `python -m mos lead baja --contacto <correo o teléfono>` |
-| La base no abre | Restaura la última copia de `espacio\respaldos` (`INSTALACION.md`, sección 6) |
+| La base no abre | Restaura la última copia de `espacio\respaldos` (`INSTALACION.md`, sección 7) |

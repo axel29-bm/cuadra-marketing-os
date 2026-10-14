@@ -8,9 +8,9 @@ Las fases siguen la sección 18 del encargo. Cada fase termina con pruebas en ve
 | 1 | Núcleo: base local, matriz de capacidades, auditor, 11 agentes con contrato, motor de tareas, leads, métricas, línea de comandos | ✓ Hecha (14/10/2026) |
 | 2 | Panel web local: productos, campañas, ideas, calendario, biblioteca, aprobaciones, publicaciones, leads, tareas y errores | ✓ Hecha (14/10/2026) |
 | 3 | Fábrica: plantillas visuales (promoción, beneficio, educativo, noticia, carrusel, trivia, meme, lanzamiento, demostración), exportación a PNG, PDF y MP4, teleprompter y paquete de voz, calendario de 30 días y paquete de lanzamiento | ✓ Hecha (14/10/2026) |
-| 4 | Automatizaciones locales: radar diario de fuentes oficiales, respaldos programados, resumen semanal del director, recordatorios de seguimiento de leads (plan en `AUTOMATIZACIONES.md`) | Siguiente |
+| 4 | Automatizaciones locales: radar diario de fuentes oficiales, respaldos programados, resumen semanal del director, recordatorios de seguimiento de leads (ver `AUTOMATIZACIONES.md`) | ✓ Hecha (14/10/2026). La primera lectura real del radar se hace en tu PC |
 | 5 | Landing con lista de espera y formulario con consentimiento (local; publicarla requiere autorización y dominio o subdominio gratuito) | ✓ Construida en local (14/10/2026). Publicarla espera los trámites legales y tu autorización |
-| 6 | Medición y mejora: importación de métricas desde los CSV de cada red, experimentos, reciclaje de piezas, revisión mensual | Pendiente |
+| 6 | Medición y mejora: importación de métricas desde los CSV de cada red, experimentos, reciclaje de piezas, revisión mensual | Siguiente |
 
 ## Decisiones que esperan a Didi
 

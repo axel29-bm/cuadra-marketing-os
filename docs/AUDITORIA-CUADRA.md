@@ -45,7 +45,7 @@ Un sistema contable de escritorio para Windows, que guarda los datos en la PC de
 | Licencia y cobro funcionando | Código y pruebas listos; nube creada a medias (faltan tablas, inicio de sesión por correo y portal). Cobro: no existe |
 | Instalador firmado | Instalador generado en la PC de Didi, sin firmar y sin publicar. No hay certificado |
 | Términos y política de privacidad revisados por abogado | No existen |
-| Casos contables CC-01 a CC-16 firmados | 0 firmados. Los tratamientos contables se basan en ContaExcel (decisión D2) |
+| Casos contables CC-01 a CC-16 firmados | 0 firmados; solo CC-01 a CC-06 están escritos. Los tratamientos contables se basan en ContaExcel (decisión D2) |
 | Guías de primeros pasos y de credenciales del SIRE | No existen como material público |
 | Canal de soporte | No definido |
 

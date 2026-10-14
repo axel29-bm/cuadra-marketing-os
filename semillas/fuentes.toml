@@ -2,6 +2,9 @@
 # Revisado el 2026-10-14 (investigación D). Reglas de cortesía: respetar robots.txt, una petición por recurso
 # y pasada, 5 s entre peticiones al mismo dominio, nunca rutas prohibidas ni sistemas con clave (SOL).
 # metodo: SITEMAP (lee un sitemap XML), RSS, HTML (detecta cambios en la página) o MANUAL (lo revisa una persona).
+# filtro: palabras (sin importar tildes ni mayúsculas) que debe tener el título o la dirección de un enlace nuevo
+# para entrar al radar. Sin filtro entran todos los enlaces nuevos del mismo sitio, y si la página cambia sin
+# enlaces nuevos se anota el cambio. Lo lee `python -m mos radar leer` (mos/radar_lector.py).
 
 [[fuente]]
 slug = "elperuano-normas-sitemap"
@@ -12,6 +15,8 @@ url = "https://busquedas.elperuano.pe/"
 rss_url = "https://busquedas.elperuano.pe/sitemap/sitemap-normas_legales.xml"
 metodo = "SITEMAP"
 frecuencia_horas = 12
+filtro = ["sunat", "superintendencia nacional de aduanas", "economia y finanzas", "-ef", "tribut", "impuesto", "igv",
+          "renta", "uit", "comprobante", "detraccion", "percepcion", "retencion", "sire", "libros electronicos"]
 notas = "robots.txt permite todo (Allow: /). Filtrar por emisor SUNAT o MEF en og:title. No usar diariooficial.elperuano.pe/NormasElperuano ni /DatosAbiertos: están prohibidas por robots.txt."
 
 [[fuente]]
@@ -134,6 +139,7 @@ titulo = "Decretos supremos del MEF"
 url = "https://www.mef.gob.pe/es/normatividad-sp-9867/por-instrumento/decretos-supremos"
 metodo = "HTML"
 frecuencia_horas = 168
+filtro = ["tribut", "uit", "igv", "renta", "impuesto", "aduan", "sunat"]
 notas = "La mayoría son transferencias de partidas: filtrar por tribut, UIT, IGV, renta. El RSS general de Joomla sale vacío."
 
 # Competencia: revisión manual de sus webs públicas. Nunca se copian textos ni se nombran en publicidad sin validación legal.

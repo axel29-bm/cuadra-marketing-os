@@ -87,7 +87,15 @@ python -m mos iniciar      # aplica migraciones nuevas y recarga la configuraci�
 python -m mos respaldar    # antes de cualquier cambio grande
 ```
 
-## 6. Restaurar una copia de seguridad
+## 6. Rutinas automáticas (opcional)
+
+```powershell
+python -m mos rutina programar
+```
+
+Te muestra los comandos para que Windows corra la rutina diaria a las 08:00 y el resumen semanal los domingos a las 18:00. No crea nada por sí solo: tú copias los comandos si quieres, y el mismo comando te da los de quitar. Detalle en `docs/AUTOMATIZACIONES.md`.
+
+## 7. Restaurar una copia de seguridad
 
 `python -m mos respaldar` guarda en `espacio\respaldos` una copia verificada y conserva las 14 más recientes. Para volver a una:
 

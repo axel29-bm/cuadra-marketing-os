@@ -389,7 +389,7 @@ No son herramientas: son requisitos (informe D, verificados el 2026-10-14). **No
 - Separar «quiero la demo o el recurso» de «acepto novedades comerciales» (art. 26 del Reglamento). No comprar bases de datos. Baja en cada envío; la oposición se atiende en 10 días.
 - Aviso de privacidad previo y en dos capas (art. 18 de la Ley; art. 6.1 del Reglamento): responsable, finalidades, destinatarios, transferencias, plazo de conservación y cómo ejercer derechos.
 - Derechos ARCO en días hábiles: información 8, acceso 20, rectificación, cancelación y oposición 10 (art. 69).
-- Inscribir el banco «Leads» en el Registro Nacional de Protección de Datos **antes de captar**: trámite gratuito y de aprobación automática (arts. 42 a 45). No inscribirlo se multa con 0,5 a 5 UIT.
+- Inscribir el banco «Interesados» en el Registro Nacional de Protección de Datos **antes de captar**: trámite gratuito y de aprobación automática (arts. 42 a 45). No inscribirlo se multa con 0,5 a 5 UIT.
 - Flujo transfronterizo: todo proveedor en la nube que reciba leads (Cloudflare, Tally, Brevo, Google, Meta) se declara en el aviso, se cubre con DPA o cláusulas modelo y se comunica e inscribe (art. 21.2).
 - Incidentes: aviso a la ANPD en 48 horas como máximo (art. 34.1), y también al titular.
 - Multas (art. 39 de la Ley): leves de 0,5 a 5 UIT, graves hasta 50, muy graves hasta 100, con tope del 10 % de los ingresos. UIT 2026 = S/ 5 500.
@@ -539,7 +539,7 @@ Consolidados de los cuatro informes, sin duplicados. Cada uno dice qué hace fal
 
 **Legal (informe D, y la Ley 29733 que C pidió revisar)**
 
-59. **(legal)** Inscripción del banco «Leads» en el Registro Nacional de Protección de Datos antes de captar: la página del trámite en gob.pe no cargó. Cierre: leerla en un navegador y hacer el trámite.
+59. **(legal)** Inscripción del banco «Interesados» en el Registro Nacional de Protección de Datos antes de captar: la página del trámite en gob.pe no cargó. Cierre: leerla en un navegador y hacer el trámite.
 60. **(legal)** Disposición exacta de vigencia del D.S. 016-2024-JUS y plazos de adecuación abiertos (Andina menciona 4 años para el Oficial de Datos). Cierre: texto en El Peruano y abogado.
 61. **(legal)** Si un contador independiente o un estudio cuenta como «consumidor» para el Código (art. 58.1 e) y precio con IGV del art. 4.1) o si la relación es B2B. Cierre: abogado.
 62. **(legal)** Cómo comunicar e inscribir el flujo transfronterizo por proveedor (Cloudflare, Tally, Brevo, Google, Meta) y si bastan las cláusulas modelo. Cierre: abogado.

@@ -7,6 +7,7 @@ TikTok Studio, LinkedIn). Ninguna se inventa: si no hay dato, el resumen dice «
 from __future__ import annotations
 
 import csv
+import re
 import sqlite3
 from pathlib import Path
 
@@ -66,11 +67,32 @@ def importar_csv(cx: sqlite3.Connection, ruta: Path, *, columna_url: str = "url"
                 continue
             fecha = (fila.get(columna_fecha) or util.hoy_lima().isoformat()).strip()[:10]
             for columna, nombre in m.items():
-                texto = (fila.get(columna) or "").replace(",", "").replace(".", "").strip()
-                if texto.isdigit():
-                    registrar(cx, nombre, int(texto), fecha, origen="CSV", publicacion_id=pub["id"])
-                    conteo["metricas"] += 1
+                texto = (fila.get(columna) or "").strip()
+                if not texto:
+                    continue
+                valor = entero(texto)
+                if valor is None:
+                    conteo["no_leidas"] = conteo.get("no_leidas", 0) + 1   # mejor sin dato que con uno falso
+                    continue
+                registrar(cx, nombre, valor, fecha, origen="CSV", publicacion_id=pub["id"])
+                conteo["metricas"] += 1
     return conteo
+
+
+_MILES = re.compile(r"\d{1,3}([., \u00a0])\d{3}(\1\d{3})*")
+
+
+def entero(texto: str) -> int | None:
+    """Un número entero escrito como lo exportan las redes: «1234», «1,234», «1.234» o «1 234».
+
+    «12.5» o «3,7» no son enteros: devuelve None en vez de leerlos como 125 o 37.
+    """
+    t = texto.strip()
+    if t.isdigit():
+        return int(t)
+    if _MILES.fullmatch(t):
+        return int(re.sub(r"\D", "", t))
+    return None
 
 
 def resumen(cx: sqlite3.Connection, desde: str, hasta: str, producto: str | None = None) -> dict:

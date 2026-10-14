@@ -2,7 +2,7 @@
 
 Nada se publica como noticia sin pasar por aquí: el elemento debe estar VERIFICADO (fuente primaria
 oficial y fecha de verificación, la base lo exige) antes de que una pieza de tipo NOTICIA lo use.
-La lectura automática de fuentes (sitemap de El Peruano, índices de SUNAT) llega en la Fase 4.
+La lectura automática de fuentes (sitemap de El Peruano, índices de SUNAT) está en radar_lector.py.
 """
 
 from __future__ import annotations

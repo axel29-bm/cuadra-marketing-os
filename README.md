@@ -18,7 +18,8 @@ El departamento de marketing de Didi, en su propia PC: investiga, planifica, pro
 | Campañas | Campañas escritas en un archivo: se cargan sin duplicar, se auditan, se renderizan y salen como calendario y paquete listo para publicar | `campanas/`, `mos/campanas.py` |
 | Landing | Página de la lista de espera con formulario de consentimiento, aviso de privacidad en borrador y trivia. Se ve en local; publicarla espera los trámites legales y tu autorización | `sitio/`, `mos/sitio.py`, `docs/CANALES-Y-PUBLICACION.md` |
 | Panel | Todo lo anterior con clics, en `http://127.0.0.1:8765` | `mos/web/` |
-| Radar | Fuentes oficiales (SUNAT, El Peruano, MEF) con método y frecuencia | `semillas/fuentes.toml` |
+| Radar | Fuentes oficiales (SUNAT, El Peruano, MEF) que se leen solas respetando `robots.txt`; lo nuevo entra sin verificar hasta que alguien lee la fuente | `semillas/fuentes.toml`, `mos/radar_lector.py` |
+| Rutinas | Diaria (respaldo, radar y lo pendiente) y semanal (resumen del director), a mano o programadas en Windows; el panel avisa si dejan de correr | `mos/rutina.py`, `docs/AUTOMATIZACIONES.md` |
 | Herramientas | Registro de herramientas con coste, licencia, límites, riesgo, decisión y fuente | `docs/REGISTRO-HERRAMIENTAS-Y-COSTES.md` |
 
 ## Empezar en 3 comandos
@@ -48,6 +49,7 @@ python -m mos campana cargar campanas/lista-espera-beta   # la campaña de lanza
 python -m mos campana render campanas/lista-espera-beta   # sus imágenes, PDF y vídeos
 python -m mos sitio ver                                   # la landing en http://127.0.0.1:8766
 python -m mos sitio pendientes                            # lo que falta para poder publicarla
+python -m mos rutina diaria                               # respaldo, radar y lo pendiente del día
 ```
 
 **La campaña de lanzamiento** (30 días, 26 piezas, paquete exportado) está en `campanas/lista-espera-beta/`: empieza por su `LEEME.md`.

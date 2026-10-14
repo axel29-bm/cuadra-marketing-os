@@ -123,13 +123,15 @@ def _fuentes(cx: sqlite3.Connection, d: dict) -> int:
     n = 0
     for f in d.get("fuente", []):
         cx.execute(
-            """INSERT INTO fuente (slug, tipo, organismo, titulo, url, rss_url, metodo, frecuencia_horas, activa, notas)
-               VALUES (?,?,?,?,?,?,?,?,?,?)
+            """INSERT INTO fuente (slug, tipo, organismo, titulo, url, rss_url, metodo, frecuencia_horas, activa, notas, filtro)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(slug) DO UPDATE SET tipo=excluded.tipo, organismo=excluded.organismo, titulo=excluded.titulo,
                  url=excluded.url, rss_url=excluded.rss_url, metodo=excluded.metodo,
-                 frecuencia_horas=excluded.frecuencia_horas, activa=excluded.activa, notas=excluded.notas""",
+                 frecuencia_horas=excluded.frecuencia_horas, activa=excluded.activa, notas=excluded.notas,
+                 filtro=excluded.filtro""",
             (f["slug"], f["tipo"], f.get("organismo", ""), f["titulo"], f["url"], f.get("rss_url"),
-             f.get("metodo", "MANUAL"), int(f.get("frecuencia_horas", 24)), int(f.get("activa", True)), f.get("notas", "")))
+             f.get("metodo", "MANUAL"), int(f.get("frecuencia_horas", 24)), int(f.get("activa", True)), f.get("notas", ""),
+             util.a_json([str(p).lower() for p in f.get("filtro", [])])))
         n += 1
     return n
 

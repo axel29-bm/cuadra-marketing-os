@@ -14,7 +14,7 @@ Este informe responde los ocho puntos de la sección 20 del encargo.
 
 - Es un sistema contable de escritorio para Windows, con los datos en la PC del contador (una base cifrada por empresa), pensado para el contador que lleva muchas empresas.
 - El código está muy avanzado: 22 pantallas, 6 diálogos y 528 métodos de prueba. La CI de GitHub del 14/10/2026 compila y pasa el núcleo y la aplicación. El trabajo «Licencias, vulnerabilidades y SBOM» falló en «Buscar vulnerabilidades»: es un asunto del producto, no del marketing, pero conviene revisarlo antes de una beta.
-- Lo que falta para vender, según el propio PRD (§XVIII.4): beta privada con 20 a 30 contadores (no empezó), servicio de licencias y cobro (a medias), instalador firmado y publicado (no hay), términos y política de privacidad revisados por abogado (no existen), casos contables firmados (0 de 6) y precio (no está decidido).
+- Lo que falta para vender, según el propio PRD (§XVIII.4): beta privada con 20 a 30 contadores (no empezó), servicio de licencias y cobro (a medias), instalador firmado y publicado (no hay), términos y política de privacidad revisados por abogado (no existen), casos contables CC-01 a CC-16 firmados (0 firmados; solo CC-01 a CC-06 están escritos) y precio (no está decidido).
 
 **Etapa comercial: prelanzamiento.** El objetivo honesto del marketing en los próximos meses no es vender: es reunir contadores interesados, conseguir participantes para la beta privada y validar el mensaje. Todo llamado a la acción será de interés (lista de espera, participar en la beta, pedir una demostración en vivo), nunca de compra o descarga. El sistema bloquea solo cualquier pieza que diga «descárgalo», «prueba gratis» o un precio.
 

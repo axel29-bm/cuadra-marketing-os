@@ -4,6 +4,41 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 ---
 
+## 14/10/2026 · Fase 4: rutinas, lector del radar y estrategia
+
+### Hecho
+
+- **Rutina diaria** (`python -m mos rutina diaria`, `mos/rutina.py`): copia de seguridad verificada, lectura del radar y lo que espera por ti (lo mismo que la página «Hoy», más las piezas de los próximos tres días y los seguimientos). Deja un informe en `espacio\salidas\rutinas\`. Si un paso falla, los demás siguen y el fallo queda en el informe y en «Errores». El informe no lleva correos ni teléfonos: solo nombre de pila, inicial y un código.
+- **Resumen semanal del director** (`rutina semanal`): publicaciones con prueba, métricas medidas separadas de las estimadas con sus recomendaciones, interesados nuevos y embudo, aprobaciones, radar, cuántos días corrió la rutina diaria, errores y la semana siguiente. Sin IA: sale de la base.
+- **Programarlas en Windows** (`rutina programar`): escribe un `.cmd` por rutina y muestra los comandos de `schtasks` para crearlas y quitarlas. No crea nada por su cuenta. `rutina estado` dice cuándo corrió cada una, y la página «Hoy» avisa si la diaria lleva más de 2 días sin correr, la semanal más de 8, o si la última tuvo fallos.
+- **Lector del radar** (`python -m mos radar leer`, `mos/radar_lector.py`): lee sitemaps y páginas de las fuentes automáticas de `semillas/fuentes.toml` según su frecuencia, respetando `robots.txt`, con 5 s entre peticiones al mismo sitio, solo https y como mucho 10 MB. La primera lectura es punto de partida; luego entra solo lo nuevo que pasa el filtro de palabras de la fuente, sin verificar. Si la dirección de una norma no dice de qué trata, abre la página una vez para leer su título. `radar fuentes` y `radar pendientes` muestran el estado.
+- **Migración 2** (solo expande): columna `filtro` en `fuente` y tablas `fuente_estado` y `rutina`.
+- **Estrategia:** `ESTRATEGIA-MAESTRA.md` (dónde estamos, posicionamiento, audiencias como hipótesis, propuesta de valor solo con capacidades permitidas, mensajes prohibidos, objetivos de 90 días, canales, presupuesto y riesgos), `ESTRATEGIA-EDITORIAL.md` (pilares, voz, formatos por red, reglas de humor y de noticias) y `METRICAS-Y-EXPERIMENTOS.md` (qué se mide, umbrales como hipótesis y cinco experimentos sin coste).
+- **Correcciones de la revisión de documentos:** `metrica importar` ya no lee «12.5» como 125 (solo acepta enteros con o sin separador de miles; lo demás lo cuenta como no leído); `lead registrar` guarda `--nota` y rechaza una campaña que no está cargada; el ejemplo de registro de `OPERACION-DIARIA.md` lleva finalidad y campaña; la demostración dura unos 30 minutos en todos los documentos; el banco de datos se llama «Interesados» en todos; el criterio de lanzamiento pide CC-01 a CC-16 firmados (solo CC-01 a CC-06 están escritos); C16 ya no mezcla «decirnos» con «escríbeme».
+
+### Cómo se verificó
+
+- `python -m unittest discover -s tests -t .` en verde con Chromium y FFmpeg (el número exacto, en la salida de la CI). Nuevas: el lector del radar contra un Internet simulado (punto de partida, solo lo nuevo, sin duplicar, cambio de página, frecuencia, `robots.txt` que bloquea, error que no detiene a las demás, fuentes manuales intocables, sitemap con filtro y fecha, índice de sitemaps, XML roto) y las rutinas (informe sin datos de contacto, un paso roto no tumba a los demás, medido y estimado separados, avisos del panel, scripts de programación y la línea de comandos).
+- Las fuentes reales no se pudieron leer desde este entorno: el proxy bloquea SUNAT y El Peruano. Por eso el lector se probó con servidores simulados.
+
+### Pendiente
+
+- La primera lectura real del radar en tu PC (`python -m mos radar leer`). Si una fuente cambia de estructura, se ajusta su `filtro` o su dirección en `semillas/fuentes.toml`.
+- Programar las rutinas, si quieres (`python -m mos rutina programar`).
+- Fase 6: leer el CSV que exporta cada red, comando y pantalla para los experimentos, y una métrica norte que cuente solo inscritos con consentimiento.
+
+### Defectos y límites conocidos
+
+- El robots.txt de SUNAT no se pudo leer durante la investigación: lo lee el lector en cada pasada y, si no deja, la fuente queda para revisión manual.
+- Los títulos de las normas que salen de la dirección son aproximados («Resolucion de superintendencia sunat…»); el título real está en la fuente.
+- El resumen semanal no atribuye interesados a publicaciones: solo cuenta por dónde llegaron.
+
+### Siguiente paso
+
+Fase 6: importar el CSV de estadísticas de cada red con su mapeo de columnas, y registrar experimentos desde la consola y el panel.
+
+---
+
 ## 14/10/2026 · Fase 5 adelantada: landing de la lista de espera y documentos de operación
 
 ### Hecho
