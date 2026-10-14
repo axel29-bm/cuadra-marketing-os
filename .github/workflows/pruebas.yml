@@ -1,0 +1,23 @@
+name: Pruebas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pruebas del núcleo (sin dependencias externas)
+        run: python -m unittest discover -s tests -t . -v
+      - name: Comprobar que la configuración TOML se lee
+        run: python -m mos --espacio "$RUNNER_TEMP/espacio" iniciar
