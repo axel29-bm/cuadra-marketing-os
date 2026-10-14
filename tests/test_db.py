@@ -22,6 +22,22 @@ class MigracionesYRespaldo(ConBase):
         self.assertEqual(self.cx.execute("PRAGMA journal_mode").fetchone()[0], "wal")
         self.assertEqual(self.cx.execute("PRAGMA foreign_keys").fetchone()[0], 1)
 
+    def test_una_base_de_la_version_2_sube_sin_perder_las_rutinas(self):
+        from unittest import mock
+        cx = db.conectar(self.tmp / "v2.db")
+        hasta_v2 = [m for m in db._migraciones() if m[0] <= 2]
+        with mock.patch.object(db, "_migraciones", return_value=hasta_v2):
+            db.migrar(cx)
+        cx.execute("""INSERT INTO rutina (tipo, fecha, iniciada_en, terminada_en, estado)
+                      VALUES ('DIARIA', '2026-10-14', '2026-10-14T13:00:00Z', '2026-10-14T13:01:00Z', 'OK')""")
+        with self.assertRaises(sqlite3.IntegrityError):
+            cx.execute("INSERT INTO rutina (tipo, fecha, iniciada_en) VALUES ('MENSUAL', '2026-10-31', 'x')")
+        self.assertEqual(db.migrar(cx), ["0003_experimentos.sql", "0004_rutina_mensual.sql"])
+        self.assertEqual(cx.execute("SELECT tipo, estado FROM rutina").fetchall()[0][:], ("DIARIA", "OK"))
+        cx.execute("INSERT INTO rutina (tipo, fecha, iniciada_en) VALUES ('MENSUAL', '2026-10-31', 'x')")
+        self.assertEqual(cx.execute("PRAGMA foreign_key_check").fetchall(), [])
+        cx.close()
+
     def test_una_base_mas_nueva_que_el_programa_no_se_abre(self):
         self.cx.execute(f"PRAGMA user_version = {db.version_esquema() + 1}")
         with self.assertRaises(db.BaseMasNueva):

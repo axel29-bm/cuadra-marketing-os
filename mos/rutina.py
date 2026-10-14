@@ -1,4 +1,4 @@
-"""Rutinas: lo que se repite cada día y cada semana, en un comando que se puede programar en Windows.
+"""Rutinas: lo que se repite cada día, cada semana y cada mes, en un comando que se puede programar en Windows.
 
 Cada paso corre aunque otro falle; los fallos quedan en el informe y en la tabla de errores. Cada pasada queda
 registrada en la tabla `rutina`, así el panel puede avisar si la tarea programada dejó de correr. Nada aquí
@@ -15,10 +15,11 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Callable
 
-from . import contenido, db, leads, metricas, util
+from . import contenido, db, experimentos, leads, metricas, util
 from .config import Config
 
-DIAS_ALERTA = {"DIARIA": 2, "SEMANAL": 8}   # pasado esto sin una rutina terminada, el panel avisa
+DIAS_ALERTA = {"DIARIA": 2, "SEMANAL": 8, "MENSUAL": 38}   # pasado esto sin una rutina terminada, el panel avisa
+DIAS_HERRAMIENTA = 90      # una herramienta gratuita verificada hace más que esto se vuelve a revisar
 
 
 @dataclass
@@ -188,10 +189,10 @@ def _publicaciones(cx: sqlite3.Connection, d: str, h: str) -> str:
     return texto
 
 
-def _metricas(cx: sqlite3.Connection, d: str, h: str) -> str:
+def _metricas(cx: sqlite3.Connection, d: str, h: str, periodo: str = "esta semana") -> str:
     r = metricas.resumen(cx, d, h)
     if r["sin_datos"]:
-        return "Sin métricas registradas esta semana. Anota las de cada publicación (ver `docs/OPERACION-DIARIA.md`).\n"
+        return f"Sin métricas registradas {periodo}. Anota las de cada publicación (ver `docs/OPERACION-DIARIA.md`).\n"
     texto = ""
     for clave, titulo in (("medido", "Medido (lo que dice cada red)"), ("estimado", "Estimado (no es un dato medido)")):
         filas = [[canal, nombre, valor] for canal, valores in sorted(r[clave].items()) for nombre, valor in sorted(valores.items())]
@@ -203,11 +204,15 @@ def _metricas(cx: sqlite3.Connection, d: str, h: str) -> str:
     return texto
 
 
-def _leads(cx: sqlite3.Connection, d: str, h: str) -> str:
+def _leads(cx: sqlite3.Connection, d: str, h: str, periodo: str = "esta semana") -> str:
     nuevos = cx.execute("""SELECT fuente, COUNT(*) AS n, SUM(consentimiento_publicidad) AS pub FROM lead
                            WHERE substr(ingreso_en, 1, 10) BETWEEN ? AND ? GROUP BY fuente ORDER BY n DESC""", (d, h)).fetchall()
     texto = (_tabla(["Por dónde llegaron", "Nuevos", "Aceptaron novedades"], [[f["fuente"], f["n"], f["pub"] or 0] for f in nuevos])
-             or "Ningún interesado nuevo esta semana.\n")
+             or f"Ningún interesado nuevo {periodo}.\n")
+    norte = [[c["nombre"], leads.metrica_norte(cx, campana=c["slug"]), c["meta_valor"] or "—"]
+             for c in cx.execute("SELECT slug, nombre, meta_valor FROM campana WHERE fin IS NULL OR fin >= ? ORDER BY slug", (d,))]
+    if norte:
+        texto += "\n**En la lista con consentimiento (métrica norte)**\n\n" + _tabla(["Campaña", "Personas", "Meta"], norte)
     embudo = {e: n for e, n in leads.embudo(cx).items() if n}
     if embudo:
         texto += "\n**Embudo completo hoy**\n\n" + _tabla(["Etapa", "Personas"], [[e.lower().replace("_", " "), n] for e, n in embudo.items()])
@@ -271,6 +276,76 @@ def _proxima(cx: sqlite3.Connection, hasta: date) -> str:
 
 # ----------------------------------------------------------------------------------------------- salud
 
+def mensual(cx: sqlite3.Connection, cfg: Config, *, mes: str | None = None) -> Informe:
+    """Revisión del mes: qué funcionó, cómo van los experimentos, qué reutilizar y qué herramienta revisar. Sin IA.
+
+    `mes` es AAAA-MM; por defecto, el mes anterior al de hoy (la tarea corre el día 1).
+    """
+    hoy = util.hoy_lima()
+    if mes:
+        inicio = date.fromisoformat(mes + "-01")
+    else:
+        inicio = (hoy.replace(day=1) - timedelta(days=1)).replace(day=1)
+    fin = (inicio.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+    d, h = inicio.isoformat(), fin.isoformat()
+    rid = _empezar(cx, "MENSUAL", h)
+    pasos: dict[str, str] = {}
+    secciones = [
+        ("Métricas del mes", _paso(cx, pasos, "metricas", lambda: _metricas(cx, d, h, "este mes"))),
+        ("Interesados", _paso(cx, pasos, "leads", lambda: _leads(cx, d, h, "este mes"))),
+        ("Experimentos", _paso(cx, pasos, "experimentos", lambda: _experimentos(cx))),
+        ("Para reutilizar", _paso(cx, pasos, "reutilizar", lambda: _reutilizar(cx, h))),
+        ("Herramientas por revisar", _paso(cx, pasos, "herramientas", lambda: _herramientas(cx, fin))),
+        ("Errores del mes", _paso(cx, pasos, "errores", lambda: _errores_del_mes(cx, d, h))),
+    ]
+    return _cerrar(cx, cfg, rid, "MENSUAL", h, f"Revisión mensual de {inicio:%m/%Y}", secciones, pasos)
+
+
+def _experimentos(cx: sqlite3.Connection) -> str:
+    filas = []
+    for x in experimentos.listar(cx):
+        if x["estado"] in ("TERMINADO", "CANCELADO"):
+            lectura = (x["resultado"] or "—") + (f" Decisión: {x['decision'].lower()}." if x["decision"] else "")
+        else:
+            lectura = experimentos.calcular(cx, x["codigo"]).lectura
+        filas.append([x["codigo"], x["estado"].lower().replace("_", " "), lectura])
+    if not filas:
+        return "No hay experimentos cargados. Ver `docs/METRICAS-Y-EXPERIMENTOS.md`, sección 9.\n"
+    return (_tabla(["Código", "Estado", "Cómo va (solo lo medido)"], filas)
+            + "\nLa decisión es tuya: `python -m mos experimento cerrar EXP-0X --decision … --resultado \"…\"`.\n")
+
+
+def _reutilizar(cx: sqlite3.Connection, h: str) -> str:
+    filas = metricas.reciclables(cx, h)
+    if not filas:
+        return "Ninguna pieza con interesados o guardados medidos publicada hace más de 60 días.\n"
+    return (_tabla(["Pieza", "Título", "Canal", "Interesados", "Guardados y compartidos"],
+                   [[f["codigo"], f["titulo"], f["canal"], f["interesados"], f["guardados"]] for f in filas[:10]])
+            + "\nPara cada una: actualiza los datos, cambia el formato y vuelve a pasar por el auditor y por tu aprobación.\n")
+
+
+def _herramientas(cx: sqlite3.Connection, fin: date) -> str:
+    limite = (fin - timedelta(days=DIAS_HERRAMIENTA)).isoformat()
+    filas = cx.execute("""SELECT nombre, decision, coste, verificado_en FROM herramienta
+                          WHERE decision IN ('ADOPTAR','PROBAR') AND substr(verificado_en, 1, 10) < ?
+                          ORDER BY verificado_en, nombre""", (limite,)).fetchall()
+    if not filas:
+        return f"Todas las herramientas en uso se verificaron en los últimos {DIAS_HERRAMIENTA} días.\n"
+    return (_tabla(["Herramienta", "Decisión", "Coste anotado", "Verificada"],
+                   [[f["nombre"], f["decision"].lower(), f["coste"], f["verificado_en"][:10]] for f in filas])
+            + "\nLos planes gratuitos cambian: revisa en la página oficial que sigan sin coste y sin límite que pierda datos,"
+              " y anota la fecha en `semillas/herramientas.toml`.\n")
+
+
+def _errores_del_mes(cx: sqlite3.Connection, d: str, h: str) -> str:
+    filas = cx.execute("""SELECT modulo, COUNT(*) AS n, SUM(resuelto) AS resueltos FROM registro_error
+                          WHERE substr(en, 1, 10) BETWEEN ? AND ? GROUP BY modulo ORDER BY n DESC""",
+                       (d, h)).fetchall()
+    if not filas:
+        return "Ningún error registrado este mes.\n"
+    return _tabla(["Módulo", "Errores", "Resueltos"], [[f["modulo"], f["n"], f["resueltos"] or 0] for f in filas])
+
+
 def ultimas(cx: sqlite3.Connection) -> dict[str, sqlite3.Row | None]:
     return {t: cx.execute("""SELECT * FROM rutina WHERE tipo = ? AND estado <> 'EN_CURSO'
                              ORDER BY iniciada_en DESC LIMIT 1""", (t,)).fetchone() for t in DIAS_ALERTA}
@@ -280,7 +355,7 @@ def alertas(cx: sqlite3.Connection, hoy: date | None = None) -> list[str]:
     """Avisos para el panel: una rutina que se usó y dejó de correr, o que terminó con fallos."""
     hoy = hoy or util.hoy_lima()
     salida = []
-    nombres = {"DIARIA": "diaria", "SEMANAL": "semanal"}
+    nombres = {"DIARIA": "diaria", "SEMANAL": "semanal", "MENSUAL": "mensual"}
     for tipo, fila in ultimas(cx).items():
         if fila is None:
             continue
@@ -300,7 +375,8 @@ def preparar_programacion(cfg: Config) -> list[str]:
     de schtasks y deja escrito qué se ejecuta exactamente.
     """
     lineas = []
-    for tipo, cuando in (("diaria", "/SC DAILY /ST 08:00"), ("semanal", "/SC WEEKLY /D SUN /ST 18:00")):
+    for tipo, cuando in (("diaria", "/SC DAILY /ST 08:00"), ("semanal", "/SC WEEKLY /D SUN /ST 18:00"),
+                         ("mensual", "/SC MONTHLY /D 1 /ST 09:00")):
         script = cfg.espacio / f"rutina-{tipo}.cmd"
         script.parent.mkdir(parents=True, exist_ok=True)
         script.write_text("\r\n".join([
@@ -313,5 +389,5 @@ def preparar_programacion(cfg: Config) -> list[str]:
             ""]), encoding="utf-8")
         nombre = f"Marketing OS {tipo}"
         lineas.append(f'schtasks /Create /TN "{nombre}" {cuando} /F /TR "\\"{script}\\""')
-    lineas += ['schtasks /Delete /TN "Marketing OS diaria" /F', 'schtasks /Delete /TN "Marketing OS semanal" /F']
+    lineas += [f'schtasks /Delete /TN "Marketing OS {tipo}" /F' for tipo in ("diaria", "semanal", "mensual")]
     return lineas

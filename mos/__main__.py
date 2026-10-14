@@ -337,6 +337,9 @@ def cmd_lead(cfg, args) -> int:
     if args.accion == "embudo":
         for estado, n in leads.embudo(cx, args.producto).items():
             print(f"{estado:<14} {n}")
+        norte = leads.metrica_norte(cx, producto=args.producto, campana=args.campana)
+        print(f"\nEn la lista con consentimiento{' (' + args.campana + ')' if args.campana else ''}: {norte}"
+              " · métrica norte: sin baja ni supresión")
         return 0
     if args.accion == "importar":
         conteo = leads.importar_csv(cx, Path(args.archivo), args.producto or _producto_unico(cfg), args.fuente,
@@ -381,7 +384,26 @@ def cmd_metrica(cfg, args) -> int:
         print("Métrica registrada.")
         return 0
     if args.accion == "importar":
-        print(metricas.importar_csv(cx, Path(args.archivo)))
+        if not args.archivo:
+            print("Indica --archivo con el CSV que exportaste de la red.", file=sys.stderr)
+            return 2
+        r = metricas.importar_csv(cx, Path(args.archivo), fecha=args.fecha, revisar=args.revisar)
+        print(("Revisión (no se guardó nada): " if args.revisar else "") +
+              f"{r.filas} filas · {r.emparejadas} publicaciones reconocidas · {r.metricas} métricas "
+              f"{'se guardarían' if args.revisar else 'guardadas'} con fecha {args.fecha or util.hoy_lima().isoformat()}.")
+        print("Columnas que entiendo: " + (", ".join(f"{k} → {v}" for k, v in r.reconocidas.items()) or "ninguna"))
+        if r.ignoradas:
+            print("Columnas que no importo (si alguna es una métrica, agrégala en semillas/metricas-csv.toml): "
+                  + ", ".join(r.ignoradas))
+        if r.sin_enlace:
+            print(f"{r.sin_enlace} filas sin enlace o sin números (descripciones o totales de la red): no se importan.")
+        if r.fecha_invalida:
+            print(f"{r.fecha_invalida} filas con una fecha que no es AAAA-MM-DD: no se importan.")
+        if r.sin_publicacion:
+            print(f"{r.sin_publicacion} filas no coinciden con ninguna publicación confirmada; por ejemplo: "
+                  + ", ".join(r.ejemplos_sin_publicacion) + ". Confírmalas con publicacion confirmar --url.")
+        if r.no_leidas:
+            print(f"{r.no_leidas} valores no eran números enteros y no se importaron (mejor sin dato que con uno falso).")
         return 0
     hasta = args.hasta or util.hoy_lima().isoformat()
     desde = args.desde or hasta[:8] + "01"
@@ -531,6 +553,7 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--desde")
     sp.add_argument("--hasta")
     sp.add_argument("--producto")
+    sp.add_argument("--revisar", action="store_true", help="Al importar, mostrar qué entraría sin guardar nada")
 
     sp = sub.add_parser("calendario", help="Piezas con fecha")
     sp.add_argument("--desde")
@@ -560,10 +583,20 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador")
     sp.add_argument("--sin-borrar", action="store_true", help="Al importar, no borrar las inscripciones del servidor")
 
-    sp = sub.add_parser("rutina", help="Rutina diaria (respaldo, radar, pendientes) y resumen semanal; se pueden programar")
-    sp.add_argument("accion", choices=["diaria", "semanal", "estado", "programar"])
+    sp = sub.add_parser("experimento", help="Experimentos de campaña: cargar del archivo, ver el resultado medido y cerrar")
+    sp.add_argument("accion", choices=["cargar", "listar", "resultado", "empezar", "cerrar", "cancelar"])
+    sp.add_argument("objetivo", nargs="?", help="Código (EXP-01) o, para cargar, la carpeta de la campaña")
+    sp.add_argument("--decision", choices=["CONTINUAR", "MODIFICAR", "DETENER", "INVESTIGAR"])
+    sp.add_argument("--resultado", help="Al cerrar: qué se midió, en una o dos frases")
+    sp.add_argument("--limitaciones")
+    sp.add_argument("--motivo", help="Al cancelar: por qué")
+    sp.add_argument("--por", default="Didi")
+
+    sp = sub.add_parser("rutina", help="Rutina diaria (respaldo, radar, pendientes), resumen semanal y revisión mensual; se pueden programar")
+    sp.add_argument("accion", choices=["diaria", "semanal", "mensual", "estado", "programar"])
     sp.add_argument("--sin-radar", action="store_true", help="En la diaria, no leer las fuentes del radar")
     sp.add_argument("--hasta", help="En la semanal, último día del resumen (AAAA-MM-DD; por defecto hoy)")
+    sp.add_argument("--mes", help="En la mensual, el mes a revisar (AAAA-MM; por defecto el anterior)")
 
     sp = sub.add_parser("radar", help="Fuentes oficiales: leer las automáticas y ver lo que espera verificación")
     sp.add_argument("accion", choices=["leer", "pendientes", "fuentes"])
@@ -725,14 +758,56 @@ def cmd_sitio(cfg: config.Config, args) -> int:
     return 0
 
 
+def cmd_experimento(cfg: config.Config, args) -> int:
+    from . import experimentos
+    cx = _cx(cfg)
+    if args.accion == "listar":
+        filas = experimentos.listar(cx)
+        if not filas:
+            print("No hay experimentos. Cárgalos con: python -m mos experimento cargar campanas/<campaña>")
+        for x in filas:
+            d = util.de_json(x["definicion"], {})
+            print(f"{x['codigo']}  {x['estado'].lower():<11} {d.get('titulo', x['hipotesis'][:60])}"
+                  + (f" · decisión: {x['decision'].lower()}" if x["decision"] else ""))
+        return 0
+    if not args.objetivo:
+        print("Indica el código del experimento (o la carpeta de la campaña para cargar).", file=sys.stderr)
+        return 2
+    if args.accion == "cargar":
+        nuevos, actualizados = experimentos.cargar(cx, Path(args.objetivo), args.por)
+        print(f"Experimentos: {nuevos} nuevos, {actualizados} actualizados (estado y decisión no se tocan).")
+        return 0
+    if args.accion == "resultado":
+        r = experimentos.calcular(cx, args.objetivo)
+        for clave, g in r.grupos.items():
+            tasa = f"{g.tasa_bp / 100:.2f} %" if g.tasa_bp is not None else "sin datos"
+            print(f"  {clave} · {g.nombre}: {g.publicaciones} publicaciones con dato · {g.numerador} / {g.denominador} = {tasa}"
+                  + (f" · sin dato: {', '.join(g.faltan)}" if g.faltan else ""))
+        print(r.lectura)
+        return 0
+    if args.accion == "empezar":
+        experimentos.empezar(cx, args.objetivo, args.por)
+    elif args.accion == "cerrar":
+        if not args.decision:
+            print("Indica --decision (CONTINUAR, MODIFICAR, DETENER o INVESTIGAR) y --resultado.", file=sys.stderr)
+            return 2
+        experimentos.cerrar(cx, args.objetivo, args.decision, args.resultado or "", args.por, args.limitaciones)
+    else:
+        experimentos.cancelar(cx, args.objetivo, args.motivo or "", args.por)
+    print(f"{args.objetivo}: " + {"empezar": "en curso.", "cerrar": "terminado, con la decisión anotada.",
+                                  "cancelar": "cancelado, con el motivo anotado."}[args.accion])
+    return 0
+
+
 def cmd_rutina(cfg: config.Config, args) -> int:
     from datetime import date
     from . import rutina
     cx = _cx(cfg)
     if args.accion == "programar":
         print("Para que la rutina corra sola, copia estos comandos en una consola de Windows (no se ejecutan desde aquí):\n")
-        crear, semanal, quitar1, quitar2 = rutina.preparar_programacion(cfg)
-        print(f"  {crear}\n  {semanal}\n\nPara quitarlas:\n\n  {quitar1}\n  {quitar2}")
+        comandos = rutina.preparar_programacion(cfg)
+        crear, quitar = comandos[:3], comandos[3:]
+        print("\n".join(f"  {c}" for c in crear) + "\n\nPara quitarlas:\n\n" + "\n".join(f"  {c}" for c in quitar))
         print("\nLa PC tiene que estar encendida a esa hora. Si no lo está, la rutina corre la próxima vez.")
         return 0
     if args.accion == "estado":
@@ -743,6 +818,8 @@ def cmd_rutina(cfg: config.Config, args) -> int:
         return 0
     if args.accion == "diaria":
         inf = rutina.diaria(cx, cfg, leer_radar=not args.sin_radar)
+    elif args.accion == "mensual":
+        inf = rutina.mensual(cx, cfg, mes=args.mes)
     else:
         inf = rutina.semanal(cx, cfg, hasta=date.fromisoformat(args.hasta) if args.hasta else None)
     print(f"Rutina {inf.tipo.lower()} del {inf.fecha}: {'todo bien' if inf.estado == 'OK' else 'con fallos'}. Informe en {inf.ruta}")
@@ -780,7 +857,7 @@ COMANDOS = {
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
     "metrica": cmd_metrica, "calendario": cmd_calendario, "fabrica": cmd_fabrica, "web": cmd_web,
-    "campana": cmd_campana, "sitio": cmd_sitio, "rutina": cmd_rutina, "radar": cmd_radar,
+    "campana": cmd_campana, "sitio": cmd_sitio, "rutina": cmd_rutina, "radar": cmd_radar, "experimento": cmd_experimento,
 }
 
 

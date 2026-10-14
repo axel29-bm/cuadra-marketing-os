@@ -75,6 +75,27 @@ class Semanal(ConBase):
         self.assertIn("Resumen semanal del 19/10 al 25/10/2026", texto)
 
 
+class Mensual(ConBase):
+    def test_revisa_experimentos_piezas_para_reutilizar_y_herramientas_viejas(self):
+        from pathlib import Path
+        from mos import campanas, experimentos
+        carpeta = Path(__file__).resolve().parent.parent / "campanas" / "lista-espera-beta"
+        campanas.cargar(self.cx, self.cfg, carpeta)
+        experimentos.cargar(self.cx, carpeta)
+        experimentos.cancelar(self.cx, "EXP-05", "La landing no se publicó")
+        inf = rutina.mensual(self.cx, self.cfg, mes="2026-10")
+        texto = inf.ruta.read_text(encoding="utf-8")
+        self.assertEqual((inf.estado, inf.fecha), ("OK", "2026-10-31"))
+        self.assertIn("Revisión mensual de 10/2026", texto)
+        self.assertIn("Sin datos medidos todavía", texto)
+        self.assertIn("| Cancelado: La landing no se publicó |", texto)
+        self.assertIn("Ninguna pieza con interesados o guardados medidos", texto)
+        self.assertIn("Todas las herramientas en uso se verificaron", texto)
+        texto = rutina.mensual(self.cx, self.cfg, mes="2027-02").ruta.read_text(encoding="utf-8")
+        self.assertIn("Los planes gratuitos cambian", texto)
+        self.assertEqual(rutina.ultimas(self.cx)["MENSUAL"]["fecha"], "2027-02-28")
+
+
 class Alertas(ConBase):
     def test_avisa_si_la_rutina_dejo_de_correr_o_fallo(self):
         self.assertEqual(rutina.alertas(self.cx), [])   # nunca se usó: no molesta
@@ -91,7 +112,10 @@ class Alertas(ConBase):
         comandos = rutina.preparar_programacion(self.cfg)
         self.assertTrue(comandos[0].startswith('schtasks /Create /TN "Marketing OS diaria" /SC DAILY'))
         self.assertIn("/D SUN", comandos[1])
-        self.assertTrue(comandos[2].startswith("schtasks /Delete"))
+        self.assertIn("/SC MONTHLY /D 1", comandos[2])
+        self.assertEqual([c.split('"')[1] for c in comandos[3:]],
+                         ["Marketing OS diaria", "Marketing OS semanal", "Marketing OS mensual"])
+        self.assertTrue(all(c.startswith("schtasks /Delete") for c in comandos[3:]))
         script = (self.cfg.espacio / "rutina-diaria.cmd").read_text(encoding="utf-8")
         self.assertIn("-m mos rutina diaria", script)
         self.assertIn(f'set "MOS_ESPACIO={self.cfg.espacio}"', script)

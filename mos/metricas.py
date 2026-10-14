@@ -7,11 +7,17 @@ TikTok Studio, LinkedIn). Ninguna se inventa: si no hay dato, el resumen dice «
 from __future__ import annotations
 
 import csv
+import io
 import re
 import sqlite3
+import tomllib
+import unicodedata
+from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
+from urllib.parse import urlsplit
 
-from . import db, util
+from . import config, db, util
 
 NOMBRES = ('impresiones', 'alcance', 'visualizaciones', 'retencion_promedio_ms', 'reacciones', 'comentarios',
            'compartidos', 'guardados', 'clics', 'visitas', 'leads', 'formularios', 'conversaciones', 'solicitudes_demo',
@@ -50,33 +56,127 @@ def registrar(cx: sqlite3.Connection, nombre: str, valor: int, fecha: str, *, na
                    (publicacion_id, campana_id, fecha, nombre, valor, naturaleza, origen, nota, util.ahora_utc()))
 
 
-def importar_csv(cx: sqlite3.Connection, ruta: Path, *, columna_url: str = "url", columna_fecha: str = "fecha",
-                 mapeo: dict[str, str] | None = None) -> dict[str, int]:
-    """Importa un CSV con una fila por publicación. Cada fila se enlaza por la URL publicada.
+@dataclass
+class Importacion:
+    filas: int = 0
+    emparejadas: int = 0
+    metricas: int = 0
+    sin_enlace: int = 0
+    sin_publicacion: int = 0
+    fecha_invalida: int = 0
+    no_leidas: int = 0
+    reconocidas: dict[str, str] = field(default_factory=dict)    # columna del archivo → métrica o campo
+    ignoradas: list[str] = field(default_factory=list)
+    ejemplos_sin_publicacion: list[str] = field(default_factory=list)
 
-    mapeo: nombre de columna del CSV → nombre de métrica (por ejemplo {"Alcance": "alcance"}).
+
+def _sin_tildes(texto: str) -> str:
+    """«Id. de la publicación» y «id de la publicacion» se reconocen igual: sin tildes, signos ni mayúsculas."""
+    t = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", t).strip()
+
+
+def alias(raiz: Path | None = None) -> tuple[dict[str, str], dict[str, str]]:
+    """(columna normalizada → url|id, columna normalizada → métrica) desde semillas/metricas-csv.toml."""
+    ruta = (raiz or config.RAIZ) / "semillas" / "metricas-csv.toml"
+    datos = tomllib.loads(ruta.read_text(encoding="utf-8")) if ruta.exists() else {}
+    campos = {_sin_tildes(a): campo for campo, nombres in datos.get("columnas", {}).items() for a in nombres}
+    medidas = {_sin_tildes(a): nombre for nombre, nombres in datos.get("metricas", {}).items() for a in nombres
+               if nombre in NOMBRES}
+    medidas.update({_sin_tildes(n): n for n in NOMBRES})     # el nombre propio de la métrica siempre vale
+    campos.setdefault("url", "url")
+    return campos, medidas
+
+
+def _url_normal(url: str) -> str:
+    partes = urlsplit(url.strip())
+    if not partes.scheme or not partes.netloc:
+        return ""
+    return f"{partes.netloc.lower()}{partes.path.rstrip('/')}"
+
+
+def _leer_tabla(ruta: Path) -> list[list[str]]:
+    datos = ruta.read_bytes()
+    if datos[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        texto = datos.decode("utf-16")
+    else:
+        try:
+            texto = datos.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            texto = datos.decode("cp1252")
+    try:
+        dialecto = csv.Sniffer().sniff(texto[:5000], delimiters=",;\t")
+    except csv.Error:
+        dialecto = csv.excel
+    return [fila for fila in csv.reader(io.StringIO(texto), dialecto) if any(c.strip() for c in fila)]
+
+
+def importar_csv(cx: sqlite3.Connection, ruta: Path, *, fecha: str | None = None, revisar: bool = False,
+                 raiz: Path | None = None) -> Importacion:
+    """Importa el CSV de estadísticas de una red (o una planilla propia con columnas url y nombres de métrica).
+
+    Cada fila se enlaza con una publicación PUBLICADA por su URL o por su id en la red; las demás se cuentan, no se
+    adivinan. `fecha` es el día en que se tomó el dato (por defecto hoy); una columna «fecha» en AAAA-MM-DD manda sobre ella. Con `revisar` no guarda nada.
     """
-    m = mapeo or {n: n for n in NOMBRES}
-    conteo = {"filas": 0, "metricas": 0, "sin_publicacion": 0}
-    with open(ruta, newline="", encoding="utf-8-sig") as f:
-        for fila in csv.DictReader(f):
-            conteo["filas"] += 1
-            pub = cx.execute("SELECT id FROM publicacion WHERE url = ?", ((fila.get(columna_url) or "").strip(),)).fetchone()
-            if pub is None:
-                conteo["sin_publicacion"] += 1
+    campos, medidas = alias(raiz)
+    tabla = _leer_tabla(ruta)
+    res = Importacion()
+    # El encabezado es la primera fila (de las 5 primeras) que tiene una columna de enlace o de id.
+    inicio = next((n for n, fila in enumerate(tabla[:5])
+                   if any(campos.get(_sin_tildes(c)) in ("url", "id") for c in fila)), None)
+    if inicio is None:
+        raise ErrorMetrica("No encontré una columna con el enlace o el id de la publicación. "
+                           "Agrega su nombre en semillas/metricas-csv.toml ([columnas] url o id).")
+    columnas: dict[int, tuple[str, str]] = {}
+    for n, nombre in enumerate(tabla[inicio]):
+        clave = _sin_tildes(nombre)
+        if clave in campos:
+            columnas[n] = ("campo", campos[clave])
+            res.reconocidas[nombre] = campos[clave]
+        elif clave in medidas:
+            columnas[n] = ("metrica", medidas[clave])
+            res.reconocidas[nombre] = medidas[clave]
+        elif nombre.strip():
+            res.ignoradas.append(nombre.strip())
+    por_url = {_url_normal(f["url"]): f["id"] for f in cx.execute(
+        "SELECT id, url FROM publicacion WHERE estado = 'PUBLICADA' AND url IS NOT NULL")}
+    por_id = {f["id_externo"]: f["id"] for f in cx.execute(
+        "SELECT id, id_externo FROM publicacion WHERE estado = 'PUBLICADA' AND id_externo IS NOT NULL")}
+    dia = fecha or util.hoy_lima().isoformat()
+    for fila in tabla[inicio + 1:]:
+        res.filas += 1
+        valores = {columnas[n]: c.strip() for n, c in enumerate(fila) if n in columnas}
+        url = valores.get(("campo", "url"), "")
+        ident = valores.get(("campo", "id"), "")
+        con_numeros = any(entero(t) is not None for (tipo, _), t in valores.items() if tipo == "metrica")
+        if (not url and not ident) or not con_numeros:
+            res.sin_enlace += 1          # filas de descripción o totales que algunas redes agregan
+            continue
+        dia_fila = valores.get(("campo", "fecha"), "")[:10] or dia
+        try:
+            date.fromisoformat(dia_fila)
+        except ValueError:
+            res.fecha_invalida += 1      # sin fecha cierta no se guarda: no se inventa el día de la medición
+            continue
+        pub = por_url.get(_url_normal(url)) if url else None
+        pub = pub or (por_id.get(ident) if ident else None)
+        if pub is None:
+            res.sin_publicacion += 1
+            if len(res.ejemplos_sin_publicacion) < 5:
+                res.ejemplos_sin_publicacion.append(url or ident)
+            continue
+        res.emparejadas += 1
+        for (tipo, nombre), texto in valores.items():
+            if tipo != "metrica" or not texto:
                 continue
-            fecha = (fila.get(columna_fecha) or util.hoy_lima().isoformat()).strip()[:10]
-            for columna, nombre in m.items():
-                texto = (fila.get(columna) or "").strip()
-                if not texto:
-                    continue
-                valor = entero(texto)
-                if valor is None:
-                    conteo["no_leidas"] = conteo.get("no_leidas", 0) + 1   # mejor sin dato que con uno falso
-                    continue
-                registrar(cx, nombre, valor, fecha, origen="CSV", publicacion_id=pub["id"])
-                conteo["metricas"] += 1
-    return conteo
+            valor = entero(texto)
+            if valor is None:
+                res.no_leidas += 1       # mejor sin dato que con uno falso («12.5», «1,2 mil»…)
+                continue
+            if not revisar:
+                registrar(cx, nombre, valor, dia_fila, origen="CSV", publicacion_id=pub)
+            res.metricas += 1
+    return res
 
 
 _MILES = re.compile(r"\d{1,3}([., \u00a0])\d{3}(\1\d{3})*")
@@ -171,14 +271,22 @@ def recomendaciones(cx: sqlite3.Connection, desde: str, hasta: str, minimo_alcan
 
 
 def reciclables(cx: sqlite3.Connection, hoy: str | None = None, dias: int = 60) -> list[dict]:
-    """Piezas que funcionaron, publicadas hace más de N días: candidatas a una nueva versión en otro formato."""
+    """Piezas que funcionaron, publicadas hace más de N días: candidatas a una nueva versión en otro formato.
+
+    Las métricas se registran como acumulados, así que de cada publicación cuenta el último valor medido.
+    """
     hoy = hoy or util.hoy_lima().isoformat()
     filas = cx.execute(
-        """SELECT pz.codigo, pz.titulo, pz.formato, pb.canal, pb.publicada_en,
-                  SUM(CASE WHEN m.nombre IN ('leads','solicitudes_demo') THEN m.valor ELSE 0 END) AS interesados,
-                  SUM(CASE WHEN m.nombre IN ('guardados','compartidos') THEN m.valor ELSE 0 END) AS guardados
+        """WITH ultimo AS (
+             SELECT publicacion_id, nombre, valor,
+                    ROW_NUMBER() OVER (PARTITION BY publicacion_id, nombre ORDER BY fecha DESC, id DESC) AS rn
+             FROM metrica WHERE naturaleza = 'MEDIDA' AND publicacion_id IS NOT NULL)
+           SELECT pz.codigo, pz.titulo, pz.formato, GROUP_CONCAT(DISTINCT pb.canal) AS canal,
+                  MIN(pb.publicada_en) AS publicada_en,
+                  SUM(CASE WHEN u.nombre IN ('leads','solicitudes_demo') THEN u.valor ELSE 0 END) AS interesados,
+                  SUM(CASE WHEN u.nombre IN ('guardados','compartidos') THEN u.valor ELSE 0 END) AS guardados
            FROM pieza pz JOIN publicacion pb ON pb.pieza_id = pz.id AND pb.estado = 'PUBLICADA'
-           LEFT JOIN metrica m ON m.publicacion_id = pb.id AND m.naturaleza = 'MEDIDA'
+           LEFT JOIN ultimo u ON u.publicacion_id = pb.id AND u.rn = 1
            WHERE julianday(?) - julianday(substr(pb.publicada_en, 1, 10)) >= ?
            GROUP BY pz.id HAVING interesados > 0 OR guardados > 0
            ORDER BY interesados DESC, guardados DESC""", (hoy, dias)).fetchall()

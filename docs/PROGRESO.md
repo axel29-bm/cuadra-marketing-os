@@ -4,6 +4,40 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 ---
 
+## 14/10/2026 · Fase 6: medición, experimentos y revisión mensual
+
+### Hecho
+
+- **El CSV de cada red se importa tal como llega** (`python -m mos metrica importar --archivo … [--fecha …] [--revisar]`): coma, punto y coma o tabulador; UTF-8, UTF-16 o Windows-1252; encabezado en cualquiera de las cinco primeras filas. Los nombres de columna se traducen con `semillas/metricas-csv.toml` (sin importar mayúsculas, tildes ni signos). Cada fila se enlaza con una publicación confirmada por su URL sin parámetros o por su id en la red. Lo que no coincide se cuenta y se muestra; las filas de descripción o totales se saltan; los decimales y fechas raras no se importan. `--revisar` muestra todo eso sin guardar nada.
+- **Experimentos** (`python -m mos experimento cargar | listar | resultado | empezar | cerrar | cancelar`, `mos/experimentos.py`): los cinco de la campaña están en `campanas/lista-espera-beta/experimentos.toml`. Los de piezas se calculan solos con el último valor medido de cada publicación (lo estimado no entra), dicen qué grupo supera el umbral y se marcan como indicio con menos de 30 publicaciones por grupo. La decisión (CONTINUAR, MODIFICAR, DETENER o INVESTIGAR) solo la anota Didi, con resultado obligatorio, y queda en la auditoría. La pantalla Métricas del panel los muestra.
+- **Métrica norte:** `lead embudo` y el resumen semanal cuentan, por campaña, a quienes siguen en la lista con consentimiento, sin baja, sin supresión y sin «no contactar».
+- **Revisión mensual** (`python -m mos rutina mensual`, programable el día 1): métricas e interesados del mes, experimentos, piezas para reutilizar y herramientas gratuitas verificadas hace más de 90 días, para confirmar que siguen sin coste. El panel avisa si deja de correr.
+- **Migraciones 3 y 4:** la definición de cada experimento y su fecha de decisión (solo expanden); la tabla `rutina` admite MENSUAL (se rehace con los mismos datos, probado desde una base de la versión 2).
+- **Corrección:** las piezas para reutilizar sumaban todos los acumulados semanales de una publicación (10 + 14 = 24 guardados); ahora toman el último valor medido (14).
+
+### Cómo se verificó
+
+- `python -m unittest discover -s tests -t .`: 167 pruebas en verde con Chromium y FFmpeg. `node --test sitio/receptor/worker.test.mjs`: 7 en verde. Nuevas: CSV con punto y coma y fila de descripción, enlace por URL con parámetros y por id, modo revisión, columnas ignoradas, decimales, fecha por fila, importar dos veces sin duplicar; experimentos que se cargan sin pisar la decisión, grupos que nombran piezas reales, resultado solo con lo medido, cierre que exige decisión y resultado, consola y panel; métrica norte con baja y supresión; revisión mensual; migración desde la versión 2.
+- Los comandos nuevos se corrieron de punta a punta sobre un espacio de prueba con la campaña cargada.
+
+### Pendiente
+
+- Confirmar los nombres de columna con el primer CSV real de cada red (Meta Business Suite, LinkedIn, TikTok, YouTube Studio) y agregar los que falten en `semillas/metricas-csv.toml`. El comando dice cuáles no reconoce.
+- Al publicar, confirmar cada pieza con su URL (y su id, si la red lo da): sin eso no hay dónde colgar sus métricas.
+- `python -m mos experimento cargar campanas/lista-espera-beta` en tu PC y `experimento empezar EXP-01` el 15/10/2026.
+
+### Defectos y límites conocidos
+
+- Los encabezados de cada red son probables, no verificados: una columna desconocida no se importa (se avisa), nunca se adivina.
+- Los experimentos comparan grupos con temas y fechas distintas: con 26 piezas en 30 días todos son indicios, y así lo dicen.
+- La revisión mensual propone qué reutilizar, pero la nueva versión la escribe Didi o el copywriter en modo asistido.
+
+### Siguiente paso
+
+Las seis fases están construidas. Lo que sigue depende de Didi: aprobar las piezas en el panel, los trámites legales de la lista y la primera semana real de la campaña (15/10/2026).
+
+---
+
 ## 14/10/2026 · Fase 4: rutinas, lector del radar y estrategia
 
 ### Hecho
@@ -25,7 +59,7 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 - La primera lectura real del radar en tu PC (`python -m mos radar leer`). Si una fuente cambia de estructura, se ajusta su `filtro` o su dirección en `semillas/fuentes.toml`.
 - Programar las rutinas, si quieres (`python -m mos rutina programar`).
-- Fase 6: leer el CSV que exporta cada red, comando y pantalla para los experimentos, y una métrica norte que cuente solo inscritos con consentimiento.
+- Fase 6: leer el CSV que exporta cada red, comando y pantalla para los experimentos, y una métrica norte que cuente solo inscritos con consentimiento. **Hecho en la entrada de arriba.**
 
 ### Defectos y límites conocidos
 

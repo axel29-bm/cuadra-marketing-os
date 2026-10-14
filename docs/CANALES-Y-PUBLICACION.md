@@ -17,7 +17,7 @@ Cómo sale una pieza del sistema hacia una red, quién aprieta el botón y cómo
 | 1. Preparación automática | Archivos en los tamaños de cada red, texto, fecha recomendada y paquete listo | **Funciona.** `campana render` y `campana paquete` |
 | 2. Revisión y programación | El auditor revisa, tú apruebas en el panel y programas con la herramienta nativa de cada red | **Funciona.** La programación la haces tú en la red; el sistema registra que quedó programada |
 | 3. Publicación automática autorizada | Publicar por la API oficial de una red | **Apagado.** Necesita la autorización `PUBLICACION_API`, revocable con `python -m mos autorizar`, y una prueba real en tu cuenta antes |
-| 4. Optimización | Leer métricas, comparar y proponer cambios | **Parcial.** Métricas a mano o desde el CSV que exporta cada red (`metrica importar`); experimentos en la Fase 6 |
+| 4. Optimización | Leer métricas, comparar y proponer cambios | **Funciona en local.** Métricas a mano o desde el CSV que exporta cada red (`metrica importar`), experimentos calculados con lo medido y revisión mensual con piezas para reutilizar. Proponer es automático; decidir y cambiar una pieza siguen siendo tuyos |
 
 Cuando un flujo de nivel 2 lleve semanas sin errores, se puede proponer el nivel 3 para una categoría concreta (por ejemplo, «trivias en Instagram»). La propuesta dirá qué se publica solo, qué no, cómo se revoca y qué prueba se hizo.
 

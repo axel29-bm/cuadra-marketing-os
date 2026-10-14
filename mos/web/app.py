@@ -23,7 +23,7 @@ from typing import Callable
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 
-from .. import __version__, config, contenido, db, leads, metricas, radar, rutina, util
+from .. import __version__, config, contenido, db, experimentos, leads, metricas, radar, rutina, util
 from ..agentes import motor
 from ..agentes.contrato import ErrorContrato
 from ..agentes.registro import AGENTES
@@ -34,6 +34,7 @@ from ..fabrica import plantillas as fab_plantillas
 TOKEN = secrets.token_urlsafe(24)
 HOSTS_LOCALES = {"127.0.0.1", "localhost"}
 ERRORES_DE_NEGOCIO = (contenido.ErrorContenido, leads.ErrorLead, radar.ErrorRadar, metricas.ErrorMetrica,
+                      experimentos.ErrorExperimento,
                       motor.ErrorTarea, ErrorContrato, ValueError, KeyError)
 
 
@@ -870,12 +871,20 @@ def vista_metricas(req: Peticion) -> str:
         {campo("fecha", "Fecha del dato", util.hoy_lima().isoformat(), "date")}
         {selector("naturaleza", "Naturaleza", [("MEDIDA", "Medida (la vi en la red)"), ("ESTIMADA", "Estimada")])}
         {campo("nota", "Nota")}</div>""", "Registrar métrica", volver="/metricas")
+    filas_exp = []
+    for x in experimentos.listar(req.cx):
+        d = util.de_json(x["definicion"], {})
+        lectura = x["resultado"] or experimentos.calcular(req.cx, x["codigo"]).lectura
+        filas_exp.append([e(x["codigo"]), chip(x["estado"], "gris"), e(d.get("titulo", x["hipotesis"])), e(lectura),
+                          e((x["decision"] or "").lower())])
     recic = metricas.reciclables(req.cx, hasta)
     filas_rec = [[e(x["codigo"]), e(x["titulo"]), e(x["canal"]), e(x["interesados"]), e(x["guardados"])] for x in recic]
     cuerpo = f"""<form method="get" class="acciones"><input type="date" name="desde" value="{e(desde)}" style="width:auto">
       <input type="date" name="hasta" value="{e(hasta)}" style="width:auto"><button class="sec">Ver</button></form>
       <p>{r['publicaciones']} publicaciones confirmadas en el periodo.</p>{''.join(bloques)}
       <h2>Recomendaciones</h2>{tabla(["Decisión", "Pieza", "Motivo"], filas_r)}
+      <h2>Experimentos</h2>{tabla(["Código", "Estado", "Qué se prueba", "Resultado (solo medido)", "Decisión"], filas_exp,
+                                  "Sin experimentos. Se cargan con: python -m mos experimento cargar campanas/<campaña>")}
       <h2>Para reciclar</h2>{tabla(["Pieza", "Título", "Canal", "Interesados", "Guardados y compartidos"], filas_rec,
                                   "Nada para reciclar todavía (se sugiere a los 60 días de publicada).")}
       <h2>Registrar una métrica</h2>{form if pubs else '<p class="vacio">Primero confirma una publicación con su enlace.</p>'}"""

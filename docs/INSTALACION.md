@@ -93,7 +93,7 @@ python -m mos respaldar    # antes de cualquier cambio grande
 python -m mos rutina programar
 ```
 
-Te muestra los comandos para que Windows corra la rutina diaria a las 08:00 y el resumen semanal los domingos a las 18:00. No crea nada por sí solo: tú copias los comandos si quieres, y el mismo comando te da los de quitar. Detalle en `docs/AUTOMATIZACIONES.md`.
+Te muestra los comandos para que Windows corra la rutina diaria a las 08:00, el resumen semanal los domingos a las 18:00 y la revisión mensual el día 1 a las 09:00. No crea nada por sí solo: tú copias los comandos si quieres, y el mismo comando te da los de quitar. Detalle en `docs/AUTOMATIZACIONES.md`.
 
 ## 7. Restaurar una copia de seguridad
 

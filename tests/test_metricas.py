@@ -32,6 +32,16 @@ class Metricas(ConBase):
         self.assertEqual(r["medido"]["facebook"]["alcance"], 300)
         self.assertEqual(r["estimado"]["facebook"]["alcance"], 999)
 
+    def test_reciclables_toma_el_ultimo_acumulado_y_no_la_suma_de_semanas(self):
+        pub = self.publicada(1)
+        self.publicada(2)                                   # sin métricas: no es candidata
+        metricas.registrar(self.cx, "guardados", 10, "2026-10-11", publicacion_id=pub)
+        metricas.registrar(self.cx, "guardados", 14, "2026-10-18", publicacion_id=pub)
+        metricas.registrar(self.cx, "guardados", 500, "2026-10-18", publicacion_id=pub, naturaleza="ESTIMADA")
+        self.assertEqual(metricas.reciclables(self.cx, "2026-11-01"), [])        # aún no pasan 60 días
+        [r] = metricas.reciclables(self.cx, "2026-12-10")
+        self.assertEqual((r["codigo"], r["guardados"], r["interesados"]), ("P-0001", 14, 0))
+
     def test_sin_datos_suficientes_no_se_recomienda_nada_concreto(self):
         self.publicada(1)
         recs = metricas.recomendaciones(self.cx, "2026-10-01", "2026-10-31")

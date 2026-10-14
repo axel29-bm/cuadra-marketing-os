@@ -26,14 +26,16 @@ Abre una consola en la carpeta del proyecto. Si usas un espacio distinto del pre
 ## Cada semana (domingo, 45 minutos)
 
 1. **Resumen semanal:** si no está programado, `python -m mos rutina semanal`. Léelo primero: trae publicaciones, métricas, interesados, aprobaciones, radar y la semana siguiente. Copia también la carpeta `espacio\respaldos` a un disco externo o a otra carpeta que no sea la de trabajo.
-2. **Métricas:** anota las cifras de cada publicación que ves en la red: `python -m mos metrica registrar --publicacion <número> --nombre alcance --valor 1200 --naturaleza MEDIDA`. También acepta una planilla con columnas `url`, `fecha` y los nombres de métrica (`metrica importar --archivo …`); leer directamente el CSV que exporta cada red llega en la Fase 6.
-3. **Embudo:** `python -m mos lead embudo` muestra cuántos interesados hay en cada etapa.
-4. **Radar:** revisa las novedades de SUNAT, El Peruano y el MEF en el panel (o `python -m mos radar pendientes`). Si una fuente marca error varios días seguidos, `python -m mos radar fuentes` dice cuál y por qué. Una noticia solo se convierte en pieza si tiene enlace a la fuente oficial y la revisa un contador.
-5. **Plan de la semana siguiente:** revisa `CALENDARIO.md` de la campaña. Si algo se retrasó, `python -m mos campana mover campanas\lista-espera-beta --semanas 1` corre todas las fechas.
-6. **Errores:** `python -m mos errores` no debería mostrar nada pendiente.
+2. **Métricas:** exporta el CSV de estadísticas de cada red y pásalo primero en modo revisión: `python -m mos metrica importar --archivo instagram.csv --fecha 2026-10-18 --revisar`. Dice qué columnas entiende, cuáles no y qué filas no coinciden con una publicación confirmada; si todo está bien, repite sin `--revisar`. Lo que la red no exporta se anota a mano: `python -m mos metrica registrar --publicacion <número> --nombre alcance --valor 1200 --naturaleza MEDIDA`. Detalle en `docs/METRICAS-Y-EXPERIMENTOS.md`, sección 6.
+3. **Embudo:** `python -m mos lead embudo --campana lista-espera-beta` muestra cuántos interesados hay en cada etapa y, al final, la métrica norte: cuántos siguen en la lista con consentimiento.
+4. **Experimentos:** `python -m mos experimento listar` y `experimento resultado EXP-01` (o la pantalla Métricas) dicen cómo va cada uno, solo con lo medido. Cuando toque decidir: `experimento cerrar EXP-01 --decision CONTINUAR --resultado "…"`.
+5. **Radar:** revisa las novedades de SUNAT, El Peruano y el MEF en el panel (o `python -m mos radar pendientes`). Si una fuente marca error varios días seguidos, `python -m mos radar fuentes` dice cuál y por qué. Una noticia solo se convierte en pieza si tiene enlace a la fuente oficial y la revisa un contador.
+6. **Plan de la semana siguiente:** revisa `CALENDARIO.md` de la campaña. Si algo se retrasó, `python -m mos campana mover campanas\lista-espera-beta --semanas 1` corre todas las fechas.
+7. **Errores:** `python -m mos errores` no debería mostrar nada pendiente.
 
 ## Cada mes
 
+- **Revisión mensual:** si no está programada, `python -m mos rutina mensual` el día 1 (revisa el mes anterior; `--mes 2026-10` para otro). Trae métricas e interesados del mes, cómo va cada experimento, las piezas que conviene reutilizar y las herramientas gratuitas verificadas hace más de 90 días, para que confirmes que siguen sin coste.
 - Revisa la matriz de capacidades con lo nuevo de Cuadra (`python -m mos capacidades cuadra`). Si una función pasa a verificada, ya se puede anunciar; si no, el auditor la sigue frenando.
 - Compara las métricas del mes con las metas de cada campaña y decide qué repetir y qué dejar.
 - Prueba los derechos de las personas con un interesado ficticio: exporta y suprime sus datos (`lead acceso --contacto …`, `lead suprimir --contacto …`) para comprobar que el procedimiento sigue funcionando.

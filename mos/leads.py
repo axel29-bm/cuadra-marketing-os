@@ -284,6 +284,20 @@ def exportar_csv(cx: sqlite3.Connection, ruta: Path, producto: str | None = None
     return len(filas)
 
 
+def metrica_norte(cx: sqlite3.Connection, *, producto: str | None = None, campana: str | None = None) -> int:
+    """Personas en la lista con consentimiento registrado, que no pidieron la baja (las suprimidas ya no están)."""
+    sql = """SELECT COUNT(*) FROM lead l JOIN producto p ON p.id = l.producto_id LEFT JOIN campana c ON c.id = l.campana_id
+             WHERE l.consentimiento = 1 AND l.baja_en IS NULL AND l.estado <> 'NO_CONTACTAR'"""
+    params: list = []
+    if producto:
+        sql += " AND p.slug = ?"
+        params.append(producto)
+    if campana:
+        sql += " AND c.slug = ?"
+        params.append(campana)
+    return cx.execute(sql, params).fetchone()[0]
+
+
 def embudo(cx: sqlite3.Connection, producto: str | None = None) -> dict[str, int]:
     sql = "SELECT l.estado, COUNT(*) FROM lead l JOIN producto p ON p.id = l.producto_id"
     params: list = []

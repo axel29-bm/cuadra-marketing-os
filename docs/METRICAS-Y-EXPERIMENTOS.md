@@ -21,7 +21,7 @@ Un lead (un interesado registrado en la tabla `lead`) cuenta si es de Cuadra, en
 Tres cosas que hay que saber:
 
 - **Empieza en cero por diseño.** Nadie entra a la lista antes de inscribir el banco de datos «Interesados» y tener el aviso de privacidad. Hasta entonces se cuentan las conversaciones (sección 3), sin guardar datos de nadie.
-- **Hoy no hay un comando que la dé directamente.** `python -m mos lead embudo` cuenta por estado e incluye leads sin consentimiento. Se cuenta en la pantalla Leads del panel (columna Consentimiento) o con `python -m mos lead exportar` (columna `consentimiento`; ese archivo tiene datos personales y no sale de la PC).
+- **La da el sistema.** `python -m mos lead embudo --campana lista-espera-beta` termina con la línea «En la lista con consentimiento», y el resumen de `python -m mos rutina semanal` trae una tabla por campaña activa con su meta. Cuenta solo a quien dio su consentimiento, sin baja, sin supresión y sin la marca «no contactar»; el resto de `lead embudo` cuenta por estado e incluye a quienes no dieron consentimiento.
 - **El lead debe registrarse con la campaña y la finalidad**, como en `mensajes-y-demo.md`; sin `--campana` no se asocia a la campaña y sin `--finalidad` el sistema rechaza el consentimiento:
 
 ```powershell
@@ -96,7 +96,9 @@ En los comandos, las fechas van como AAAA-MM-DD. Los valores son enteros.
 | Métrica de una publicación | `python -m mos metrica registrar --nombre alcance --valor [número] --publicacion [número] --fecha 2026-10-18` |
 | Métrica estimada | Lo mismo con `--naturaleza ESTIMADA --nota "cómo se estimó"` |
 | Métrica de la campaña | `--campana lista-espera-beta` en lugar de `--publicacion` |
-| Importar una planilla | `python -m mos metrica importar --archivo semana.csv` |
+| Importar el CSV que exporta una red, o una planilla propia | `python -m mos metrica importar --archivo instagram.csv --revisar` para ver qué entendería sin guardar nada; luego, lo mismo sin `--revisar` |
+| Cargar o actualizar los experimentos de la campaña | `python -m mos experimento cargar campanas/lista-espera-beta` |
+| Ver cómo va un experimento | `python -m mos experimento resultado EXP-01` |
 | Resumen y recomendaciones | `python -m mos metrica resumen --desde 2026-10-15 --hasta 2026-10-18 --producto cuadra` |
 | Embudo de leads | `python -m mos lead embudo --producto cuadra` |
 | Seguimientos pendientes | `python -m mos lead seguimientos` |
@@ -106,20 +108,23 @@ Cómo se comporta el sistema:
 - **Registrar dos veces no duplica.** La misma métrica, de la misma publicación o campaña, con la misma fecha, naturaleza y origen, reemplaza a la anterior.
 - **El resumen toma el último valor** de cada métrica por publicación o campaña dentro del rango. Por eso se registran **acumulados** con la fecha del domingo, no lo sumado en la semana.
 - **Sin fechas**, `metrica resumen` va del primer día del mes hasta hoy. El panel (pantalla Métricas) muestra los últimos 28 días y solo registra métricas de publicaciones; las de campaña van por la línea de comandos.
-- **La planilla** necesita las columnas `url` y `fecha` y una columna por métrica con el nombre del sistema (`alcance`, `guardados`…). Hoy el comando no traduce los encabezados que exporta cada red: hay que renombrarlos antes (leer esos archivos tal cual llega en la Fase 6). Las filas cuyo enlace no corresponde a una publicación confirmada se saltan. **Cuidado:** el importador quita puntos y comas, así que «12.5» se leería como 125; la retención va en milisegundos y sin decimales.
+- **El CSV de cada red se lee tal como llega** (coma, punto y coma o tabulador; UTF-8, UTF-16 o Windows-1252). Los encabezados se traducen con `semillas/metricas-csv.toml`; esos nombres son probables y quedan por verificar con el primer archivo real de cada red. El comando lista las columnas que no reconoce: si una es una métrica, se agrega su nombre en ese archivo. Una columna que no está ahí no se importa.
+- **Cada fila se enlaza con una publicación confirmada** por su URL (sin parámetros como `?igsh=`) o por su id en la red (`publicacion confirmar --id-externo`). Las filas que no coinciden se cuentan y se muestran, nunca se adivinan. Las filas de descripción o de totales que agregan algunas redes se saltan.
+- **La fecha** es el día en que se tomó el dato: `--fecha`, o hoy si falta. Una planilla propia puede traer una columna `fecha` en AAAA-MM-DD por fila; la fecha de publicación que traen las redes no se usa. Una fecha en otro formato deja la fila fuera.
+- **Solo números enteros.** «1.234», «1,234» y «1 234» se leen como 1234; «12.5», «4,5 %» o «1,2 mil» no se importan y se cuentan como no leídos. La retención va en milisegundos y sin decimales.
 
 ## 7. Revisión semanal de los domingos
 
 Fechas de la campaña: 18/10, 25/10, 01/11 y 08/11/2026, más el cierre propuesto del 15/11/2026. Orden de trabajo, después de la copia de seguridad de `OPERACION-DIARIA.md`:
 
 1. Confirmar con su enlace todo lo publicado en la semana.
-2. Copiar de cada red las métricas acumuladas de cada publicación y registrarlas con la fecha del domingo.
+2. Exportar de cada red el CSV de estadísticas e importarlo con `--fecha` del domingo (primero con `--revisar`). Lo que la red no exporta se copia a mano con `metrica registrar`.
 3. Registrar `conversaciones` de campaña (acumulado) y, si ya hay lista, `leads` con consentimiento (acumulado).
 4. Responder lo pendiente y revisar `lead seguimientos`.
 5. Correr `metrica resumen` de la semana y de toda la campaña (desde el 15/10/2026).
-6. Revisar los umbrales (sección 8) y los experimentos (sección 9). Decidir CONTINUAR, MODIFICAR, DETENER o INVESTIGAR, con el motivo.
+6. Revisar los umbrales (sección 8) y los experimentos (sección 9) con `experimento resultado` o la pantalla Métricas. Decidir CONTINUAR, MODIFICAR, DETENER o INVESTIGAR, con el motivo.
 7. Hacer la tarea del día que fija `campana.toml`: 18/10 voz de C13; 25/10 revisión de la meta y noticia C12 al contador; 01/11 decisión sobre la landing; 08/11 demostraciones y tres piezas para repetir.
-8. Anotar las decisiones en el registro de la sección 10.
+8. Anotar las decisiones: `experimento cerrar EXP-01 --decision CONTINUAR --resultado "…"` (o `cancelar --motivo "…"`).
 
 ## 8. Umbrales para decidir
 
@@ -150,7 +155,11 @@ Con pocos datos, una diferencia es un indicio, no una prueba. Con menos de 30 ca
 
 ## 9. Cinco experimentos para la campaña
 
-La tabla `experimento` ya existe en la base (hipótesis, cambio, variable, métrica, fechas, resultado, limitaciones, decisión y estado), pero todavía no hay comando ni pantalla para llenarla: llega con la Fase 6. Mientras tanto, los experimentos viven aquí y su avance en la sección 10. Ninguno cuesta dinero ni necesita rastreo.
+Los cinco están escritos en `campanas/lista-espera-beta/experimentos.toml` y se cargan en la base con `python -m mos experimento cargar campanas/lista-espera-beta`. Volver a cargar actualiza la definición sin tocar el estado, el resultado ni la decisión. Ninguno cuesta dinero ni necesita rastreo.
+
+- **EXP-01 a EXP-03 se calculan solos** con `experimento resultado` y en la pantalla Métricas: suman los numeradores y el denominador de las publicaciones confirmadas de cada grupo, con el último valor **medido** de cada una (lo estimado no entra), y dicen qué grupo supera el umbral. Con menos de 30 publicaciones por grupo el resultado se marca como indicio. Las piezas sin publicación confirmada o sin el denominador se listan como «sin dato».
+- **EXP-04 y EXP-05 se miden fuera de las publicaciones** (leads y conversaciones); su resultado se escribe al cerrarlos.
+- **La decisión siempre es de Didi:** `experimento empezar`, `experimento cerrar --decision … --resultado "…"` o `experimento cancelar --motivo "…"`. Todo queda en la auditoría.
 
 **EXP-01 · Oficio primero o producto primero**
 - Hipótesis (la de la campaña): las piezas de Oficio y control generan más guardados y conversaciones por alcance que las de Producto real.
@@ -193,6 +202,8 @@ La tabla `experimento` ya existe en la base (hipótesis, cambio, variable, métr
 - Limitaciones: es una comparación de antes y después, y el contenido cambia de una semana a otra.
 
 ## 10. Registro de experimentos y decisiones
+
+El registro vivo está en la base: `python -m mos experimento listar` y la pantalla Métricas del panel. Esta tabla es el plan de partida.
 
 | Código | Estado | Inicio | Fin | Resultado (solo medido) | Decisión y motivo |
 | --- | --- | --- | --- | --- | --- |
