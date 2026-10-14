@@ -1,0 +1,45 @@
+# Audiencias de Cuadra. Todas son HIPÓTESIS hasta que entrevistas o datos las conviertan en OBSERVADA.
+
+[[audiencia]]
+slug = "contador-multiempresa"
+nombre = "Contador independiente multiempresa"
+naturaleza = "HIPOTESIS"
+descripcion = "Contador público que lleva por su cuenta varias empresas pequeñas (el rango típico está por validar en entrevistas), trabaja en Windows y vive entre Excel, SOL y un sistema contable."
+dolores = [
+  "Cambiar de empresa en empresa para saber qué falta",
+  "Semana de vencimientos con todo junto",
+  "Pasar a mano lo que ya está en Excel o en el SIRE",
+  "Errores que aparecen al cierre",
+]
+objeciones = [
+  "Ya tengo mi sistema y mis plantillas",
+  "No tengo tiempo para migrar",
+  "¿Y si se pierde mi información?",
+  "¿Cuánto cuesta?",
+]
+canales = ["facebook", "youtube", "tiktok", "whatsapp", "grupos de colegios de contadores"]
+
+[[audiencia]]
+slug = "estudio-contable-pequeno"
+nombre = "Estudio contable pequeño"
+naturaleza = "HIPOTESIS"
+descripcion = "Estudio con pocas personas y una cartera amplia de empresas (tamaños por validar), con un responsable que decide qué sistema se usa."
+dolores = [
+  "No saber en qué estado está cada empresa sin preguntar a cada asistente",
+  "Control y respaldo de la información de toda la cartera",
+  "Tiempo de los asistentes en digitación",
+]
+objeciones = [
+  "Necesito varios usuarios a la vez",
+  "Mi equipo ya sabe usar el sistema actual",
+]
+canales = ["linkedin", "facebook", "youtube"]
+
+[[audiencia]]
+slug = "contador-en-formacion"
+nombre = "Estudiante o contador joven"
+naturaleza = "HIPOTESIS"
+descripcion = "Estudiante de los últimos ciclos o contador recién colegiado que busca aprender y hacerse una cartera."
+dolores = ["Aprender el SIRE y los cierres en la práctica", "Herramientas caras para empezar"]
+objeciones = ["Todavía no tengo clientes"]
+canales = ["tiktok", "instagram", "youtube"]

@@ -1,0 +1,31 @@
+# Ficha del producto. La lee `python -m mos iniciar` y se carga en la base sin duplicar.
+# Cada producto nuevo del portafolio copia esta carpeta y cambia sus datos.
+
+slug = "cuadra"
+nombre_provisional = "Cuadra"
+nombre_comercial = ""            # vacío hasta confirmar la marca (búsqueda en INDECOPI pendiente)
+sector = "Software contable para contadores en Perú"
+publico_objetivo = "Contador independiente o estudio contable pequeño en Perú que lleva la contabilidad de varias empresas, sobre todo del Régimen Especial y del MYPE Tributario"
+problemas = [
+  "Llevar muchas empresas obliga a abrir archivos o sistemas uno por uno y perder de vista qué falta en cada una",
+  "Digitar o pasar a mano compras y ventas que ya están en Excel o en la propuesta del SIRE",
+  "Cotejar la propuesta del SIRE con lo registrado consume tiempo y se presta a errores",
+  "Errores que se descubren tarde: correlativos faltantes, comprobantes duplicados, meses que nunca se cerraron",
+  "Miedo a perder la información de los clientes por una PC dañada o una copia que nunca se probó",
+]
+propuesta_valor = "Un sistema contable de escritorio, con tus datos en tu PC, que te muestra todas tus empresas en una pantalla y te ayuda a registrar, cotejar con el SIRE y cerrar cada mes con control."
+precio = ""
+precio_definido = false
+estado_desarrollo = "Código de la mayoría del MVP en main con 719 pruebas; sin versión publicada; validación contable y beta pendientes"
+etapa_comercial = "PRELANZAMIENTO"
+disponible_al_publico = false
+validacion_contable = "PENDIENTE"
+marca = "cuadra"
+canales = ["facebook", "linkedin", "youtube", "tiktok", "instagram", "whatsapp", "landing"]
+# Observados el 2026-10-14 en sus webs oficiales (ver docs/ESTRATEGIA-MAESTRA.md). Nunca se nombran en publicidad
+# sin validación legal: la comparación pública exige prueba previa (D. Leg. 1044).
+competidores = ["CONCAR (Real Systems)", "SISCONT", "StarSoft", "Contasis", "Siigo Nube", "NubeCont", "ContaUno",
+                "Dora", "Defontana", "Adiasoft", "GestiERP", "Alegra", "Excel con PLE y SIRE de SUNAT"]
+presupuesto_mensual_c = 0
+repositorio = "axel29-bm/contatony-2"
+notas = "Nombre provisional. Los tratamientos contables se basan en ContaExcel (decisión D2) y esperan firma de un contador colegiado."

@@ -1,0 +1,37 @@
+# Sistema visual genérico del portafolio. Cada producto hereda esto y cambia solo lo suyo.
+# Las plantillas leen los tokens por nombre; nunca usan un color escrito a mano.
+slug = "base"
+nombre = "Sistema base"
+descripcion = "Tokens neutros que sirven a cualquier producto mientras no tenga identidad propia."
+provisional = true
+
+[color]
+fondo = "#FFFFFF"
+superficie = "#F4F5F7"
+borde = "#DCDFE4"
+tinta = "#111827"
+texto = "#1F2937"
+texto_suave = "#4B5563"
+acento = "#1D4ED8"
+acento_texto = "#FFFFFF"
+destacado = "#FDE68A"
+destacado_texto = "#111827"
+exito = "#15803D"
+alerta = "#B45309"
+oscuro = "#0F172A"
+oscuro_texto = "#F8FAFC"
+
+[tipografia]
+titulos = "Geist"
+texto = "Geist"
+mono = "Geist Mono"
+respaldo = "Inter, 'Segoe UI', system-ui, sans-serif"
+archivo_titulos = "recursos/tipografias/geist/Geist-Variable.woff2"
+archivo_mono = "recursos/tipografias/geist/GeistMono-Variable.woff2"
+
+[forma]
+radio = 20
+radio_chico = 10
+margen = 72          # en un lienzo de 1080 px
+espacio = 24
+grosor_icono = 1.75
