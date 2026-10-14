@@ -1,0 +1,37 @@
+{% extends "_base/base.html.j2" %}
+{% block estilos %}
+.lienzo { gap: calc(22 * var(--u)); }
+.panel { flex: 1; min-height: 0; border-radius: var(--r); padding: calc(40 * var(--u)) calc(44 * var(--u)); display: flex; flex-direction: column;
+  justify-content: center; gap: calc(22 * var(--u)); position: relative; overflow: hidden; }
+.panel.a { background: var(--superficie); }
+.panel.b { background: var(--oscuro); color: var(--oscuro-texto); }
+.panel h2 { display: flex; align-items: center; gap: calc(14 * var(--u)); font: 700 calc(26 * var(--u)) / 1 var(--fuente-texto);
+  letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+.panel.b h2 { color: var(--destacado); }
+.panel h2 span { width: calc(36 * var(--u)); height: calc(36 * var(--u)); }
+.panel p { font: 700 calc(60 * var(--u)) / 1.08 var(--fuente-titulos); letter-spacing: -0.03em; color: var(--tinta); text-wrap: balance; }
+.panel.b p { color: var(--oscuro-texto); }
+.panel p mark { background: linear-gradient(var(--destacado), var(--destacado)) no-repeat 0 62% / 100% 84%; color: var(--destacado-texto); padding: 0 .12em; border-radius: .12em; }
+.nadie .linea { font: 600 calc(48 * var(--u)) / 1.2 var(--fuente-titulos); color: var(--texto-suave); }
+.nadie .linea b { color: var(--tinta); }
+.nadie .remate-grande { font: 750 calc(86 * var(--u)) / 1.03 var(--fuente-titulos); letter-spacing: -0.035em; color: var(--tinta); text-wrap: balance; }
+.nadie .remate-grande mark { background: linear-gradient(var(--destacado), var(--destacado)) no-repeat 0 62% / 100% 84%; color: var(--destacado-texto); padding: 0 .12em; border-radius: .12em; }
+.pie-meme { display: flex; justify-content: space-between; align-items: center; gap: var(--e); }
+.pie-meme .remate { font: 600 calc(28 * var(--u)) / 1.25 var(--fuente-texto); color: var(--tinta); }
+.pie-meme .marca img { width: calc(44 * var(--u)); height: calc(44 * var(--u)); }
+.pie-meme .marca b { font-size: calc(26 * var(--u)); }
+.formato-historia .lienzo { padding-top: calc(150 * var(--u)); padding-bottom: calc(170 * var(--u)); }
+{% endblock %}
+{% block contenido %}
+{% if estilo == "nadie" %}
+<div class="nadie" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:calc(34 * var(--u))">
+  <p class="linea ajustar"><b>{{ panel_a_titulo or "Nadie:" }}</b>{% if panel_a %} {{ panel_a }}{% endif %}</p>
+  <p class="linea ajustar"><b>{{ panel_b_titulo }}</b></p>
+  <p class="remate-grande ajustar">{{ panel_b | resaltar }}</p>
+</div>
+{% else %}
+<div class="panel a caja-ajuste"><h2>{% if d.icono_a %}<span>{{ icono(d.icono_a) }}</span>{% endif %}{{ panel_a_titulo }}</h2><p class="ajustar">{{ panel_a | resaltar }}</p></div>
+<div class="panel b caja-ajuste"><h2>{% if d.icono_b %}<span>{{ icono(d.icono_b) }}</span>{% endif %}{{ panel_b_titulo }}</h2><p class="ajustar">{{ panel_b | resaltar }}</p></div>
+{% endif %}
+<div class="pie-meme"><p class="remate">{{ remate or "" }}</p><div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div></div>
+{% endblock %}

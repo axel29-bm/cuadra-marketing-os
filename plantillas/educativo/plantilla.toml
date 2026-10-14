@@ -1,0 +1,26 @@
+nombre = "educativo"
+titulo = "Educativo"
+descripcion = "Enseña algo útil del oficio en 2 a 5 puntos. Pensado para que lo guarden y lo compartan."
+uso = "Listas de control, pasos de un proceso, errores frecuentes. Atención e interés."
+tipos_afirmacion = ["EDUCATIVA", "CAPTACION"]
+formatos = ["vertical", "cuadrado", "historia"]
+
+[campos]
+antetitulo = { tipo = "texto", max = 32 }
+titular = { tipo = "texto", max = 80, requerido = true }
+puntos = { tipo = "lista", min = 2, max_items = 5, max = 80, requerido = true }
+nota = { tipo = "texto", max = 110 }
+cta = { tipo = "texto", max = 34 }
+
+[ejemplo]
+antetitulo = "Cierre de mes"
+titular = "5 cosas que revisar *antes* de cerrar el mes"
+puntos = [
+  "Correlativos de cada serie de venta, sin huecos",
+  "Compras del mes contra la propuesta del SIRE",
+  "Tipo de cambio de cada comprobante en dólares",
+  "Detracciones y retenciones del periodo",
+  "Copia de seguridad hecha y comprobada",
+]
+nota = "Guárdalo para tu próximo cierre."
+cta = "Únete a la lista de espera"

@@ -17,3 +17,4 @@ include = ["mos*"]
 
 [tool.setuptools.package-data]
 "mos.migraciones" = ["*.sql"]
+"mos.web" = ["*.css"]

@@ -1,0 +1,100 @@
+{% extends "_base/base.html.j2" %}
+{% block estilos %}
+.lienzo { padding: 0; }
+.motivo { right: calc(-180 * var(--u)); top: 22%; width: calc(520 * var(--u)); transform-origin: 50% 50%; }
+.progreso { position: absolute; z-index: 5; left: var(--m); right: var(--m); top: calc(var(--m) * .8); display: flex; gap: calc(10 * var(--u)); }
+.progreso i { flex: 1; height: calc(8 * var(--u)); border-radius: 99px; background: color-mix(in srgb, var(--tinta) 14%, transparent); overflow: hidden; }
+.progreso i b { display: block; height: 100%; width: 0; background: var(--tinta); }
+.capa { position: absolute; inset: 0; padding: calc(var(--m) * 2) var(--m) var(--m); display: flex; flex-direction: column; justify-content: center;
+  gap: calc(36 * var(--u)); opacity: 0; overflow: hidden; z-index: 2; }
+.capa .titular { font-size: calc(104 * var(--u)); }
+.capa .texto { font-size: calc(42 * var(--u)); color: var(--texto); }
+.capa .icono-caja { width: calc(150 * var(--u)); height: calc(150 * var(--u)); }
+.capa mark { background: linear-gradient(var(--destacado), var(--destacado)) no-repeat 0 62% / calc(var(--hl, 1) * 100%) 84% !important; }
+.capa .captura { max-height: 48%; display: flex; }
+.capa .captura img { width: 100%; object-fit: cover; object-position: top left; transform-origin: 30% 20%; }
+.tema { position: absolute; z-index: 5; left: var(--m); top: calc(var(--m) * 1.25); font: 600 calc(28 * var(--u)) / 1 var(--fuente-texto); color: var(--texto-suave); }
+.marca-fija { position: absolute; z-index: 5; right: var(--m); top: calc(var(--m) * 1.1); }
+.marca-fija img { width: calc(52 * var(--u)); height: calc(52 * var(--u)); display: block; }
+.sub { position: absolute; z-index: 6; left: var(--m); right: var(--m); bottom: calc(var(--m) * 1.6); text-align: center; }
+.sub span { display: inline; background: var(--tinta); color: var(--oscuro-texto); font: 600 calc(34 * var(--u)) / 1.5 var(--fuente-texto);
+  padding: calc(6 * var(--u)) calc(14 * var(--u)); border-radius: calc(10 * var(--u)); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.final { background: var(--oscuro); color: var(--oscuro-texto); }
+.en-final .progreso, .en-final .tema, .en-final .marca-fija { opacity: 0; }
+.final .marca b { color: var(--oscuro-texto); }
+.final .titular { color: var(--oscuro-texto); font-size: calc(92 * var(--u)); }
+.final .pie { color: color-mix(in srgb, var(--oscuro-texto) 70%, transparent); font-size: calc(26 * var(--u)); }
+.final .cta { background: var(--destacado); color: var(--destacado-texto); }
+.final .cta .flecha { background: var(--oscuro); color: var(--destacado); }
+.formato-historia .capa { padding: calc(240 * var(--u)) var(--m) calc(340 * var(--u)); }
+.formato-historia .progreso { top: calc(150 * var(--u)); }
+.formato-historia .tema { top: calc(185 * var(--u)); }
+.formato-historia .marca-fija { top: calc(175 * var(--u)); }
+.formato-historia .sub { bottom: calc(330 * var(--u)); }
+.formato-horizontal .capa { padding: calc(150 * var(--u)) calc(160 * var(--u)); }
+.formato-horizontal .capa .titular, .formato-horizontal .capa .texto { max-width: 75%; }
+.formato-cuadrado .capa .titular { font-size: calc(84 * var(--u)); }
+{% endblock %}
+{% block fondo %}<div class="motivo"><i></i><i></i><i></i><i></i></div>{% endblock %}
+{% block contenido %}
+<div class="progreso">{% for e in escenas %}<i><b></b></i>{% endfor %}<i><b></b></i></div>
+{% if tema %}<div class="tema">{{ tema }}</div>{% endif %}
+{% if logo %}<div class="marca-fija"><img src="{{ logo }}" alt=""></div>{% endif %}
+{% for e in escenas %}
+<section class="capa caja-ajuste">
+  {% if e.captura %}<div class="captura entra"><img src="{{ captura(e.captura) }}" alt=""></div>
+  {% elif e.icono %}<div class="icono-caja entra">{{ icono(e.icono) }}</div>{% endif %}
+  <h1 class="titular ajustar entra">{{ e.pantalla | resaltar }}</h1>
+  {% if e.apoyo %}<p class="texto ajustar entra">{{ e.apoyo | resaltar }}</p>{% endif %}
+  {% if e.captura %}<p class="captura-nota entra">Captura real con una empresa de ejemplo</p>{% endif %}
+</section>
+{% endfor %}
+<section class="capa final caja-ajuste">
+  <div class="marca entra">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div>
+  <h1 class="titular ajustar entra">{{ cierre_titular | resaltar }}</h1>
+  <div class="cta entra">{{ cta }}<span class="flecha">{{ icono("arrow-right") }}</span></div>
+  {% if cierre_pie %}<p class="pie entra">{{ cierre_pie }}</p>{% endif %}
+</section>
+{% if mostrar_locucion == "si" %}<div class="sub"><span id="sub"></span></div>{% endif %}
+{% endblock %}
+{% block script %}
+const U = {{ u }};
+const DUR = [{% for e in escenas %}{{ e.segundos }}, {% endfor %}3.5];
+const LOCUCION = {{ escenas | map(attribute="locucion") | map("default", "") | list | tojson }};
+window.duracion = DUR.reduce((a, b) => a + b, 0);
+const capas = [...document.querySelectorAll('.capa')];
+const barras = [...document.querySelectorAll('.progreso b')];
+const motivo = document.querySelector('.motivo');
+const sub = document.getElementById('sub');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = x => 1 - Math.pow(1 - x, 3);
+window.escena = function (t) {
+  let inicio = 0;
+  capas.forEach((c, i) => {
+    const d = DUR[i], local = t - inicio, ultima = i === capas.length - 1;
+    const activa = local >= 0 && (local < d || (ultima && local <= d + 0.01));
+    const salida = ultima ? 1 : clamp((d - local) / 0.35);
+    c.style.opacity = activa ? Math.min(ease(clamp(local / 0.35)), salida) : 0;
+    c.style.transform = `translateY(${(1 - salida) * -30 * U}px)`;
+    c.style.setProperty('--hl', ease(clamp((local - 0.55) / 0.5)));
+    c.querySelectorAll('.entra').forEach((el, k) => {
+      const e = ease(clamp((local - 0.1 * k) / 0.55));
+      el.style.opacity = e;
+      el.style.transform = `translateY(${(1 - e) * 50 * U}px)`;
+    });
+    const img = c.querySelector('.captura img');
+    if (img) img.style.transform = `scale(${1 + 0.08 * ease(clamp(local / d))})`;
+    if (barras[i]) barras[i].style.width = (clamp(local / d) * 100) + '%';
+    if (activa && sub) { sub.textContent = LOCUCION[i] || ''; sub.parentElement.style.display = LOCUCION[i] ? '' : 'none'; }
+    inicio += d;
+  });
+  document.body.classList.toggle('en-final', t >= window.duracion - DUR[DUR.length - 1]);
+  if (motivo) motivo.style.transform = `rotate(${t * 4}deg)`;
+};
+document.fonts.ready.then(() => {
+  capas.forEach(c => c.style.opacity = 1);
+  ajustar();
+  window.escena(window.__portada ? Math.min(1.6, DUR[0] - 0.2) : 0);
+  window.__listo = true;
+});
+{% endblock %}

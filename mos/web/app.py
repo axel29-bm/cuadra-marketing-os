@@ -29,6 +29,7 @@ from ..agentes.contrato import ErrorContrato
 from ..agentes.registro import AGENTES
 from ..calidad import auditor as aud
 from ..contexto import de_producto, producto_unico
+from ..fabrica import plantillas as fab_plantillas
 
 TOKEN = secrets.token_urlsafe(24)
 HOSTS_LOCALES = {"127.0.0.1", "localhost"}
@@ -586,11 +587,11 @@ def ver_pieza(req: Peticion, codigo: str) -> str:
                              for h in items) or "<p>Sin hallazgos.</p>")
     aprob = cx.execute("SELECT * FROM aprobacion WHERE pieza_id = ? ORDER BY id DESC", (p["id"],)).fetchall()
     filas_ap = [[e(a["decidido_en"]), f"v{a['version']}", chip(a["decision"]), e(a["decidido_por"]), e(a["comentario"])] for a in aprob]
-    activos = cx.execute("SELECT * FROM activo WHERE pieza_id = ? ORDER BY id DESC", (p["id"],)).fetchall()
-    previas = "".join(
-        f'<figure><a href="/archivos/{quote(a["ruta"])}"><img src="/archivos/{quote(a["ruta"])}" alt=""></a>'
-        f'<figcaption><small>{e(a["formato"])} · {e(a["origen"].lower())}</small></figcaption></figure>'
-        if a["tipo"] == "imagen" else f'<p><a href="/archivos/{quote(a["ruta"])}">{e(a["ruta"])}</a></p>' for a in activos)
+    activos = cx.execute("SELECT * FROM activo WHERE pieza_id = ? AND version = ? ORDER BY ruta",
+                         (p["id"], p["version_actual"])).fetchall()
+    previas = "".join(_vista_activo(a) for a in activos)
+    anteriores = cx.execute("SELECT COUNT(*) FROM activo WHERE pieza_id = ? AND version <> ?",
+                            (p["id"], p["version_actual"])).fetchone()[0]
     pubs = cx.execute("SELECT * FROM publicacion WHERE pieza_id = ? ORDER BY id DESC", (p["id"],)).fetchall()
     filas_pub = [[f"#{x['id']}", e(x["canal"]), chip(x["estado"]), e(x["fecha_prevista"]),
                   f'<a href="{e(x["url"])}">{e(x["url"])}</a>' if x["url"] else ""] for x in pubs]
@@ -600,6 +601,8 @@ def ver_pieza(req: Peticion, codigo: str) -> str:
     acciones = []
     if v and p["estado"] not in ("PUBLICADA", "ARCHIVADA"):
         acciones.append(boton(f"/piezas/{codigo}/auditar", "Pasar por el auditor", volver, ""))
+    if v and p["plantilla"]:
+        acciones.append(boton(f"/piezas/{codigo}/render", "Generar imágenes y vídeo", volver, "sec"))
     if p["estado"] == "LISTA_PARA_APROBAR":
         acciones += [boton(f"/piezas/{codigo}/decidir", "Aprobar esta versión", volver, "lima", decision="APROBADA"),
                      boton(f"/piezas/{codigo}/decidir", "Pedir correcciones", volver, "sec", decision="CORRECCIONES"),
@@ -612,6 +615,21 @@ def ver_pieza(req: Peticion, codigo: str) -> str:
                                                                    "Dejar listo el paquete", volver=volver)
     extra = {k: val for k, val in datos.items() if k not in ("gancho", "copy", "cta", "fecha_publicacion_fuente",
                                                              "revisado_por_contador", "es_demostracion_guiada")}
+    ayuda_plantilla = ""
+    if p["plantilla"]:
+        try:
+            ficha = fab_plantillas.ficha(req.cfg.raiz, p["plantilla"])
+        except KeyError:
+            ficha = None
+        if ficha:
+            if not extra:
+                extra = {k: val for k, val in ficha.get("ejemplo", {}).items() if k != "cta"}
+            filas_campos = [[f"<code>{e(k)}</code>", e(r.get("tipo", "texto")), "sí" if r.get("requerido") else "",
+                             e(r.get("max", r.get("max_items", "")))] for k, r in ficha.get("campos", {}).items()]
+            ayuda_plantilla = (f"<details><summary>Campos de la plantilla «{e(ficha['titulo'])}»</summary>"
+                               f"<p>{e(ficha['descripcion'])} Formatos: {e(', '.join(ficha['formatos']))}. "
+                               "Escribe <code>*palabra*</code> para resaltarla.</p>"
+                               + tabla(["Campo", "Tipo", "Obligatorio", "Máximo"], filas_campos) + "</details>")
     form_version = formulario(f"/piezas/{codigo}/version", f"""<div class="campos">
         {campo("gancho", "Gancho (primera línea)", datos.get("gancho", ""), clase="ancho")}
         {campo("copy", "Copy", datos.get("copy", ""), "textarea", clase="ancho")}
@@ -631,12 +649,13 @@ def ver_pieza(req: Peticion, codigo: str) -> str:
       {tabla(["Campo", "Texto"], [[e(k), e(t).replace(chr(10), '<br>')] for k, t in textos.items()], "Todavía no tiene contenido.")}
       <h2>Capacidades que afirma</h2>{tabla(["Código", "Capacidad", "Uso", "Matiz"], filas_caps, "No cita capacidades.")}
       {'<h2>Fuentes</h2>' + '<br>'.join(f'<a href="{e(f)}">{e(f)}</a>' for f in fuentes) if fuentes else ''}
-      {'<h2>Archivos</h2><div class="previa">' + previas + '</div>' if activos else ''}</div>
+      {'<h2>Archivos de esta versión</h2><div class="previa">' + previas + '</div>' if activos else ''}
+      {f'<p class="vacio">{anteriores} archivos de versiones anteriores siguen en la carpeta de salidas.</p>' if anteriores else ''}</div>
       <div><h2>Auditor</h2>{hallazgos or '<p class="vacio">Todavía no pasó por el auditor.</p>'}
       <h2>Decisiones</h2>{tabla(["Cuándo", "Versión", "Decisión", "Quién", "Comentario"], filas_ap, "Sin decisiones.")}
       <h2>Publicaciones</h2>{tabla(["#", "Canal", "Estado", "Fecha", "Enlace"], filas_pub, "Sin publicaciones.")}
       <h2>Versiones</h2>{tabla(["N.°", "Autor", "Cuándo", "Nota"], [[e(x["numero"]), e(x["autor"]), e(x["creado_en"]), e(x["nota"])] for x in versiones])}</div></div>
-      {form_pub}<h2>Escribir una versión nueva</h2>{form_version}"""
+      {form_pub}<h2>Escribir una versión nueva</h2>{ayuda_plantilla}{form_version}"""
     return pagina(req, p["titulo"], cuerpo)
 
 
@@ -665,6 +684,24 @@ def nueva_version(req: Peticion, codigo: str):
     if informe.resultado == "RECHAZADO":
         raise ir(f"/piezas/{codigo}", error=texto + " Corrige los bloqueos antes de aprobar.")
     raise ir(f"/piezas/{codigo}", ok=texto)
+
+
+@ruta("POST", r"/piezas/(?P<codigo>P-\d+)/render")
+def render_pieza(req: Peticion, codigo: str):
+    from ..fabrica import render
+    res = render.exportar_pieza(req.cx, req.cfg, codigo)
+    avisos = (" Avisos: " + "; ".join(res.avisos)) if any("no cabe" in a for a in res.avisos) else ""
+    raise ir(req.volver, ok=f"{len(res.archivos)} archivos generados.{avisos}")
+
+
+def _vista_activo(a) -> str:
+    url = "/archivos/" + quote(a["ruta"])
+    nombre = e(a["ruta"].rsplit("/", 1)[-1])
+    if a["tipo"] == "imagen":
+        return f'<figure><a href="{url}"><img src="{url}" alt=""></a><figcaption><small>{nombre}</small></figcaption></figure>'
+    if a["tipo"] == "video":
+        return f'<figure><video src="{url}" controls preload="metadata"></video><figcaption><small>{nombre}</small></figcaption></figure>'
+    return f'<p><a href="{url}">{nombre}</a></p>'
 
 
 @ruta("POST", r"/piezas/(?P<codigo>P-\d+)/auditar")

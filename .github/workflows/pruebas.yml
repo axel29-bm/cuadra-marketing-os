@@ -21,3 +21,19 @@ jobs:
         run: python -m unittest discover -s tests -t . -v
       - name: Comprobar que la configuración TOML se lee
         run: python -m mos --espacio "$RUNNER_TEMP/espacio" iniciar
+
+  fabrica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Dependencias de la fábrica (Jinja2, Playwright con Chromium y FFmpeg)
+        run: |
+          python -m pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y ffmpeg
+      - name: Todas las pruebas, incluidas las de render de imágenes, PDF y vídeo
+        run: python -m unittest discover -s tests -t . -v

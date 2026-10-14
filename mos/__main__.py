@@ -13,15 +13,20 @@ from pathlib import Path
 from . import __version__, config, db, semillas, util
 
 
+_ABIERTAS: list = []
+
+
 def _cx(cfg: config.Config):
     cx = db.conectar(cfg.base)
     db.migrar(cx)
+    _ABIERTAS.append(cx)
     return cx
 
 
 def cmd_iniciar(cfg, args) -> int:
     cfg.espacio.mkdir(parents=True, exist_ok=True)
     cx = db.conectar(cfg.base)
+    _ABIERTAS.append(cx)
     aplicadas = db.migrar(cx)
     conteo = semillas.cargar_todo(cx, cfg.raiz)
     print(f"Espacio de trabajo: {cfg.espacio}")
@@ -527,9 +532,65 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--hasta")
     sp.add_argument("--producto")
 
+    sp = sub.add_parser("fabrica", help="Plantillas visuales: imágenes, PDF, vídeo y guion a partir de los textos")
+    sp.add_argument("accion", choices=["plantillas", "previas", "probar", "render"])
+    sp.add_argument("codigo", nargs="?", help="Pieza a renderizar (P-0001)")
+    sp.add_argument("--plantilla")
+    sp.add_argument("--archivo", help="JSON con los textos (para probar)")
+    sp.add_argument("--formato", action="append", help="Formato (se puede repetir): cuadrado, vertical, historia…")
+    sp.add_argument("--audio", help="Voz grabada para unir al vídeo")
+    sp.add_argument("--marca", default="cuadra")
+
     sp = sub.add_parser("web", help="Abre el panel local en el navegador (solo en esta PC)")
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador automáticamente")
     return ap
+
+
+def cmd_fabrica(cfg, args) -> int:
+    from .fabrica import plantillas, render
+    raiz = cfg.raiz
+    if args.accion == "plantillas":
+        for nombre in sorted(plantillas.disponibles(raiz)):
+            f = plantillas.ficha(raiz, nombre)
+            print(f"{nombre:<16} {f['titulo']:<26} {', '.join(f['formatos'])}")
+            print(f"{'':<16} {f['descripcion']}")
+        print("\nFormatos: " + ", ".join(f"{k} {a}x{b}" for k, (a, b) in render.FORMATOS.items()))
+        return 0
+    if args.accion == "previas":
+        nombres = [args.plantilla] if args.plantilla else sorted(plantillas.disponibles(raiz))
+        with render.Navegador() as nav:
+            for nombre in nombres:
+                f = plantillas.ficha(raiz, nombre)
+                formatos = args.formato or f["formatos"][:1]
+                res = render.exportar(raiz, nombre, f["ejemplo"], raiz / "plantillas" / nombre / "previa", "previa",
+                                      formatos=formatos, marca=args.marca, vista_previa=True, navegador=nav,
+                                      titulo=f["titulo"])
+                print(f"{nombre}: " + ", ".join(p.relative_to(raiz).as_posix() for p in res.archivos))
+        return 0
+    if args.accion == "probar":
+        if not (args.plantilla and args.archivo):
+            print("Indica --plantilla y --archivo con los textos en JSON.", file=sys.stderr)
+            return 2
+        datos = json.loads(Path(args.archivo).read_text(encoding="utf-8"))
+        res = render.exportar(raiz, args.plantilla, datos, cfg.salidas / "pruebas", args.plantilla,
+                              formatos=args.formato, marca=args.marca, vista_previa=True,
+                              audio=Path(args.audio) if args.audio else None)
+        for ruta in res.archivos:
+            print(ruta)
+        for aviso in res.avisos:
+            print("Aviso: " + aviso)
+        return 0
+    if not args.codigo:
+        print("Indica la pieza: python -m mos fabrica render P-0001", file=sys.stderr)
+        return 2
+    cx = _cx(cfg)
+    res = render.exportar_pieza(cx, cfg, args.codigo, formatos=args.formato,
+                                audio=Path(args.audio) if args.audio else None)
+    for ruta in res.archivos:
+        print(ruta)
+    for aviso in res.avisos:
+        print("Aviso: " + aviso)
+    return 0
 
 
 def cmd_web(cfg: config.Config, args) -> int:
@@ -542,7 +603,7 @@ COMANDOS = {
     "iniciar": cmd_iniciar, "estado": cmd_estado, "capacidades": cmd_capacidades, "agentes": cmd_agentes,
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
-    "metrica": cmd_metrica, "calendario": cmd_calendario, "web": cmd_web,
+    "metrica": cmd_metrica, "calendario": cmd_calendario, "fabrica": cmd_fabrica, "web": cmd_web,
 }
 
 
@@ -554,12 +615,14 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as e:  # mensaje humano y rastro en la base
         print(f"No se pudo completar «{args.comando}»: {e}", file=sys.stderr)
         try:
-            cx = db.conectar(cfg.base)
-            db.migrar(cx)
+            cx = _cx(cfg)
             db.registrar_error(cx, "cli", type(e).__name__, str(e))
         except Exception:
             pass
         return 1
+    finally:
+        while _ABIERTAS:
+            _ABIERTAS.pop().close()
 
 
 if __name__ == "__main__":

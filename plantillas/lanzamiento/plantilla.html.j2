@@ -1,0 +1,28 @@
+{% extends "_base/base.html.j2" %}
+{% block clase_body %} oscuro{% endblock %}
+{% block estilos %}
+.motivo { right: calc(-120 * var(--u)); top: calc(-120 * var(--u)); width: calc(460 * var(--u)); }
+.titular { font-size: calc(96 * var(--u)); }
+.texto { font-size: calc(34 * var(--u)); max-width: 92%; }
+.formato-cuadrado .titular { font-size: calc(80 * var(--u)); }
+.formato-historia .lienzo { padding-top: calc(160 * var(--u)); padding-bottom: calc(180 * var(--u)); }
+.formato-historia .titular { font-size: calc(108 * var(--u)); }
+.formato-horizontal .lienzo, .formato-enlace .lienzo { padding: calc(90 * var(--u)) calc(110 * var(--u)); }
+.formato-horizontal .titular { font-size: calc(96 * var(--u)); max-width: 72%; }
+.formato-horizontal .texto { max-width: 60%; }
+.formato-enlace .titular { font-size: calc(80 * var(--u)); max-width: 80%; }
+.formato-enlace .puntos, .formato-enlace .texto { display: none; }
+.formato-horizontal .puntos { flex-direction: row; gap: calc(40 * var(--u)); }
+.punto { font-size: calc(32 * var(--u)); }
+{% endblock %}
+{% block fondo %}<div class="motivo"><i></i><i></i><i></i><i></i></div>{% endblock %}
+{% block contenido %}
+<div class="cabecera"><div class="marca">{% if logo %}<img src="{{ logo }}" alt="">{% endif %}<b>{{ nombre_marca }}</b></div></div>
+<div class="empuje"></div>
+{% if antetitulo %}<div class="antetitulo">{{ antetitulo }}</div>{% endif %}
+<h1 class="titular ajustar">{{ titular | resaltar }}</h1>
+{% if subtitulo %}<p class="texto ajustar">{{ subtitulo | resaltar }}</p>{% endif %}
+{% if puntos %}<ul class="puntos">{% for p in puntos %}<li class="punto ajustar"><span class="marca-punto">{{ icono("check") }}</span><span>{{ p }}</span></li>{% endfor %}</ul>{% endif %}
+<div class="empuje"></div>
+<div class="pie-fila"><p class="pie">{{ pie or "" }}</p><div class="cta">{{ cta }}<span class="flecha">{{ icono("arrow-right") }}</span></div></div>
+{% endblock %}

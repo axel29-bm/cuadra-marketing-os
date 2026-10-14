@@ -92,3 +92,6 @@ pre { white-space: pre-wrap; background: var(--superficie); border: 1px solid va
   .dos { grid-template-columns: 1fr; }
   main { padding: 20px 16px 40px; }
 }
+.previa figure { margin: 0; }
+.previa video { max-width: 100%; border: 1px solid var(--borde); border-radius: var(--radio-chico); background: #000; }
+details summary { cursor: pointer; font-weight: 600; margin: 8px 0; }

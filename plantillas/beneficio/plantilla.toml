@@ -1,0 +1,24 @@
+nombre = "beneficio"
+titulo = "Beneficio"
+descripcion = "Una sola capacidad real del producto, contada como lo que le cambia al contador. Admite una captura real."
+uso = "Interés y consideración. Cada pieza cita el código de la capacidad que afirma."
+tipos_afirmacion = ["CAPTACION", "EDUCATIVA", "DESARROLLO"]
+formatos = ["vertical", "cuadrado", "historia", "enlace"]
+
+[campos]
+etiqueta = { tipo = "texto", max = 32 }
+icono = { tipo = "icono" }
+titular = { tipo = "texto", max = 90, requerido = true }
+apoyo = { tipo = "texto", max = 170 }
+captura = { tipo = "captura" }
+nota_captura = { tipo = "texto", max = 80 }
+estado = { tipo = "texto", max = 60 }
+cta = { tipo = "texto", max = 34 }
+
+[ejemplo]
+etiqueta = "Importar compras"
+icono = "clipboard-paste"
+titular = "Pegas tu Excel y ves *fila por fila* qué va a pasar antes de guardar"
+apoyo = "Y si te equivocas, deshaces la importación entera."
+estado = "Cuadra está en desarrollo"
+cta = "Quiero participar en la beta"

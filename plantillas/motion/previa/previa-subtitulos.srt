@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:04,000
+¿Te ha pasado que cierras el mes y luego tienes que volver a abrirlo?
+
+2
+00:00:04,000 --> 00:00:09,000
+En Cuadra, el cierre del mes tiene su lista de control: ves qué falta antes de cerrar.
+
+3
+00:00:09,000 --> 00:00:14,000
+Cuando cierras, queda cerrado de verdad. Y si hay que reabrirlo, queda registrado el motivo.
