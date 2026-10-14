@@ -4,6 +4,37 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 ---
 
+## 14/10/2026 · Fase 2: panel web local y registro de herramientas
+
+### Hecho
+
+- Panel web en `http://127.0.0.1:8765` con `python -m mos web` (`mos/web/`). Solo biblioteca estándar de Python. Pantallas: Hoy, Aprobaciones, Calendario mensual, Tareas de agentes (con el prompt preparado y un cuadro para pegar la respuesta de la IA), Ideas con puntuación explicable, Campañas, Biblioteca de piezas (versiones, auditor, decisiones, archivos y paquete de publicación), Publicaciones (confirmar con enlace, programada o fallida), Leads (contactos enmascarados, derechos de la persona, exportación), Métricas, Radar normativo, Productos con su matriz, Herramientas y Errores.
+- Seguridad del panel: solo responde a `127.0.0.1` y `localhost` (evita el ataque de DNS rebinding), token por proceso en cada formulario, todo texto escapado, no sirve la base, ni CSV ni JSON con datos personales, ni archivos fuera de su carpeta.
+- Radar con verificación humana (`mos/radar.py`): una novedad solo pasa a VERIFICADA con enlace a la fuente oficial.
+- Contexto de producto compartido entre la línea de comandos y el panel (`mos/contexto.py`).
+- Registro de herramientas y costes consolidado: 175 herramientas (63 adoptar, 34 probar, 58 reservar, 20 descartar; 51 requieren autorización) y 36 recursos con licencia (`docs/REGISTRO-HERRAMIENTAS-Y-COSTES.md`, `semillas/herramientas.toml`, `semillas/licencias.toml`). Higgsfield queda en RESERVAR con autorización obligatoria.
+
+### Cómo se verificó
+
+- `python -m unittest discover -s tests -t .`: 90 pruebas en verde. Las 12 nuevas del panel prueban el rechazo de otro host y de formularios sin token, que todas las pantallas se muestren, el escape de textos, el enmascarado de contactos, la supresión con confirmación, el bloqueo de una pieza con precio y el recorrido completo de una pieza con clics (crear, escribir, auditar, aprobar, preparar y confirmar la publicación).
+- Panel levantado con datos sintéticos y revisado en capturas de Chromium.
+
+### Pendiente
+
+- Lo de la Fase 3 en adelante (ver la entrada anterior).
+- 68 pendientes de verificación en el registro de herramientas; los cinco más importantes: inscribir el banco de datos de leads y validar el aviso con un abogado; confirmar si Cloudflare Workers, D1 o R2 piden tarjeta; confirmar el plan de Claude que paga Didi; conocer la RAM y la GPU de su PC; leer la licencia comercial de changedetection.io.
+
+### Defectos y límites conocidos
+
+- El panel no tiene usuarios ni contraseña: está pensado para una sola persona en su propia PC.
+- El calendario no permite arrastrar piezas entre días; la fecha se cambia en la pieza.
+
+### Siguiente paso
+
+Fase 3: plantillas visuales y exportación a PNG, PDF y vídeo; calendario de 30 días y paquete de lanzamiento.
+
+---
+
 ## 14/10/2026 · Fases 0 y 1: auditoría, investigación y núcleo
 
 ### Hecho

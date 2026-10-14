@@ -27,7 +27,13 @@ cd cuadra-marketing-os
 python -m mos iniciar
 ```
 
-Luego:
+Luego abre el panel, que es donde se trabaja cada día:
+
+```powershell
+python -m mos web                                     # http://127.0.0.1:8765, solo en esta PC
+```
+
+O usa la línea de comandos:
 
 ```powershell
 python -m mos estado                                  # resumen del sistema

@@ -23,7 +23,12 @@ Tiempo estimado: 15 minutos para el núcleo. Todo es gratuito.
    python -m mos estado
    ```
    Se crea `espacio\mos.db` con la configuración de Cuadra cargada.
-5. **Comprobar que todo funciona:**
+5. **Abrir el panel:**
+   ```powershell
+   python -m mos web
+   ```
+   Se abre `http://127.0.0.1:8765` en tu navegador. Solo responde desde tu PC: si otra máquina o una página web intenta entrar, se rechaza. Para cerrarlo, Ctrl+C en la consola. Si el puerto está ocupado: `$env:MOS_PUERTO = "8766"`.
+6. **Comprobar que todo funciona:**
    ```powershell
    python -m unittest discover -s tests -t .
    ```

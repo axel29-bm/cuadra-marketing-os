@@ -1,0 +1,363 @@
+# Fuente de datos de las licencias de recursos (tipografías, iconos, imágenes, música, voces y software), al 2026-10-14.
+# Se carga en la tabla `licencia_recurso` con `python -m mos iniciar` (mos/semillas.py); cargarlo dos veces no duplica.
+# Cada activo de terceros que use el sistema debe apuntar a una de estas entradas; las herramientas están en herramientas.toml.
+
+[[recurso]]
+recurso = "Geist"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/vercel/geist-font"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Tipografía de marca. Incluida en recursos/tipografias/geist/Geist-Variable.woff2 con su OFL.txt (Copyright 2023 Vercel, con basement.studio). No se vende sola; la licencia acompaña a los archivos."
+
+[[recurso]]
+recurso = "Geist Mono"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/vercel/geist-font"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Tipografía mono de marca. Incluida en recursos/tipografias/geist/GeistMono-Variable.woff2 con su OFL.txt. No se vende sola; la licencia acompaña a los archivos."
+
+[[recurso]]
+recurso = "Inter"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/inter/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Respaldo en marca.toml. Autoalojar el archivo; no cargarlo desde la API de Google Fonts. No se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "Plus Jakarta Sans"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/plusjakartasans/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Alternativa OFL (informe B). Autoalojar; no se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "Manrope"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/manrope/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Alternativa OFL (informe B). Autoalojar; no se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "Poppins"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/poppins/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Alternativa OFL (informe B). Autoalojar; no se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "DM Sans"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/dmsans/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Alternativa OFL (informe B). Autoalojar; no se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "Montserrat"
+tipo = "TIPOGRAFIA"
+licencia = "OFL-1.1"
+url = "https://github.com/google/fonts/blob/main/ofl/montserrat/OFL.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Alternativa OFL (informe B). Autoalojar; no se vende sola; nombre reservado en versiones modificadas."
+
+[[recurso]]
+recurso = "Lucide"
+tipo = "ICONOS"
+licencia = "ISC (algunos iconos derivados de Feather: MIT)"
+url = "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Conjunto principal. Conservar el aviso de licencia ISC y MIT junto a los SVG en el repositorio."
+
+[[recurso]]
+recurso = "Tabler Icons"
+tipo = "ICONOS"
+licencia = "MIT"
+url = "https://github.com/tabler/tabler-icons/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Complemento de Lucide. Conservar el aviso MIT."
+
+[[recurso]]
+recurso = "Phosphor"
+tipo = "ICONOS"
+licencia = "MIT"
+url = "https://github.com/phosphor-icons/core/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "En prueba (6 pesos de trazo). Conservar el aviso MIT."
+
+[[recurso]]
+recurso = "Heroicons"
+tipo = "ICONOS"
+licencia = "MIT"
+url = "https://github.com/tailwindlabs/heroicons/blob/master/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "En reserva. Conservar el aviso MIT."
+
+[[recurso]]
+recurso = "Pexels"
+tipo = "IMAGEN"
+licencia = "Licencia de Pexels"
+url = "https://www.pexels.com/license/"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Sin atribución obligatoria. No insinuar respaldo de personas o marcas; no usar como marca o logotipo; no vender sin alterar ni subir a otras plataformas de stock; personas identificables nunca en mala luz. Con la API: enlace visible a Pexels y crédito al fotógrafo si es posible. Por foto: guardar URL, autor y fecha."
+
+[[recurso]]
+recurso = "Unsplash"
+tipo = "IMAGEN"
+licencia = "Licencia de Unsplash (no Unsplash+)"
+url = "https://unsplash.com/license"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Sin atribución obligatoria por licencia. Prohibido compilar fotos para replicar un servicio similar. Con la API: hotlinking, atribución con enlace al perfil y aviso de descarga. Unsplash+ es de pago y tiene otra licencia."
+
+[[recurso]]
+recurso = "Pixabay (imágenes y vídeo)"
+tipo = "IMAGEN"
+licencia = "Pixabay Content License"
+url = "https://pixabay.com/service/license-summary/"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Sin atribución. Prohibido vender sin alterar, usarlo como marca o en usos engañosos. Con personas, marcas o propiedad de terceros puede hacer falta consentimiento: preferir imágenes sin ellas. API: descargar, sin hotlinking."
+
+[[recurso]]
+recurso = "Pixabay Music"
+tipo = "MUSICA"
+licencia = "Pixabay Content License"
+url = "https://pixabay.com/service/faq/"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Por pista. Solo dentro de una obra mayor, nunca como archivo suelto. Algunas pistas están en Content ID: guardar el enlace a la pista y a la licencia para disputar reclamos (una disputa rechazada puede escalar a strike)."
+
+[[recurso]]
+recurso = "Incompetech (Kevin MacLeod)"
+tipo = "MUSICA"
+licencia = "CC BY 4.0"
+url = "https://incompetech.com/music/royalty-free/licenses/"
+uso_comercial = true
+atribucion = "\"<Título>\" Kevin MacLeod (incompetech.com) / Licensed under Creative Commons: By Attribution 4.0"
+verificado_en = "2026-10-14"
+notas = "Por pista; crédito obligatorio en cada pieza. Para anuncios de TV o radio recomienda su licencia de pago. Música conocida, a veces reclamada por terceros: conservar el ISRC para responder."
+
+[[recurso]]
+recurso = "YouTube Audio Library"
+tipo = "MUSICA"
+licencia = "Términos de la YouTube Audio Library (algunas pistas CC BY)"
+url = "https://support.google.com/youtube/answer/3376882?hl=en"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Solo YouTube: monetizable allí. Fuera de YouTube (Facebook, TikTok, Instagram): PENDIENTE, salvo pistas CC BY. Las pistas CC exigen acreditar al artista en la descripción."
+
+[[recurso]]
+recurso = "Free Music Archive"
+tipo = "MUSICA"
+licencia = "Por pista: solo CC BY, CC BY-SA o CC0"
+url = "https://freemusicarchive.org/License_Guide"
+uso_comercial = true
+atribucion = "Por pista: título, artista, fuente y licencia con enlace"
+verificado_en = "2026-10-14"
+notas = "Descartar pistas ND (prohíbe sincronizar con vídeo) y NC (no comercial). FMA no licencia por sí misma el uso comercial: vale la licencia de cada pista."
+
+[[recurso]]
+recurso = "Freesound"
+tipo = "EFECTO"
+licencia = "Por sonido: solo CC0 o CC BY"
+url = "https://freesound.org/help/faq/"
+uso_comercial = true
+atribucion = "Solo CC BY, por sonido: título, autor, enlace y licencia (Freesound genera la lista)"
+verificado_en = "2026-10-14"
+notas = "Descartar CC BY-NC y Sampling+ (no comerciales). Cuenta para descargar."
+
+[[recurso]]
+recurso = "Piper voz es_MX/ald"
+tipo = "VOZ"
+licencia = "Unlicense"
+url = "https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_MX/ald/medium/MODEL_CARD"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Voz de apoyo; la voz principal es la de Didi. El motor piper1-gpl es GPL-3.0 (solo importa si se distribuye)."
+
+[[recurso]]
+recurso = "Piper voz es_ES/davefx"
+tipo = "VOZ"
+licencia = "CC0"
+url = "https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_ES/davefx/medium/MODEL_CARD"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Voz de apoyo (acento de España). Motor piper1-gpl GPL-3.0."
+
+[[recurso]]
+recurso = "Piper voz es_MX/claude"
+tipo = "VOZ"
+licencia = "Apache-2.0"
+url = "https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_MX/claude/high/MODEL_CARD"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Procedencia del dataset (un Space de Hugging Face) PENDIENTE: no usar hasta confirmarla."
+
+[[recurso]]
+recurso = "Kokoro-82M (voces ef_dora, em_alex, em_santa)"
+tipo = "VOZ"
+licencia = "Apache-2.0 (código y pesos)"
+url = "https://huggingface.co/hexgrad/Kokoro-82M"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "En prueba. Entrenado con audio permisivo o sin copyright, incluido audio sintético de TTS comerciales. El español usa espeak-ng (GPL-3). Calidad en español sin evaluar."
+
+[[recurso]]
+recurso = "Playwright"
+tipo = "SOFTWARE"
+licencia = "Apache-2.0"
+url = "https://github.com/microsoft/playwright/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Render de plantillas y pruebas. v1.64.0 en npm y PyPI (PyPI publicó el 2026-10-13). Fijar la versión del navegador."
+
+[[recurso]]
+recurso = "FFmpeg"
+tipo = "SOFTWARE"
+licencia = "LGPL-2.1-or-later o GPL (según la compilación)"
+url = "https://ffmpeg.org/legal.html"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "La licencia depende de la compilación: con --enable-gpl (libx264, libx265) toda es GPL; las nonfree (fdk-aac) no son redistribuibles. Uso interno: compilación gpl de BtbN. Para distribuir: lgpl-shared y la lista de comprobación de FFmpeg. Los vídeos producidos no heredan la licencia."
+
+[[recurso]]
+recurso = "anime.js"
+tipo = "SOFTWARE"
+licencia = "MIT"
+url = "https://github.com/juliangarnier/anime/blob/master/LICENSE.md"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Animación por defecto de las plantillas HTML (npm 4.5.0)."
+
+[[recurso]]
+recurso = "Jinja2"
+tipo = "SOFTWARE"
+licencia = "BSD-3-Clause"
+url = "https://github.com/pallets/jinja/blob/main/LICENSE.txt"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "No figuraba en los informes: verificado en el LICENSE.txt de pallets/jinja y en PyPI (3.1.6). Conservar el aviso si se redistribuye."
+
+[[recurso]]
+recurso = "Pillow"
+tipo = "SOFTWARE"
+licencia = "MIT-CMU"
+url = "https://github.com/python-pillow/Pillow/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Post-proceso de imágenes en Python (PyPI 12.3.0)."
+
+[[recurso]]
+recurso = "faster-whisper"
+tipo = "SOFTWARE"
+licencia = "MIT"
+url = "https://github.com/SYSTRAN/faster-whisper/blob/master/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Transcripción local (v1.2.1)."
+
+[[recurso]]
+recurso = "Pesos de Whisper (OpenAI)"
+tipo = "SOFTWARE"
+licencia = "MIT"
+url = "https://github.com/openai/whisper/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Código y pesos MIT; los usan faster-whisper y whisper.cpp."
+
+[[recurso]]
+recurso = "Ollama"
+tipo = "SOFTWARE"
+licencia = "MIT"
+url = "https://github.com/ollama/ollama/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Motor de IA local. Cada modelo tiene su propia licencia."
+
+[[recurso]]
+recurso = "Qwen3.5 (pesos)"
+tipo = "SOFTWARE"
+licencia = "Apache-2.0"
+url = "https://huggingface.co/Qwen/Qwen3.5-9B/blob/main/LICENSE"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Modelo local por defecto (4b y 9b)."
+
+[[recurso]]
+recurso = "Piper (motor piper1-gpl)"
+tipo = "SOFTWARE"
+licencia = "GPL-3.0-or-later"
+url = "https://github.com/OHF-Voice/piper1-gpl/blob/main/COPYING"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Incluye espeak-ng. Uso interno sin problema; si se distribuye, obligaciones GPL. Cada voz tiene su licencia."
+
+[[recurso]]
+recurso = "SQLite"
+tipo = "SOFTWARE"
+licencia = "Dominio público"
+url = "https://sqlite.org/copyright.html"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "Base del sistema. Hwaci vende aparte una garantía de titularidad (Warranty of Title) opcional."
+
+[[recurso]]
+recurso = "FLUX.1 [schnell] (pesos)"
+tipo = "SOFTWARE"
+licencia = "Apache-2.0"
+url = "https://huggingface.co/black-forest-labs/FLUX.1-schnell"
+uso_comercial = true
+atribucion = ""
+verificado_en = "2026-10-14"
+notas = "En reserva: solo con GPU y solo para fondos sin texto. No confundir con FLUX.1 [dev], que es no comercial."

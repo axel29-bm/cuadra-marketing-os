@@ -88,33 +88,14 @@ def cmd_agentes(cfg, args) -> int:
     return 0
 
 
-def _producto_unico(cfg) -> str | None:
-    carpetas = [p.name for p in (cfg.raiz / "productos").iterdir() if (p / "producto.toml").exists()]
-    return carpetas[0] if len(carpetas) == 1 else None
+def _producto_unico(cfg):
+    from .contexto import producto_unico
+    return producto_unico(cfg)
 
 
 def _contexto_producto(cfg, slug: str | None):
-    """Política y texto de contexto que acompañan a una tarea de un producto."""
-    from .calidad.auditor import Politica
-    from .fabrica import plantillas
-    if not slug:
-        return {}, ""
-    carpeta = cfg.raiz / "productos" / slug
-    if not (carpeta / "producto.toml").exists():
-        return {}, ""
-    pol = Politica.desde_carpeta(carpeta)
-    lineas = [f"Producto: {pol.nombre_marca}. Etapa comercial: {pol.etapa_comercial}. "
-              f"Disponible al público: {'sí' if pol.disponible_al_publico else 'no'}. "
-              f"Precio definido: {'sí' if pol.precio_definido else 'no'}.",
-              "Solo puedes afirmar capacidades con uso PERMITIDO o CON_MATICES (con su matiz). Cita sus códigos.", ""]
-    for c in pol.capacidades.values():
-        if c.uso in ("PERMITIDO", "CON_MATICES"):
-            extra = f" Matiz obligatorio: {c.matiz}" if c.uso == "CON_MATICES" and c.matiz else ""
-            lineas.append(f"- {c.codigo} · {c.nombre}. Frase de referencia: {c.frase}{extra}")
-    lineas.append("\nNo menciones como disponible: " + "; ".join(
-        f"{c.nombre} ({c.codigo})" for c in pol.capacidades.values() if c.uso == "NO_ANUNCIAR"))
-    ctx = {"politica": pol, "plantillas": plantillas.disponibles(cfg.raiz)}
-    return ctx, "\n".join(lineas)
+    from .contexto import de_producto
+    return de_producto(cfg, slug)
 
 
 def cmd_tarea(cfg, args) -> int:
@@ -545,14 +526,23 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--desde")
     sp.add_argument("--hasta")
     sp.add_argument("--producto")
+
+    sp = sub.add_parser("web", help="Abre el panel local en el navegador (solo en esta PC)")
+    sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador automáticamente")
     return ap
+
+
+def cmd_web(cfg: config.Config, args) -> int:
+    from .web.app import servir
+    servir(cfg, abrir=not args.sin_abrir)
+    return 0
 
 
 COMANDOS = {
     "iniciar": cmd_iniciar, "estado": cmd_estado, "capacidades": cmd_capacidades, "agentes": cmd_agentes,
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
-    "metrica": cmd_metrica, "calendario": cmd_calendario,
+    "metrica": cmd_metrica, "calendario": cmd_calendario, "web": cmd_web,
 }
 
 
