@@ -66,7 +66,7 @@ Fuente: investigación del 14/10/2026 sobre la Ley 29733, su reglamento (D.S. 01
 | Flujo transfronterizo (art. 21.2) | Si los datos pasan por un servidor fuera del Perú (Cloudflare, Google, Meta, un servicio de correo), declararlo en el aviso y comunicarlo e inscribirlo | **Validar con abogado** cuando se elija dónde vive el formulario |
 | Derechos ARCO en plazo | Información 8 días hábiles; acceso 20; rectificación, cancelación y oposición 10 | Comandos `acceso` y `suprimir` listos; falta el correo de contacto para derechos |
 | Incidentes en 48 horas | Procedimiento escrito para avisar a la autoridad y a los titulares | Ver `docs/SEGURIDAD-Y-PRIVACIDAD.md` |
-| Correo comercial (Ley 28493) | «PUBLICIDAD» en el asunto, remitente con domicilio, baja en un clic, procesada en menos de 2 días | Plantilla de seguimiento en la Fase 3 |
+| Correo comercial (Ley 28493) | «PUBLICIDAD» en el asunto, remitente con domicilio, baja en un clic, procesada en menos de 2 días | Hecho en `campanas/lista-espera-beta/secuencia-seguimiento.md` |
 | Contacto masivo (Código art. 58.1 e) | Nada de llamadas, SMS, WhatsApp ni correos masivos a quien no lo pidió | Regla del sistema |
 | No comprar ni alquilar bases de datos | Prohibido por el sistema | Regla del sistema |
 
@@ -78,11 +78,13 @@ Si ContaExcel tiene usuarios, son la audiencia más cercana para la beta. Escrib
 
 ## 6. Secuencia de seguimiento (con consentimiento)
 
-Solo para quien marcó la casilla de publicidad. Cada mensaje lo revisa el auditor y lo envía Didi.
+Los textos listos para usar están en `campanas/lista-espera-beta/secuencia-seguimiento.md` y las respuestas a «BETA» y «DEMO», con la pregunta de consentimiento, en `campanas/lista-espera-beta/mensajes-y-demo.md`.
+
+Los días 3 y 10 son solo para quien aceptó novedades (publicidad); la bienvenida y el aviso de apertura, para todos los de la lista. Cada mensaje lo envía Didi.
 
 1. **Día 0.** Gracias por anotarte. Qué es la beta, qué no es (no hay precio ni descarga todavía) y una pregunta: cuántas empresas llevas y qué usas hoy.
 2. **Día 3.** Un vídeo corto de una pantalla real con la empresa de ejemplo, ligado al problema que contó.
-3. **Día 10.** Invitación a una demostración en vivo de 20 minutos.
+3. **Día 10.** Invitación a una demostración en vivo de unos 30 minutos.
 4. **Al abrir la beta.** Aviso con los cupos reales y los requisitos (Windows, número de empresas).
 
 Cada mensaje incluye cómo darse de baja. Si no responde a los tres primeros, el lead pasa a `PERDIDO` y no se le escribe más.

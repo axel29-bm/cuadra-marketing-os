@@ -1,7 +1,7 @@
 {% extends "_base/base.html.j2" %}
 {% block estilos %}
 .lienzo { padding: 0; }
-.motivo { right: calc(-180 * var(--u)); top: 22%; width: calc(520 * var(--u)); transform-origin: 50% 50%; }
+.motivo { right: calc(-200 * var(--u)); top: 22%; width: calc(460 * var(--u)); transform-origin: 50% 50%; opacity: .55; }
 .progreso { position: absolute; z-index: 5; left: var(--m); right: var(--m); top: calc(var(--m) * .8); display: flex; gap: calc(10 * var(--u)); }
 .progreso i { flex: 1; height: calc(8 * var(--u)); border-radius: 99px; background: color-mix(in srgb, var(--tinta) 14%, transparent); overflow: hidden; }
 .progreso i b { display: block; height: 100%; width: 0; background: var(--tinta); }
@@ -30,6 +30,7 @@
 .formato-historia .progreso { top: calc(150 * var(--u)); }
 .formato-historia .tema { top: calc(185 * var(--u)); }
 .formato-historia .marca-fija { top: calc(175 * var(--u)); }
+.formato-historia .motivo { top: auto; bottom: calc(560 * var(--u)); right: calc(-260 * var(--u)); }
 .formato-historia .sub { bottom: calc(330 * var(--u)); }
 .formato-horizontal .capa { padding: calc(150 * var(--u)) calc(160 * var(--u)); }
 .formato-horizontal .capa .titular, .formato-horizontal .capa .texto { max-width: 75%; }
@@ -94,7 +95,10 @@ window.escena = function (t) {
 document.fonts.ready.then(() => {
   capas.forEach(c => c.style.opacity = 1);
   ajustar();
-  window.escena(window.__portada ? Math.min(1.6, DUR[0] - 0.2) : 0);
+  // La portada es un cuadro quieto de la escena elegida (por defecto, la primera), con la animación de entrada ya hecha.
+  const P = Math.min(Math.max({{ portada_escena | default(1) }}, 1), DUR.length - 1) - 1;
+  const desde = DUR.slice(0, P).reduce((a, b) => a + b, 0);
+  window.escena(window.__portada ? desde + Math.min(1.6, DUR[P] - 0.2) : 0);
   window.__listo = true;
 });
 {% endblock %}

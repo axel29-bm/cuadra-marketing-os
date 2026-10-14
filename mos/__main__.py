@@ -541,6 +541,14 @@ def construir_parser() -> argparse.ArgumentParser:
     sp.add_argument("--audio", help="Voz grabada para unir al vídeo")
     sp.add_argument("--marca", default="cuadra")
 
+    sp = sub.add_parser("campana", help="Campañas escritas en campanas/<slug>/campana.toml: cargar, renderizar, calendario y paquete")
+    sp.add_argument("accion", choices=["cargar", "render", "calendario", "paquete", "mover"])
+    sp.add_argument("carpeta", help="Carpeta de la campaña, por ejemplo campanas/lista-espera-beta")
+    sp.add_argument("--solo", action="append", help="Solo esta pieza del archivo (clave, se puede repetir)")
+    sp.add_argument("--forzar", action="store_true", help="Rehacer los archivos aunque ya existan")
+    sp.add_argument("--destino", help="Carpeta de salida (calendario o paquete)")
+    sp.add_argument("--semanas", type=int, help="Para mover: cuántas semanas correr todas las fechas")
+
     sp = sub.add_parser("web", help="Abre el panel local en el navegador (solo en esta PC)")
     sp.add_argument("--sin-abrir", action="store_true", help="No abrir el navegador automáticamente")
     return ap
@@ -588,6 +596,8 @@ def cmd_fabrica(cfg, args) -> int:
                                 audio=Path(args.audio) if args.audio else None)
     for ruta in res.archivos:
         print(ruta)
+    for nombre, ms in res.duraciones_ms.items():
+        print(f"{nombre}: {ms / 1000:g} s")
     for aviso in res.avisos:
         print("Aviso: " + aviso)
     return 0
@@ -599,11 +609,76 @@ def cmd_web(cfg: config.Config, args) -> int:
     return 0
 
 
+def cmd_campana(cfg: config.Config, args) -> int:
+    from . import campanas
+    carpeta = Path(args.carpeta)
+    datos = campanas.leer(carpeta)
+    slug = datos["campana"]["slug"]
+    if args.accion == "cargar":
+        cx = _cx(cfg)
+        res = campanas.cargar(cx, cfg, carpeta)
+        print(f"Campaña «{datos['campana']['nombre']}»: {len(res.creadas)} piezas nuevas, {len(res.actualizadas)} con versión nueva, "
+              f"{len(res.sin_cambios)} sin cambios.")
+        bd = campanas.piezas_de(cx, slug)
+        for p in datos["pieza"]:
+            fila = bd[p["clave"]]
+            print(f"  {p['fecha']} {p['clave']:<8} {fila['codigo']}  auditor: {res.auditoria.get(fila['codigo'], '').lower().replace('_', ' ')}")
+        return 0
+    if args.accion == "render":
+        from .fabrica import render
+        cx = _cx(cfg)
+        bd = campanas.piezas_de(cx, slug)
+        elegidas = [p for p in datos["pieza"] if p.get("plantilla") and (not args.solo or p["clave"] in args.solo)]
+        faltan = [p["clave"] for p in elegidas if p["clave"] not in bd]
+        if faltan:
+            print("Primero carga la campaña (python -m mos campana cargar …). Faltan: " + ", ".join(faltan), file=sys.stderr)
+            return 2
+        cache: dict = {}  # la misma imagen o el mismo vídeo en varios canales se renderiza una sola vez
+        with render.Navegador() as nav:
+            for p in elegidas:
+                fila = bd[p["clave"]]
+                ya = cx.execute("SELECT COUNT(*) FROM activo WHERE pieza_id = ? AND version = ?",
+                                (fila["id"], fila["version_actual"])).fetchone()[0]
+                if ya and not args.forzar:
+                    print(f"  {p['clave']:<8} {fila['codigo']} ya tiene {ya} archivos de su versión actual (usa --forzar para rehacerlos)")
+                    continue
+                res = render.exportar_pieza(cx, cfg, fila["codigo"], formatos=p.get("formatos"), navegador=nav, cache=cache)
+                videos = ", ".join(f"vídeo de {ms / 1000:g} s" for ms in res.duraciones_ms.values())
+                print(f"  {p['clave']:<8} {fila['codigo']} {len(res.archivos)} archivos" + (f" ({videos})" if videos else ""))
+                for aviso in res.avisos:
+                    print("    Aviso: " + aviso)
+        return 0
+    if args.accion == "mover":
+        if not args.semanas:
+            print("Indica cuántas semanas: --semanas 1 (o -1 para adelantar). Mover por semanas conserva los días de la semana.",
+                  file=sys.stderr)
+            return 2
+        n = campanas.mover(carpeta, 7 * args.semanas)
+        print(f"Movidas {n} fechas {abs(args.semanas)} semana(s) {'después' if args.semanas > 0 else 'antes'}. "
+              "Vuelve a cargar la campaña para actualizar las piezas.")
+        return 0
+    if args.accion == "calendario":
+        bd = campanas.piezas_de(_cx(cfg), slug) if cfg.base.exists() else {}
+        filas = campanas.filas_calendario(datos, bd)
+        destino = Path(args.destino) if args.destino else carpeta
+        destino.mkdir(parents=True, exist_ok=True)
+        (destino / "CALENDARIO.md").write_text(campanas.calendario_md(datos, filas), encoding="utf-8")
+        (destino / "calendario.csv").write_text(campanas.calendario_csv(filas), encoding="utf-8-sig", newline="")
+        print(f"Calendario de {len(filas)} días en {destino / 'CALENDARIO.md'} y {destino / 'calendario.csv'}")
+        return 0
+    cx = _cx(cfg)
+    destino = Path(args.destino) if args.destino else carpeta / "exportados"
+    archivos = campanas.exportar_paquete(cx, cfg, carpeta, destino)
+    print(f"Paquete en {destino}: {len(archivos)} archivos")
+    return 0
+
+
 COMANDOS = {
     "iniciar": cmd_iniciar, "estado": cmd_estado, "capacidades": cmd_capacidades, "agentes": cmd_agentes,
     "tarea": cmd_tarea, "auditar": cmd_auditar, "respaldar": cmd_respaldar, "autorizar": cmd_autorizar,
     "errores": cmd_errores, "idea": cmd_idea, "pieza": cmd_pieza, "publicacion": cmd_publicacion, "lead": cmd_lead,
     "metrica": cmd_metrica, "calendario": cmd_calendario, "fabrica": cmd_fabrica, "web": cmd_web,
+    "campana": cmd_campana,
 }
 
 

@@ -153,6 +153,26 @@ class Exportacion(ConBase):
         self.assertTrue((self.cfg.espacio / fila["ruta"]).exists())
         render.exportar_pieza(self.cx, self.cfg, codigo, formatos=["vertical"])   # repetir no duplica
         self.assertEqual(self.cx.execute("SELECT COUNT(*) FROM activo").fetchone()[0], len(res.archivos))
+        # si el archivo cambió (plantilla corregida y render forzado), el registro se pone al día en vez de duplicarse
+        ruta = self.cfg.espacio / fila["ruta"]
+        ruta.write_bytes(b"otra imagen")
+        render._registrar_activo(self.cx, self.cfg, fila["pieza_id"], 1, ruta, "imagen", 1080, 1350, None, "1080x1350")
+        filas = self.cx.execute("SELECT sha256 FROM activo WHERE ruta = ?", (fila["ruta"],)).fetchall()
+        self.assertEqual(len(filas), 1)
+        self.assertNotEqual(filas[0]["sha256"], fila["sha256"])
+
+    def test_la_misma_imagen_para_varios_canales_se_renderiza_una_sola_vez(self):
+        ejemplo = plantillas.ficha(RAIZ, "educativo")["ejemplo"]
+        cache: dict = {}
+        a = render.exportar(RAIZ, "educativo", ejemplo, self.tmp / "a", "fb", formatos=["cuadrado"], marca="cuadra", cache=cache)
+        # mismo texto visible, otro copy del post: se copia sin abrir el navegador (un objeto vacío fallaría si se usara)
+        b = render.exportar(RAIZ, "educativo", ejemplo | {"copy": "Texto para LinkedIn"}, self.tmp / "b", "li",
+                            formatos=["cuadrado"], marca="cuadra", cache=cache, navegador=object())
+        self.assertEqual([p.name for p in b.archivos], ["li-cuadrado.png"])
+        self.assertEqual(b.archivos[0].read_bytes(), a.archivos[0].read_bytes())
+        c = render.exportar(RAIZ, "educativo", ejemplo | {"titular": "Otro titular"}, self.tmp / "c", "ig",
+                            formatos=["cuadrado"], marca="cuadra", cache=cache)
+        self.assertNotEqual(c.archivos[0].read_bytes(), a.archivos[0].read_bytes())
 
     def test_una_pieza_sin_plantilla_no_se_renderiza(self):
         codigo = contenido.crear_pieza(self.cx, "cuadra", formato="post", canal="facebook", titulo="Sin plantilla",

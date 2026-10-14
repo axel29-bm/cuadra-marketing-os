@@ -340,16 +340,31 @@ def _registrar_activo(cx: sqlite3.Connection, cfg: Config, pieza_id: int | None,
                       tipo: str, ancho: int | None = None, alto: int | None = None, duracion_ms: int | None = None,
                       formato: str = "", origen: str = "RENDER") -> None:
     relativa = ruta.resolve().relative_to(cfg.espacio.resolve()).as_posix()
+    huella = util.sha256_archivo(ruta)
+    # Un render repetido sobrescribe el archivo: el registro anterior de esa ruta ya no describe lo que hay en disco.
+    cx.execute("DELETE FROM activo WHERE ruta = ? AND sha256 != ? AND origen = 'RENDER'", (relativa, huella))
     cx.execute("""INSERT OR IGNORE INTO activo (pieza_id, version, ruta, tipo, formato, sha256, bytes, ancho, alto,
                     duracion_ms, origen, creado_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
-               (pieza_id, version, relativa, tipo, formato, util.sha256_archivo(ruta), ruta.stat().st_size, ancho, alto,
+               (pieza_id, version, relativa, tipo, formato, huella, ruta.stat().st_size, ancho, alto,
                 duracion_ms, origen, util.ahora_utc()))
+
+
+def _clave_render(ficha: dict, nombre: str, datos: dict, formato: str, marca: str, vista_previa: bool,
+                  audio: Path | None) -> str:
+    """Huella de lo que se ve: solo los campos que la plantilla declara (el copy del post no cambia la imagen)."""
+    visibles = {k: v for k, v in datos.items() if k in ficha.get("campos", {})}
+    sonido = util.sha256_archivo(audio) if audio else ""
+    return util.sha256_texto(util.a_json([nombre, visibles, formato, marca, vista_previa, sonido]))
 
 
 def exportar(raiz: Path, nombre: str, datos: dict, destino: Path, base_nombre: str, *, formatos: list[str] | None = None,
              marca: str = "base", vista_previa: bool = False, audio: Path | None = None,
-             navegador: Navegador | None = None, titulo: str = "") -> Resultado:
-    """Renderiza una plantilla con sus datos en todos los formatos pedidos. Devuelve los archivos creados."""
+             navegador: Navegador | None = None, titulo: str = "", cache: dict | None = None) -> Resultado:
+    """Renderiza una plantilla con sus datos en todos los formatos pedidos. Devuelve los archivos creados.
+
+    Con `cache` (un dict que se comparte entre llamadas), un formato que ya se renderizó con los mismos textos visibles
+    se copia en lugar de volver a abrir el navegador: sirve cuando la misma imagen o el mismo vídeo va a varios canales.
+    """
     problemas = validar(raiz, nombre, datos)
     if problemas:
         raise ErrorFabrica("Los textos no encajan en la plantilla: " + "; ".join(problemas))
@@ -362,6 +377,20 @@ def exportar(raiz: Path, nombre: str, datos: dict, destino: Path, base_nombre: s
         for formato in formatos:
             ancho, alto = FORMATOS[formato]
             sufijo = f"{base_nombre}-{formato}"
+            clave = _clave_render(ficha, nombre, datos, formato, marca, vista_previa, audio) if cache is not None else ""
+            if clave in (cache or {}):
+                sufijo_previo, archivos, avisos = cache[clave]
+                destino.mkdir(parents=True, exist_ok=True)
+                for origen, duracion in archivos:
+                    ruta = destino / origen.name.replace(sufijo_previo, sufijo, 1)
+                    if ruta != origen:
+                        shutil.copy2(origen, ruta)
+                    res.archivos.append(ruta)
+                    if duracion is not None:
+                        res.duraciones_ms[ruta.name] = duracion
+                res.avisos += [a.replace(sufijo_previo, sufijo) for a in avisos]
+                continue
+            inicio = (len(res.archivos), len(res.avisos))
             if ficha.get("video"):
                 ruta = destino / f"{sufijo}.mp4"
                 html = componer(raiz, nombre, datos, formato=formato, marca=marca, vista_previa=vista_previa)
@@ -371,22 +400,24 @@ def exportar(raiz: Path, nombre: str, datos: dict, destino: Path, base_nombre: s
                 portada = destino / f"{sufijo}-portada.png"
                 nav.imagen(html.replace("window.__portada = false", "window.__portada = true"), ancho, alto, portada)
                 res.archivos.append(portada)
-                res.avisos.append(f"{ruta.name}: {info['duracion_ms'] / 1000:g} s, {info['cuadros']} cuadros")
-                continue
-            total = paginas(raiz, nombre, datos)
-            imagenes = []
-            for pagina in range(total):
-                ruta = destino / (f"{sufijo}-{pagina + 1:02d}.png" if total > 1 else f"{sufijo}.png")
-                html = componer(raiz, nombre, datos, formato=formato, marca=marca, pagina=pagina, vista_previa=vista_previa)
-                info = nav.imagen(html, ancho, alto, ruta)
-                if not info["cabe"]:
-                    res.avisos.append(f"{ruta.name}: el texto no cabe ni con la letra más pequeña permitida; acórtalo")
-                imagenes.append(ruta)
-            res.archivos += imagenes
-            if total > 1 and ficha.get("pdf", False):
-                ruta_pdf = destino / f"{sufijo}.pdf"
-                nav.pdf(imagenes, ancho, alto, ruta_pdf)
-                res.archivos.append(ruta_pdf)
+            else:
+                total = paginas(raiz, nombre, datos)
+                imagenes = []
+                for pagina in range(total):
+                    ruta = destino / (f"{sufijo}-{pagina + 1:02d}.png" if total > 1 else f"{sufijo}.png")
+                    html = componer(raiz, nombre, datos, formato=formato, marca=marca, pagina=pagina, vista_previa=vista_previa)
+                    info = nav.imagen(html, ancho, alto, ruta)
+                    if not info["cabe"]:
+                        res.avisos.append(f"{ruta.name}: el texto no cabe ni con la letra más pequeña permitida; acórtalo")
+                    imagenes.append(ruta)
+                res.archivos += imagenes
+                if total > 1 and ficha.get("pdf", False):
+                    ruta_pdf = destino / f"{sufijo}.pdf"
+                    nav.pdf(imagenes, ancho, alto, ruta_pdf)
+                    res.archivos.append(ruta_pdf)
+            if cache is not None:
+                cache[clave] = (sufijo, [(r, res.duraciones_ms.get(r.name)) for r in res.archivos[inicio[0]:]],
+                                res.avisos[inicio[1]:])
         if ficha.get("interactivo"):
             ruta = destino / f"{base_nombre}-interactivo.html"
             ruta.write_text(componer_interactivo(raiz, nombre, datos, marca=marca), encoding="utf-8")
@@ -403,7 +434,7 @@ def exportar(raiz: Path, nombre: str, datos: dict, destino: Path, base_nombre: s
 
 
 def exportar_pieza(cx: sqlite3.Connection, cfg: Config, codigo: str, *, formatos: list[str] | None = None,
-                   audio: Path | None = None, navegador: Navegador | None = None) -> Resultado:
+                   audio: Path | None = None, navegador: Navegador | None = None, cache: dict | None = None) -> Resultado:
     """Renderiza la versión actual de una pieza con su plantilla y registra los archivos como activos."""
     p = contenido.obtener_pieza(cx, codigo)
     if not p["plantilla"]:
@@ -415,7 +446,8 @@ def exportar_pieza(cx: sqlite3.Connection, cfg: Config, codigo: str, *, formatos
     _ESPACIO_CAPTURAS[:] = [cfg.espacio / "capturas"]
     destino = cfg.salidas / codigo / f"v{v['numero']}"
     res = exportar(cfg.raiz, p["plantilla"], datos, destino, f"{codigo}-v{v['numero']}", formatos=formatos,
-                   marca=_marca_del_producto(cfg.raiz, p["producto"]), audio=audio, navegador=navegador, titulo=p["titulo"])
+                   marca=_marca_del_producto(cfg.raiz, p["producto"]), audio=audio, navegador=navegador, titulo=p["titulo"],
+                   cache=cache)
     tipos = {".png": "imagen", ".pdf": "pdf", ".mp4": "video", ".html": "html", ".srt": "srt", ".md": "guion"}
     with db.transaccion(cx):
         for ruta in res.archivos:

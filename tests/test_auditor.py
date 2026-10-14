@@ -93,6 +93,13 @@ class Estilo(unittest.TestCase):
     def test_avisa_signos_de_apertura_faltantes(self):
         self.assertIn("ortografia", reglas(revisar("Llevas muchas empresas?"), "ADVERTENCIA"))
 
+    def test_el_nombre_mal_escrito_se_avisa_pero_el_verbo_cuadrar_no(self):
+        self.assertIn("marca", reglas(revisar("Prueba cuadra en tu estudio"), "ADVERTENCIA"))
+        self.assertIn("marca", reglas(revisar("Así funciona CUadra"), "ADVERTENCIA"))
+        for texto in ("3 señales de que algo no cuadra en tu serie", "Cuando todo cuadra, cierras tranquilo",
+                      "Un formato cuadrado para Instagram"):
+            self.assertNotIn("marca", reglas(revisar(texto), "ADVERTENCIA"), texto)
+
     def test_los_limites_del_canal_bloquean_un_texto_largo(self):
         informe = auditar(PiezaParaAuditar(tipo_afirmacion="EDUCATIVA", canal="instagram", textos={"copy": "a " * 1500},
                                            limites_canal={"copy": 2200}), POL)

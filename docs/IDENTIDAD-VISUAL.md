@@ -47,7 +47,7 @@ Cada plantilla vive en `plantillas/<nombre>/` con tres cosas: `plantilla.toml` (
 | `beneficio` | Una capacidad real, con icono o captura | vertical, cuadrado, historia, enlace | captación, educativa, desarrollo |
 | `noticia` | Norma o comunicado oficial: qué cambia, a quién afecta, desde cuándo y fuente | vertical, cuadrado, historia | noticia |
 | `carrusel` | 3 a 10 láminas en PNG y un PDF (documento de LinkedIn) | vertical, cuadrado | educativa, captación, desarrollo |
-| `trivia` | Pregunta y respuesta en dos láminas, más una versión HTML interactiva | vertical, cuadrado, historia | educativa, humor, captación |
+| `trivia` | Pregunta y respuesta en dos láminas, más una versión HTML interactiva. `invitacion` cambia la línea de abajo (por ejemplo, «Vota en la encuesta» en historias) | vertical, cuadrado, historia | educativa, humor, captación |
 | `meme` | Humor del oficio solo con texto: dos paneles o «Nadie:» | cuadrado, vertical, historia | humor |
 | `lanzamiento` | Anuncio grande sobre azul noche (hoy: lista de espera) | vertical, cuadrado, historia, horizontal, enlace | captación, desarrollo, promocional |
 | `invitacion-demo` | Qué se verá en una demostración en vivo y cómo pedirla | vertical, cuadrado, historia, enlace | captación |
@@ -76,12 +76,16 @@ Qué hace el sistema:
 
 Para probar una plantilla con textos sueltos, sin crear una pieza: `python -m mos fabrica probar --plantilla trivia --archivo textos.json`.
 
+Para una campaña entera, las piezas se escriben en `campanas/<slug>/campana.toml` y se producen todas juntas con `python -m mos campana cargar|render|calendario|paquete` (ver `campanas/lista-espera-beta/LEEME.md`). La misma imagen o vídeo que va a varias redes se renderiza una sola vez.
+
 ## 5. Vídeo con tu voz
 
 1. Escribe el guion por escenas en la plantilla `motion`: lo que va en pantalla, la locución y los segundos.
 2. `python -m mos fabrica render P-0005` genera el vídeo mudo, `guion.md` (con palabras por minuto por escena), `subtitulos.srt` y `teleprompter.html` (espacio para iniciar, flechas para la velocidad, E para espejo).
 3. Grabas la voz con el celular o el micrófono de la PC leyendo el teleprompter.
 4. `python -m mos fabrica render P-0005 --audio voz.m4a` une la voz al vídeo. Si la voz dura más que una escena, ajusta sus segundos y vuelve a renderizar.
+
+La portada del vídeo es un cuadro quieto de la escena que indiques en `portada_escena` (por defecto, la primera): elige la que se entienda sola en la cuadrícula del perfil.
 
 Más de 160 palabras por minuto suele sonar apurado. Las escenas pueden llevar una captura real con un zoom suave en lugar de icono: así se arma una demo animada a partir de capturas de verdad.
 

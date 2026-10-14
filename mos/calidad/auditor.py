@@ -299,10 +299,22 @@ def _ortografia_basica(campo: str, texto: str) -> list[Hallazgo]:
     return h
 
 
+# Palabras que, justo antes del nombre en minúscula, indican que es el verbo y no la marca («no cuadra», «todo cuadra»).
+_ANTES_DEL_VERBO = {"no", "ya", "si", "sí", "que", "lo", "se", "me", "te", "nos", "le", "les", "todo", "nada", "algo", "esto",
+                    "eso", "nunca", "siempre", "cuando", "también", "tampoco", "bien", "casi", "aún", "todavía", "y", "o", "ni"}
+
+
 def _marca(campo: str, texto: str, pol: Politica) -> list[Hallazgo]:
     nombre = pol.nombre_marca
-    variantes = {m.group(0) for m in re.finditer(re.escape(nombre), texto, re.I)}
-    raras = [v for v in variantes if v not in {nombre, nombre.upper()}]
+    raras = []
+    for m in re.finditer(rf"(\w+\W+)?\b({re.escape(nombre)})\b", texto, re.I):
+        variante = m.group(2)
+        if variante in {nombre, nombre.upper()}:
+            continue
+        anterior = (m.group(1) or "").strip(" ,.;:¿?¡!«»\"'()\n").lower()
+        if variante == nombre.lower() and anterior in _ANTES_DEL_VERBO:
+            continue  # el nombre de la marca también es una palabra común: «algo no cuadra»
+        raras.append(variante)
     if raras:
         return [Hallazgo("marca", ADVERTENCIA, f"El nombre aparece como «{raras[0]}». Escribe {nombre}.", campo)]
     return []

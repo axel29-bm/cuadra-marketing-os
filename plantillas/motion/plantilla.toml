@@ -13,6 +13,7 @@ mostrar_locucion = { tipo = "opcion", valores = ["si", "no"] }
 cierre_titular = { tipo = "texto", max = 70, requerido = true }
 cta = { tipo = "texto", max = 34, requerido = true }
 cierre_pie = { tipo = "texto", max = 90 }
+portada_escena = { tipo = "entero", min = 1, max = 8 }
 
 [campos.escenas]
 tipo = "objetos"

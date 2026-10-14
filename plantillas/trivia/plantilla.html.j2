@@ -33,7 +33,7 @@
 </div>
 {% if pagina == 0 %}
 <div class="empuje"></div>
-<p class="invita"><span>{{ icono("message-circle") }}</span>Responde con la letra en los comentarios. La respuesta, en la siguiente lámina.</p>
+<p class="invita"><span>{{ icono("message-circle") }}</span>{{ invitacion or "Responde con la letra en los comentarios. La respuesta, en la siguiente lámina." }}</p>
 {% else %}
 <div class="explica"><p class="texto ajustar">{{ explicacion | resaltar }}</p>{% if fuente %}<p class="fuente">Fuente: {{ fuente }}</p>{% endif %}</div>
 <div class="empuje"></div>

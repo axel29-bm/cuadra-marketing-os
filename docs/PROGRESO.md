@@ -4,6 +4,43 @@ Bitácora del Marketing OS. Lo más reciente arriba. Cada entrada dice qué se h
 
 ---
 
+## 14/10/2026 · Fase 3: fábrica de piezas, calendario de 30 días y paquete de lanzamiento
+
+### Hecho
+
+- **Fábrica** (`mos/fabrica/`, `plantillas/`): 10 plantillas (educativo, beneficio, noticia, carrusel, trivia, meme, lanzamiento, invitación a demo, promoción y vídeo animado) con la identidad provisional de Cuadra: Geist, iconos Lucide y logo incrustados, sin Internet. Exportan PNG en cinco formatos, PDF de carrusel para LinkedIn, trivia interactiva en HTML, vídeo MP4 con portada y, si hay locución, guion, teleprompter y subtítulos SRT. Los textos que no caben se achican hasta un 55 % y, si aun así no caben, avisan. Cada archivo queda registrado con su huella SHA-256. Previsualizaciones en `plantillas/<nombre>/previa/`. Guía en `docs/IDENTIDAD-VISUAL.md`.
+- **Campañas como archivos** (`mos/campanas.py`, `python -m mos campana`): `cargar` (sin duplicar; versión nueva solo si el contenido cambió; auditoría en cada carga), `render` (la misma imagen o vídeo para varias redes se renderiza una vez), `calendario` (Markdown y CSV), `paquete` (una carpeta por publicación con sus archivos y el texto) y `mover` (corre todas las fechas por semanas).
+- **Calendario de 30 días** (`campanas/lista-espera-beta/`): del 15/10 al 13/11/2026, 26 publicaciones en Facebook, Instagram, LinkedIn, TikTok y YouTube y 4 domingos de revisión. Cada día tiene producto, audiencia, objetivo, etapa, pilar, tema, formato, canal, gancho, copy o guion, llamado, fuente, archivos, verificación, aprobación y métrica.
+- **Paquete de lanzamiento exportado** (`campanas/lista-espera-beta/exportados/`, 94 archivos): flyers comerciales y educativos, dos carruseles con PDF, trivia con versión interactiva, tres memes, un vídeo meme, dos vídeos con guion para tu voz y una noticia con fuente oficial verificada (R.S. N.° 000125-2026/SUNAT). Más `mensajes-y-demo.md` (respuestas a «BETA» y «DEMO» con la pregunta de consentimiento y preguntas frecuentes), `secuencia-seguimiento.md` y `concepto-video-meme.md`.
+- Auditor: el nombre de la marca ya no se confunde con el verbo («algo no cuadra») ni con otras palabras («cuadrado»).
+
+### Cómo se verificó
+
+- `python -m unittest discover -s tests -t .`: todas en verde (ver el número en la salida de la CI). Nuevas: plantillas y exportación real (medidas exactas, PDF con sus páginas, vídeo con su duración, caché de render, registro de archivos) y campañas (herencia entre piezas, carga idempotente, piezas publicadas intocables, calendario, paquete, mover fechas). La campaña real tiene su propia prueba: 30 días seguidos sin repetir, cada pieza encaja en su plantilla y el auditor solo frena la noticia hasta que la revise un contador.
+- Las 26 piezas se renderizaron con Chromium y FFmpeg y se revisaron a ojo en hojas de contacto; se corrigieron las portadas de vídeo (ahora se elige la escena) y la invitación de la trivia en historias.
+
+### Pendiente
+
+- Tu aprobación de cada pieza en el panel. Que un contador lea la noticia C12 y los contenidos educativos.
+- Grabar tu voz para C13 y C18 y volver a renderizar con `--audio`.
+- Capturas reales de Cuadra con la empresa de ejemplo para reemplazar iconos en C06, C15, C17 y los vídeos.
+- Inscribir el banco de datos «Interesados» y publicar el aviso de privacidad antes de guardar datos de nadie.
+- Landing de captación (Fase 5) y los documentos que faltan: ESTRATEGIA-MAESTRA, ESTRATEGIA-EDITORIAL, AUTOMATIZACIONES, CANALES-Y-PUBLICACION, METRICAS-Y-EXPERIMENTOS y OPERACION-DIARIA.
+
+### Defectos y límites conocidos
+
+- La identidad visual es provisional: las imágenes de referencia que mencionaste no llegaron.
+- Las piezas usan iconos donde irían capturas reales del producto, porque Cuadra no se pudo ejecutar en este entorno (es de Windows).
+- Renderizar todo el paquete tarda unos 6 minutos (los vídeos se graban cuadro a cuadro).
+- Los vídeos salen sin música: en cada red se elige un sonido con licencia comercial o se publican sin música.
+- `exportados/` es una foto del paquete: si cambias el TOML, vuelve a renderizar y a exportar.
+
+### Siguiente paso
+
+Landing local con la lista de espera y la trivia interactiva, sin publicar (Fase 5 adelantada), y los documentos de operación.
+
+---
+
 ## 14/10/2026 · Fase 2: panel web local y registro de herramientas
 
 ### Hecho
